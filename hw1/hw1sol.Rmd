@@ -26,11 +26,13 @@ Done.
 
 4. After each homework due date, teaching assistant and instructor will check out your master branch for grading. Tag each of your homework submissions with tag names `hw1`, `hw2`, ... Tagging time will be used as your submission time. That means if you tag your `hw1` submission after deadline, penalty points will be deducted for late submission.
 
-Understood.
+Understood. 
 
 ## Q2. Linux Shell Commands
 
 1. This exercise (and later in this course) uses the [MIMIC-III data](https://mimic.physionet.org), a freely accessible critical care database developed by the MIT Lab for Computational Physiology. Please follow the instructions at <https://mimic.physionet.org/gettingstarted/access/> to complete the CITI `Data or Specimens Only Research` course. Show the screenshot of your completion report. 
+
+
 
 2. The `/home/203bdata/mimic-iii/` folder on teaching server contains data sets from MIMIC-III. See <https://mimic.physionet.org/mimictables/admissions/> for details of each table.  
     ```{bash}
@@ -47,9 +49,52 @@ Please, do **not** put these data files into Git; they are big. Also do **not** 
         ls $datafile
       done
     ```
+
+The bash script is a for loop that only lists `csv` files. 
+
 Display the number of lines in each `csv` file.
 
-4. Display the first few lines of `ADMISSIONS.csv`. How many rows are in this data file? How many unique patients (identified by `SUBJECT_ID`) are in this data file? What are the possible values taken by each of the variable `INSURANCE`, `LANGUAGE`, `RELIGION`, `MARITAL_STATUS`, and `ETHNICITY`? How many (unique) patients are Hispanic? (Hint: combine Linux comamnds `head`, `tail`, `awk`, `uniq`, `wc`, `sort` and so on using pipe.)
+```{bash}
+ for datafile in /home/203bdata/mimic-iii/*.csv
+      do
+        cat $datafile | wc -l
+      done
+```
+
+4. Display the first few lines of `ADMISSIONS.csv`. 
+
+```{bash}
+head /home/203bdata/mimic-iii/ADMISSIONS.csv
+```
+
+
+How many rows are in this data file? 
+
+```{bash}
+awk -F',' 'END {print NR}' /home/203bdata/mimic-iii/ADMISSIONS.csv
+```
+
+How many unique patients (identified by `SUBJECT_ID`) are in this data file? 
+
+```{bash}
+awk -F',' '{print $2}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq | wc -l
+```
+
+
+What are the possible values taken by each of the variable `INSURANCE`, `LANGUAGE`, `RELIGION`, `MARITAL_STATUS`, and `ETHNICITY`? 
+
+```{bash}
+for ((i = 10; i <= 14; i++)); do
+  awk -F',' '{print $i}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq
+done
+```
+
+How many (unique) patients are Hispanic? (Hint: combine Linux commands `head`, `tail`, `awk`, `uniq`, `wc`, `sort` and so on using pipe.)
+
+```{bash}
+
+```
+
 
 ## Q3. More fun with shell
 
