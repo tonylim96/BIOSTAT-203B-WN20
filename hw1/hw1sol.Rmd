@@ -14,11 +14,19 @@ knitr::opts_chunk$set(echo = TRUE)
 
 1. Apply for the [Student Developer Pack](https://education.github.com/pack) at GitHub using your UCLA email.
 
+Done.
+
 2. Create a **private** repository `biostat-203b-2020-winter` and add `Hua-Zhou` and `juhkim111` as your collaborators with write permission.
+
+Done.
 
 3. Top directories of the repository should be `hw1`, `hw2`, ... Maintain two branches `master` and `develop`. The `develop` branch will be your main playground, the place where you develop solution (code) to homework problems and write up report. The `master` branch will be your presentation area. Submit your homework files (R markdown file `Rmd`, `html` file converted from R markdown, all code and data sets to reproduce results) in `master` branch.
 
+`hw1` folder created. 
+
 4. After each homework due date, teaching assistant and instructor will check out your master branch for grading. Tag each of your homework submissions with tag names `hw1`, `hw2`, ... Tagging time will be used as your submission time. That means if you tag your `hw1` submission after deadline, penalty points will be deducted for late submission.
+
+Understood.
 
 ## Q2. Linux Shell Commands
 
