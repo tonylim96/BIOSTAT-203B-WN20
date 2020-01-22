@@ -84,26 +84,30 @@ head /home/203bdata/mimic-iii/ADMISSIONS.csv
   How many rows are in this data file? 
 
 ```{bash}
-awk -F',' 'END {print NR}' /home/203bdata/mimic-iii/ADMISSIONS.csv
+awk -F',' 'END { print NR }' /home/203bdata/mimic-iii/ADMISSIONS.csv
 ```
 
 How many unique patients (identified by `SUBJECT_ID`) are in this data file? 
 
 ```{bash}
-awk -F',' '{print $2}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq | wc -l
+awk -F',' '{ print $2 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq | wc -l
 ```
 
 What are the possible values taken by each of the variable `INSURANCE`, `LANGUAGE`, `RELIGION`, `MARITAL_STATUS`, and `ETHNICITY`? 
 
 **Solution**: 
 ```{bash}
-awk -F',' '{print $14}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq
+awk -F',' '{ print $10 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
+awk -F',' '{ print $11 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
+awk -F',' '{ print $12 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
+awk -F',' '{ print $13 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
+awk -F',' '{ print $14 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
 ```
 
 How many (unique) patients are Hispanic? (Hint: combine Linux commands `head`, `tail`, `awk`, `uniq`, `wc`, `sort` and so on using pipe.)
 
 ```{bash}
-awk -F',' '{if($14 ~ /HISPANIC/) {print $2}}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq | wc -l
+awk -F',' '{if($14 ~ /HISPANIC/) { print $2 }}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq | wc -l
 ```
 
 ## Q3. More fun with shell
@@ -127,9 +131,10 @@ Do **not** put this text file `pride_and_prejudice.txt` in Git. Using a `for` lo
     echo 'hello, world' >> test2.txt
     ```
 
-If `test1.txt` does not exist, the first command would create the file that would contain "hello, world".  If `test1.txt1` already exists, the command would overwrite the file.
+**Solution**: \n
+If `test1.txt` does not exist, the first command would create the file that would contain "hello, world". If `test1.txt1` already exists, the command would overwrite the file with a file that "hello, world" in it. 
 
-If `test2.txt` does not exist, the second command would create the file that would contain "hello, world". If `test2.txt` already exists, the second command would add 'hello, world' to the end of the file.
+If `test2.txt` does not exist, the second command would create the file that would contain "hello, world". If `test2.txt` already exists, the second command would add "hello, world" to the end of the file.
 
 3. Using your favorite text editor (e.g., `vi`), type the following and save the file as `middle.sh`:
     ```{bash eval=FALSE}

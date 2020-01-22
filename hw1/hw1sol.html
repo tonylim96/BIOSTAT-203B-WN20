@@ -489,25 +489,129 @@ done</code></pre>
 ## 28,28,162569,2177-09-01 07:15:00,2177-09-06 16:00:00,,&quot;ELECTIVE&quot;,&quot;PHYS REFERRAL/NORMAL DELI&quot;,&quot;HOME HEALTH CARE&quot;,&quot;Medicare&quot;,,&quot;CATHOLIC&quot;,&quot;MARRIED&quot;,&quot;WHITE&quot;,,,&quot;CORONARY ARTERY DISEASE\CORONARY ARTERY BYPASS GRAFT/SDA&quot;,0,1
 ## 29,30,104557,2172-10-14 14:17:00,2172-10-19 14:37:00,,&quot;URGENT&quot;,&quot;TRANSFER FROM HOSP/EXTRAM&quot;,&quot;HOME HEALTH CARE&quot;,&quot;Medicare&quot;,,&quot;CATHOLIC&quot;,&quot;MARRIED&quot;,&quot;UNKNOWN/NOT SPECIFIED&quot;,,,&quot;UNSTABLE ANGINA\CATH&quot;,0,1</code></pre>
 <p>How many rows are in this data file?</p>
-<pre class="bash"><code>awk -F',' 'END {print NR}' /home/203bdata/mimic-iii/ADMISSIONS.csv</code></pre>
+<pre class="bash"><code>awk -F',' 'END { print NR }' /home/203bdata/mimic-iii/ADMISSIONS.csv</code></pre>
 <pre><code>## 58977</code></pre>
 <p>How many unique patients (identified by <code>SUBJECT_ID</code>) are in this data file?</p>
-<pre class="bash"><code>awk -F',' '{print $2}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq | wc -l</code></pre>
+<pre class="bash"><code>awk -F',' '{ print $2 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq | wc -l</code></pre>
 <pre><code>## 46521</code></pre>
 <p>What are the possible values taken by each of the variable <code>INSURANCE</code>, <code>LANGUAGE</code>, <code>RELIGION</code>, <code>MARITAL_STATUS</code>, and <code>ETHNICITY</code>?</p>
-<!-- ```{bash} -->
-<!-- for ((i = 10; i <= 14; i++)); do -->
-<!--   awk -F',' '{print $i}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq -->
-<!-- done -->
-<!-- ``` -->
-<!-- ```{bash} -->
-<!-- for var in {INSURANCE}; -->
-<!-- do -->
-<!--   awk -F',' '{print $var}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq -->
-<!-- done; -->
-<!-- ``` -->
-<pre class="bash"><code>awk -F',' '{print $14}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq</code></pre>
-<pre><code>## &quot;AMERICAN INDIAN/ALASKA NATIVE&quot;
+<p><strong>Solution</strong>:</p>
+<pre class="bash"><code>awk -F',' '{ print $10 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
+awk -F',' '{ print $11 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
+awk -F',' '{ print $12 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
+awk -F',' '{ print $13 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
+awk -F',' '{ print $14 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq</code></pre>
+<pre><code>## &quot;Government&quot;
+## &quot;Medicaid&quot;
+## &quot;Medicare&quot;
+## &quot;Private&quot;
+## &quot;Self Pay&quot;
+## 
+## &quot;ALBA&quot;
+## &quot;AMER&quot;
+## &quot;*AMH&quot;
+## &quot;*ARA&quot;
+## &quot;ARAB&quot;
+## &quot;*ARM&quot;
+## &quot;* BE&quot;
+## &quot;*BEN&quot;
+## &quot;BENG&quot;
+## &quot;*BOS&quot;
+## &quot;*BUL&quot;
+## &quot;*BUR&quot;
+## &quot;CAMB&quot;
+## &quot;*CAN&quot;
+## &quot;CANT&quot;
+## &quot;CAPE&quot;
+## &quot;*CDI&quot;
+## &quot;*CHI&quot;
+## &quot;*CRE&quot;
+## &quot;*DEA&quot;
+## &quot;*DUT&quot;
+## &quot;ENGL&quot;
+## &quot;ETHI&quot;
+## &quot;*FAR&quot;
+## &quot;*FIL&quot;
+## &quot;FREN&quot;
+## &quot;* FU&quot;
+## &quot;*FUL&quot;
+## &quot;GERM&quot;
+## &quot;GREE&quot;
+## &quot;*GUJ&quot;
+## &quot;HAIT&quot;
+## &quot;HIND&quot;
+## &quot;*HUN&quot;
+## &quot;*IBO&quot;
+## &quot;ITAL&quot;
+## &quot;JAPA&quot;
+## &quot;*KHM&quot;
+## &quot;KORE&quot;
+## &quot;LAOT&quot;
+## &quot;*LEB&quot;
+## &quot;*LIT&quot;
+## &quot;*MAN&quot;
+## &quot;MAND&quot;
+## &quot;*MOR&quot;
+## &quot;*NEP&quot;
+## &quot;*PER&quot;
+## &quot;PERS&quot;
+## &quot;*PHI&quot;
+## &quot;POLI&quot;
+## &quot;PORT&quot;
+## &quot;PTUN&quot;
+## &quot;*PUN&quot;
+## &quot;*ROM&quot;
+## &quot;*RUS&quot;
+## &quot;RUSS&quot;
+## &quot;SERB&quot;
+## &quot;**SH&quot;
+## &quot;SOMA&quot;
+## &quot;*SPA&quot;
+## &quot;SPAN&quot;
+## &quot;** T&quot;
+## &quot;TAGA&quot;
+## &quot;*TAM&quot;
+## &quot;*TEL&quot;
+## &quot;THAI&quot;
+## &quot;**TO&quot;
+## &quot;*TOI&quot;
+## &quot;*TOY&quot;
+## &quot;TURK&quot;
+## &quot;*URD&quot;
+## &quot;URDU&quot;
+## &quot;VIET&quot;
+## &quot;*YID&quot;
+## &quot;*YOR&quot;
+## 
+## &quot;7TH DAY ADVENTIST&quot;
+## &quot;BAPTIST&quot;
+## &quot;BUDDHIST&quot;
+## &quot;CATHOLIC&quot;
+## &quot;CHRISTIAN SCIENTIST&quot;
+## &quot;EPISCOPALIAN&quot;
+## &quot;GREEK ORTHODOX&quot;
+## &quot;HEBREW&quot;
+## &quot;HINDU&quot;
+## &quot;JEHOVAH'S WITNESS&quot;
+## &quot;JEWISH&quot;
+## &quot;LUTHERAN&quot;
+## &quot;METHODIST&quot;
+## &quot;MUSLIM&quot;
+## &quot;NOT SPECIFIED&quot;
+## &quot;OTHER&quot;
+## &quot;PROTESTANT QUAKER&quot;
+## &quot;ROMANIAN EAST. ORTH&quot;
+## &quot;UNITARIAN-UNIVERSALIST&quot;
+## &quot;UNOBTAINABLE&quot;
+## 
+## &quot;DIVORCED&quot;
+## &quot;LIFE PARTNER&quot;
+## &quot;MARRIED&quot;
+## &quot;SEPARATED&quot;
+## &quot;SINGLE&quot;
+## &quot;UNKNOWN (DEFAULT)&quot;
+## &quot;WIDOWED&quot;
+## &quot;AMERICAN INDIAN/ALASKA NATIVE&quot;
 ## &quot;AMERICAN INDIAN/ALASKA NATIVE FEDERALLY RECOGNIZED TRIBE&quot;
 ## &quot;ASIAN&quot;
 ## &quot;ASIAN - ASIAN INDIAN&quot;
@@ -524,7 +628,6 @@ done</code></pre>
 ## &quot;BLACK/CAPE VERDEAN&quot;
 ## &quot;BLACK/HAITIAN&quot;
 ## &quot;CARIBBEAN ISLAND&quot;
-## &quot;ETHNICITY&quot;
 ## &quot;HISPANIC/LATINO - CENTRAL AMERICAN (OTHER)&quot;
 ## &quot;HISPANIC/LATINO - COLOMBIAN&quot;
 ## &quot;HISPANIC/LATINO - CUBAN&quot;
@@ -550,7 +653,7 @@ done</code></pre>
 ## &quot;WHITE - OTHER EUROPEAN&quot;
 ## &quot;WHITE - RUSSIAN&quot;</code></pre>
 <p>How many (unique) patients are Hispanic? (Hint: combine Linux commands <code>head</code>, <code>tail</code>, <code>awk</code>, <code>uniq</code>, <code>wc</code>, <code>sort</code> and so on using pipe.)</p>
-<pre class="bash"><code>awk -F',' '{if($14 ~ /HISPANIC/) {print $2}}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq | wc -l</code></pre>
+<pre class="bash"><code>awk -F',' '{if($14 ~ /HISPANIC/) { print $2 }}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq | wc -l</code></pre>
 <pre><code>## 1652</code></pre>
 </div>
 <div id="q3.-more-fun-with-shell" class="section level2">
@@ -567,8 +670,8 @@ done</code></pre>
 <p>and</p>
 <pre class="bash"><code>echo 'hello, world' &gt;&gt; test2.txt</code></pre></li>
 </ol>
-<p>If <code>test1.txt</code> does not exist, the first command would create the file that would contain “hello, world”. If <code>test1.txt1</code> already exists, the command would overwrite the file.</p>
-<p>If <code>test2.txt</code> does not exist, the second command would create the file that would contain “hello, world”. If <code>test2.txt</code> already exists, the second command would add ‘hello, world’ to the end of the file.</p>
+<p><strong>Solution</strong>:  If <code>test1.txt</code> does not exist, the first command would create the file that would contain “hello, world”. If <code>test1.txt1</code> already exists, the command would overwrite the file with a file that “hello, world” in it.</p>
+<p>If <code>test2.txt</code> does not exist, the second command would create the file that would contain “hello, world”. If <code>test2.txt</code> already exists, the second command would add “hello, world” to the end of the file.</p>
 <ol start="3" style="list-style-type: decimal">
 <li><p>Using your favorite text editor (e.g., <code>vi</code>), type the following and save the file as <code>middle.sh</code>:</p>
 <pre class="bash"><code>#!/bin/sh
