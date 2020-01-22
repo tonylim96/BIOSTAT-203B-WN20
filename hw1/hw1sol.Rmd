@@ -15,25 +15,27 @@ knitr::opts_chunk$set(echo = TRUE)
 
 1. Apply for the [Student Developer Pack](https://education.github.com/pack) at GitHub using your UCLA email.
 
-Done.
+**Solution:** Done.
 
 2. Create a **private** repository `biostat-203b-2020-winter` and add `Hua-Zhou` and `juhkim111` as your collaborators with write permission.
 
-Done.
+**Solution:** Done.
 
 3. Top directories of the repository should be `hw1`, `hw2`, ... Maintain two branches `master` and `develop`. The `develop` branch will be your main playground, the place where you develop solution (code) to homework problems and write up report. The `master` branch will be your presentation area. Submit your homework files (R markdown file `Rmd`, `html` file converted from R markdown, all code and data sets to reproduce results) in `master` branch.
 
-`hw1` folder created. 
+**Solution:** `hw1` folder created. 
 
 4. After each homework due date, teaching assistant and instructor will check out your master branch for grading. Tag each of your homework submissions with tag names `hw1`, `hw2`, ... Tagging time will be used as your submission time. That means if you tag your `hw1` submission after deadline, penalty points will be deducted for late submission.
 
-Understood. 
+**Solution:** Understood. 
 
 ## Q2. Linux Shell Commands
 
 1. This exercise (and later in this course) uses the [MIMIC-III data](https://mimic.physionet.org), a freely accessible critical care database developed by the MIT Lab for Computational Physiology. Please follow the instructions at <https://mimic.physionet.org/gettingstarted/access/> to complete the CITI `Data or Specimens Only Research` course. Show the screenshot of your completion report. 
 
-
+**Solution:** 
+<p align="center">
+  <img src="./completion_report.png" height="450" width="700">
 
 2. The `/home/203bdata/mimic-iii/` folder on teaching server contains data sets from MIMIC-III. See <https://mimic.physionet.org/mimictables/admissions/> for details of each table.  
     ```{bash}
@@ -51,18 +53,27 @@ Please, do **not** put these data files into Git; they are big. Also do **not** 
       done
     ```
 
-The bash script is a for loop that only lists `csv` files. 
+**Solution:** The bash script is a `for` loop that only lists `csv` files. The output is
+
+    ```{bash, eval = TRUE, echo = FALSE}
+    for datafile in /home/203bdata/mimic-iii/*.csv
+      do
+        ls $datafile
+      done
+    ```
 
 Display the number of lines in each `csv` file.
 
 ```{bash}
- for datafile in /home/203bdata/mimic-iii/*.csv
-      do
-        cat $datafile | wc -l
-      done
+for datafile in /home/203bdata/mimic-iii/*.csv
+  do
+    wc -l $datafile
+  done
 ```
 
 4. Display the first few lines of `ADMISSIONS.csv`. 
+
+**Solution**: Displaying the first 10 lines of `ADMISSIONS.csv`
 
 ```{bash}
 head /home/203bdata/mimic-iii/ADMISSIONS.csv
@@ -88,9 +99,16 @@ What are the possible values taken by each of the variable `INSURANCE`, `LANGUAG
 <!-- done -->
 <!-- ``` -->
 
+<!-- ```{bash} -->
+<!-- for var in {INSURANCE}; -->
+<!-- do  -->
+<!--   awk -F',' '{print $var}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq -->
+<!-- done; -->
+<!-- ``` -->
+
+
 ```{bash}
 awk -F',' '{print $14}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq
-
 ```
 
 How many (unique) patients are Hispanic? (Hint: combine Linux commands `head`, `tail`, `awk`, `uniq`, `wc`, `sort` and so on using pipe.)
@@ -112,7 +130,7 @@ Do **not** put this text file `pride_and_prejudice.txt` in Git. Using a `for` lo
 ```
 
 
-0. What's the difference between the following two commands?
+2. What's the difference between the following two commands?
     ```{bash eval=FALSE}
     echo 'hello, world' > test1.txt
     ```
@@ -125,7 +143,7 @@ If `test1.txt` does not exist, the first command would create the file that woul
 
 If `test2.txt` does not exist, the second command would create the file that would contain "hello, world". If `test2.txt` already exists, the second command would add 'hello, world' to the end of the file.
 
-0. Using your favorite text editor (e.g., `vi`), type the following and save the file as `middle.sh`:
+3. Using your favorite text editor (e.g., `vi`), type the following and save the file as `middle.sh`:
     ```{bash eval=FALSE}
     #!/bin/sh
     # Select lines from the middle of a file.
