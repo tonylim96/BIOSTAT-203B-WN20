@@ -64,7 +64,7 @@ Please, do **not** put these data files into Git; they are big. Also do **not** 
 
 Display the number of lines in each `csv` file.
 
-```{bash}
+```{bash, eval = FALSE}
 for datafile in /home/203bdata/mimic-iii/*.csv
   do
     wc -l $datafile
@@ -165,6 +165,13 @@ $$
   \frac{\sum_{r=1}^{\text{rep}} (\widehat \mu_r - \mu_{\text{true}})^2}{\text{rep}}
 $$
 for both methods.
+
+**Solution:** This is my `runSim.R` code:
+
+```{bash}
+cat runSim.R
+```
+
 
 2. Modify the [`autoSim.R`](https://ucla-biostat203b-2020winter.github.io/slides/02-linux/autoSim.R) script to run simulations with combinations of sample sizes `nVals = seq(100, 500, by=100)` and distributions `distTypes = c("gaussian", "t1", "t5")` and write output to appropriately named files. Use `rep = 50`, and `seed = 203`. 
 
