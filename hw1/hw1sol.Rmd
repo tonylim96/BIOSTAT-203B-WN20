@@ -65,6 +65,7 @@ done
 
 Display the number of lines in each `csv` file.
 
+/* REMEMBER TO PUT EVALU = TRUE */
 ```{bash, eval = FALSE, echo = FALSE}
 for datafile in /home/203bdata/mimic-iii/*.csv
   do
@@ -94,20 +95,7 @@ awk -F',' '{print $2}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq | w
 
 What are the possible values taken by each of the variable `INSURANCE`, `LANGUAGE`, `RELIGION`, `MARITAL_STATUS`, and `ETHNICITY`? 
 
-<!-- ```{bash} -->
-<!-- for ((i = 10; i <= 14; i++)); do -->
-<!--   awk -F',' '{print $i}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq -->
-<!-- done -->
-<!-- ``` -->
-
-<!-- ```{bash} -->
-<!-- for var in {INSURANCE}; -->
-<!-- do -->
-<!--   awk -F',' '{print $var}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq -->
-<!-- done; -->
-<!-- ``` -->
-
-
+**Solution**: 
 ```{bash}
 awk -F',' '{print $14}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq
 ```
