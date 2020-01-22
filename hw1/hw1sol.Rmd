@@ -34,8 +34,9 @@ knitr::opts_chunk$set(echo = TRUE)
 1. This exercise (and later in this course) uses the [MIMIC-III data](https://mimic.physionet.org), a freely accessible critical care database developed by the MIT Lab for Computational Physiology. Please follow the instructions at <https://mimic.physionet.org/gettingstarted/access/> to complete the CITI `Data or Specimens Only Research` course. Show the screenshot of your completion report. 
 
 **Solution:** 
-<p align="center">
-  <img src="./completion_report.png" height="450" width="700">
+<center>
+  <img src="./completion_report.png" height="450">
+</center>
 
 2. The `/home/203bdata/mimic-iii/` folder on teaching server contains data sets from MIMIC-III. See <https://mimic.physionet.org/mimictables/admissions/> for details of each table.  
     ```{bash}
@@ -53,18 +54,18 @@ Please, do **not** put these data files into Git; they are big. Also do **not** 
       done
     ```
 
-**Solution:** The bash script is a `for` loop that only lists `csv` files. The output is
+**Solution:** The output only lists `.csv` files.
 
-    ```{bash, eval = TRUE, echo = FALSE}
-    for datafile in /home/203bdata/mimic-iii/*.csv
-      do
-        ls $datafile
-      done
-    ```
+```{bash, eval = TRUE, echo = TRUE}
+for datafile in /home/203bdata/mimic-iii/*.csv
+do
+  ls $datafile
+done
+```
 
 Display the number of lines in each `csv` file.
 
-```{bash, eval = FALSE}
+```{bash, eval = FALSE, echo = FALSE}
 for datafile in /home/203bdata/mimic-iii/*.csv
   do
     wc -l $datafile
@@ -79,7 +80,7 @@ for datafile in /home/203bdata/mimic-iii/*.csv
 head /home/203bdata/mimic-iii/ADMISSIONS.csv
 ```
 
-How many rows are in this data file? 
+  How many rows are in this data file? 
 
 ```{bash}
 awk -F',' 'END {print NR}' /home/203bdata/mimic-iii/ADMISSIONS.csv
@@ -101,7 +102,7 @@ What are the possible values taken by each of the variable `INSURANCE`, `LANGUAG
 
 <!-- ```{bash} -->
 <!-- for var in {INSURANCE}; -->
-<!-- do  -->
+<!-- do -->
 <!--   awk -F',' '{print $var}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq -->
 <!-- done; -->
 <!-- ``` -->
@@ -128,7 +129,6 @@ Do **not** put this text file `pride_and_prejudice.txt` in Git. Using a `for` lo
 ```{bash}
  
 ```
-
 
 2. What's the difference between the following two commands?
     ```{bash eval=FALSE}
