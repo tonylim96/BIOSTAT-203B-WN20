@@ -670,7 +670,7 @@ awk -F',' '{ print $14 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 |
 <p>and</p>
 <pre class="bash"><code>echo 'hello, world' &gt;&gt; test2.txt</code></pre></li>
 </ol>
-<p><strong>Solution</strong>:  If <code>test1.txt</code> does not exist, the first command would create the file that would contain “hello, world”. If <code>test1.txt1</code> already exists, the command would overwrite the file with a file that “hello, world” in it.</p>
+<p><strong>Solution</strong>: If <code>test1.txt</code> does not exist, the first command would create the file that would contain “hello, world”. If <code>test1.txt1</code> already exists, the command would overwrite the file with a file that “hello, world” in it.</p>
 <p>If <code>test2.txt</code> does not exist, the second command would create the file that would contain “hello, world”. If <code>test2.txt</code> already exists, the second command would add “hello, world” to the end of the file.</p>
 <ol start="3" style="list-style-type: decimal">
 <li><p>Using your favorite text editor (e.g., <code>vi</code>), type the following and save the file as <code>middle.sh</code>:</p>
@@ -680,8 +680,20 @@ awk -F',' '{ print $14 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 |
 head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
 <p>Using <code>chmod</code> make the file executable by the owner, and run</p>
 <pre class="bash"><code>./middle.sh pride_and_prejudice.txt 20 5</code></pre>
-<p>Explain the output. Explain the meaning of <code>&quot;$1&quot;</code>, <code>&quot;$2&quot;</code>, and <code>&quot;$3&quot;</code> in this shell script. Why do we need the first line of the shell script?</p></li>
+<p>Explain the output.</p></li>
 </ol>
+<p><strong>Solution</strong>:</p>
+<pre class="bash"><code>./middle.sh pride_and_prejudice.txt 20 5</code></pre>
+<pre><code>##     &lt;/script&gt; 
+## 
+##     &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/css/pg-002.css&quot;&gt;    &lt;link rel=&quot;shortcut icon&quot;   href=&quot;/favicon.ico&quot;&gt;
+##     &lt;title&gt;Page Not Found - Project Gutenberg&lt;/title&gt;
+##   &lt;/head&gt;</code></pre>
+<p>The output has a total of five lines with the last line being Line 20.</p>
+<p>Explain the meaning of <code>&quot;$1&quot;</code>, <code>&quot;$2&quot;</code>, and <code>&quot;$3&quot;</code> in this shell script.</p>
+<p><strong>Solution</strong>:</p>
+<p>Why do we need the first line of the shell script?</p>
+<p><strong>Solution</strong>:</p>
 </div>
 <div id="q4.-r-batch-run" class="section level2">
 <h2>Q4. R Batch Run</h2>

@@ -131,7 +131,7 @@ Do **not** put this text file `pride_and_prejudice.txt` in Git. Using a `for` lo
     echo 'hello, world' >> test2.txt
     ```
 
-**Solution**: \n
+**Solution**:
 If `test1.txt` does not exist, the first command would create the file that would contain "hello, world". If `test1.txt1` already exists, the command would overwrite the file with a file that "hello, world" in it. 
 
 If `test2.txt` does not exist, the second command would create the file that would contain "hello, world". If `test2.txt` already exists, the second command would add "hello, world" to the end of the file.
@@ -147,7 +147,22 @@ Using `chmod` make the file executable by the owner, and run
     ```{bash eval=FALSE}
     ./middle.sh pride_and_prejudice.txt 20 5
     ```
-Explain the output. Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in this shell script. Why do we need the first line of the shell script?
+Explain the output.
+
+**Solution**:
+```{bash}
+./middle.sh pride_and_prejudice.txt 20 5
+```
+
+The output has a total of five lines with the last line being Line 20. 
+
+Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in this shell script. 
+
+**Solution**:
+
+Why do we need the first line of the shell script?
+
+**Solution**:
 
 ## Q4. R Batch Run
 
