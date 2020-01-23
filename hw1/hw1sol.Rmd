@@ -97,11 +97,11 @@ What are the possible values taken by each of the variable `INSURANCE`, `LANGUAG
 
 **Solution**: 
 ```{bash}
-awk -F',' '{ print $10 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n + 2 | sort | uniq
-awk -F',' '{ print $11 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n + 2 | sort | uniq
-awk -F',' '{ print $12 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n + 2 | sort | uniq
-awk -F',' '{ print $13 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n + 2 | sort | uniq
-awk -F',' '{ print $14 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n + 2 | sort | uniq
+awk -F',' '{ print $10 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
+awk -F',' '{ print $11 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
+awk -F',' '{ print $12 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
+awk -F',' '{ print $13 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
+awk -F',' '{ print $14 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
 ```
 
 How many (unique) patients are Hispanic? (Hint: combine Linux commands `head`, `tail`, `awk`, `uniq`, `wc`, `sort` and so on using pipe.)
@@ -119,7 +119,10 @@ awk -F',' '{if($14 ~ /HISPANIC/) { print $2 }}' /home/203bdata/mimic-iii/ADMISSI
 Do **not** put this text file `pride_and_prejudice.txt` in Git. Using a `for` loop, how would you tabulate the number of times each of the four characters is mentioned?
 
 ```{bash}
- 
+names = "Elizabeth Jane Lydia Darcy"
+for name in $names
+do cat pride_and_prejudcie.txt | grep -w "Elizabeth"
+done
 ```
 
 2. What's the difference between the following two commands?
@@ -156,7 +159,9 @@ Explain the output. Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in this sh
 
 The output's last line is Line 20, and there are a total of five lines (Line 16-20).
 
-The meaning of `"$1"`, `"$2"`, and `"$3"` in the shell script represents the order of the variables in the command `./middle.sh pride_and_prejudice.txt 20 5`. For example, in `head -n "$2" "$1"`, the `"$1"` refers to the `pride_and_prejudice.txt` and `"$2"` refers to 20, so that shows the first 20 lines in the `.txt.` file. That is piped into the `tail` command, and the `"$3"` refers to the 5, which means it only displays the last five lines. 
+The meaning of `"$1"`, `"$2"`, and `"$3"` in the shell script represents the order of the variables in the command `./middle.sh pride_and_prejudice.txt 20 5`. 
+
+For example, in `head -n "$2" "$1"`, the `"$1"` refers to the `pride_and_prejudice.txt` and `"$2"` refers to 20, so that shows the first 20 lines in the `.txt.` file. That is piped into the `tail` command, and the `"$3"` refers to the 5, which means it only displays the last five lines. 
 
 We need the first line of the shell script because executes the following command lines as shell. 
 
