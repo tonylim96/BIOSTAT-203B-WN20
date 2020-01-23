@@ -101,6 +101,7 @@ awk -F',' '{ print $10 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 |
 awk -F',' '{ print $11 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
 awk -F',' '{ print $12 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
 awk -F',' '{ print $13 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
+echo -en '\n'
 awk -F',' '{ print $14 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
 ```
 
@@ -112,16 +113,20 @@ awk -F',' '{if($14 ~ /HISPANIC/) { print $2 }}' /home/203bdata/mimic-iii/ADMISSI
 
 ## Q3. More fun with shell
 
-1. You and your friend just have finished reading *Pride and Prejudice* by Jane Austen. Among the four main characters in the book, Elizabeth, Jane, Lydia, and Darcy, your friend thinks that Darcy was the most mentioned. You, however, are certain it was Elizabeth. Obtain the full text of the novel from <https://www.gutenberg.org/files/1342/1342.txt> and save to your local folder. 
+1. You and your friend just have finished reading *Pride and Prejudice* by Jane Austen. Among the four main characters in the book, Elizabeth, Jane, Lydia, and Darcy, your friend thinks that Darcy was the most mentioned. You, however, are certain it was Elizabeth. Obtain the full text of the novel from <http://www.gutenberg.org/cache/epub/42671/pg42671.txt> and save to your local folder. 
     ```{bash, eval=FALSE}
-    curl https://www.gutenberg.org/files/1342/1342.txt > pride_and_prejudice.txt
+    curl http://www.gutenberg.org/cache/epub/42671/pg42671.txt > pride_and_prejudice.txt
     ```
 Do **not** put this text file `pride_and_prejudice.txt` in Git. Using a `for` loop, how would you tabulate the number of times each of the four characters is mentioned?
 
+**Solution:** 
 ```{bash}
-names = "Elizabeth Jane Lydia Darcy"
+names="Elizabeth Jane Lydia Darcy"
 for name in $names
-do cat pride_and_prejudcie.txt | grep -w "Elizabeth"
+do 
+  echo $name
+  grep -o -i $name pride_and_prejudice.txt | wc -l
+  echo -en '\n'
 done
 ```
 
@@ -161,7 +166,7 @@ The output's last line is Line 20, and there are a total of five lines (Line 16-
 
 The meaning of `"$1"`, `"$2"`, and `"$3"` in the shell script represents the order of the variables in the command `./middle.sh pride_and_prejudice.txt 20 5`. 
 
-For example, in `head -n "$2" "$1"`, the `"$1"` refers to the `pride_and_prejudice.txt` and `"$2"` refers to 20, so that shows the first 20 lines in the `.txt.` file. That is piped into the `tail` command, and the `"$3"` refers to the 5, which means it only displays the last five lines. 
+For example, in `head -n "$2" "$1"`, the `"$1"` refers to the `pride_and_prejudice.txt` and `"$2"` refers to 20, so that shows the first 20 lines in the `pride_and_prejudice.txt.` file. That is piped into the `tail` command, and the `"$3"` refers to the 5, which means it only displays the last five lines. 
 
 We need the first line of the shell script because executes the following command lines as shell. 
 

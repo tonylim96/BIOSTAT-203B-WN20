@@ -496,16 +496,164 @@ done</code></pre>
 <pre><code>## 46521</code></pre>
 <p>What are the possible values taken by each of the variable <code>INSURANCE</code>, <code>LANGUAGE</code>, <code>RELIGION</code>, <code>MARITAL_STATUS</code>, and <code>ETHNICITY</code>?</p>
 <p><strong>Solution</strong>:</p>
-<pre class="bash"><code>awk -F',' '{ print $10 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n + 2 | sort | uniq
-awk -F',' '{ print $11 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n + 2 | sort | uniq
-awk -F',' '{ print $12 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n + 2 | sort | uniq
-awk -F',' '{ print $13 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n + 2 | sort | uniq
-awk -F',' '{ print $14 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n + 2 | sort | uniq</code></pre>
-<pre><code>## tail: +: invalid number of lines
-## tail: +: invalid number of lines
-## tail: +: invalid number of lines
-## tail: +: invalid number of lines
-## tail: +: invalid number of lines</code></pre>
+<pre class="bash"><code>awk -F',' '{ print $10 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
+awk -F',' '{ print $11 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
+awk -F',' '{ print $12 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
+awk -F',' '{ print $13 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
+echo -en '\n'
+awk -F',' '{ print $14 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq</code></pre>
+<pre><code>## &quot;Government&quot;
+## &quot;Medicaid&quot;
+## &quot;Medicare&quot;
+## &quot;Private&quot;
+## &quot;Self Pay&quot;
+## 
+## &quot;ALBA&quot;
+## &quot;AMER&quot;
+## &quot;*AMH&quot;
+## &quot;*ARA&quot;
+## &quot;ARAB&quot;
+## &quot;*ARM&quot;
+## &quot;* BE&quot;
+## &quot;*BEN&quot;
+## &quot;BENG&quot;
+## &quot;*BOS&quot;
+## &quot;*BUL&quot;
+## &quot;*BUR&quot;
+## &quot;CAMB&quot;
+## &quot;*CAN&quot;
+## &quot;CANT&quot;
+## &quot;CAPE&quot;
+## &quot;*CDI&quot;
+## &quot;*CHI&quot;
+## &quot;*CRE&quot;
+## &quot;*DEA&quot;
+## &quot;*DUT&quot;
+## &quot;ENGL&quot;
+## &quot;ETHI&quot;
+## &quot;*FAR&quot;
+## &quot;*FIL&quot;
+## &quot;FREN&quot;
+## &quot;* FU&quot;
+## &quot;*FUL&quot;
+## &quot;GERM&quot;
+## &quot;GREE&quot;
+## &quot;*GUJ&quot;
+## &quot;HAIT&quot;
+## &quot;HIND&quot;
+## &quot;*HUN&quot;
+## &quot;*IBO&quot;
+## &quot;ITAL&quot;
+## &quot;JAPA&quot;
+## &quot;*KHM&quot;
+## &quot;KORE&quot;
+## &quot;LAOT&quot;
+## &quot;*LEB&quot;
+## &quot;*LIT&quot;
+## &quot;*MAN&quot;
+## &quot;MAND&quot;
+## &quot;*MOR&quot;
+## &quot;*NEP&quot;
+## &quot;*PER&quot;
+## &quot;PERS&quot;
+## &quot;*PHI&quot;
+## &quot;POLI&quot;
+## &quot;PORT&quot;
+## &quot;PTUN&quot;
+## &quot;*PUN&quot;
+## &quot;*ROM&quot;
+## &quot;*RUS&quot;
+## &quot;RUSS&quot;
+## &quot;SERB&quot;
+## &quot;**SH&quot;
+## &quot;SOMA&quot;
+## &quot;*SPA&quot;
+## &quot;SPAN&quot;
+## &quot;** T&quot;
+## &quot;TAGA&quot;
+## &quot;*TAM&quot;
+## &quot;*TEL&quot;
+## &quot;THAI&quot;
+## &quot;**TO&quot;
+## &quot;*TOI&quot;
+## &quot;*TOY&quot;
+## &quot;TURK&quot;
+## &quot;*URD&quot;
+## &quot;URDU&quot;
+## &quot;VIET&quot;
+## &quot;*YID&quot;
+## &quot;*YOR&quot;
+## 
+## &quot;7TH DAY ADVENTIST&quot;
+## &quot;BAPTIST&quot;
+## &quot;BUDDHIST&quot;
+## &quot;CATHOLIC&quot;
+## &quot;CHRISTIAN SCIENTIST&quot;
+## &quot;EPISCOPALIAN&quot;
+## &quot;GREEK ORTHODOX&quot;
+## &quot;HEBREW&quot;
+## &quot;HINDU&quot;
+## &quot;JEHOVAH'S WITNESS&quot;
+## &quot;JEWISH&quot;
+## &quot;LUTHERAN&quot;
+## &quot;METHODIST&quot;
+## &quot;MUSLIM&quot;
+## &quot;NOT SPECIFIED&quot;
+## &quot;OTHER&quot;
+## &quot;PROTESTANT QUAKER&quot;
+## &quot;ROMANIAN EAST. ORTH&quot;
+## &quot;UNITARIAN-UNIVERSALIST&quot;
+## &quot;UNOBTAINABLE&quot;
+## 
+## &quot;DIVORCED&quot;
+## &quot;LIFE PARTNER&quot;
+## &quot;MARRIED&quot;
+## &quot;SEPARATED&quot;
+## &quot;SINGLE&quot;
+## &quot;UNKNOWN (DEFAULT)&quot;
+## &quot;WIDOWED&quot;
+## 
+## &quot;AMERICAN INDIAN/ALASKA NATIVE&quot;
+## &quot;AMERICAN INDIAN/ALASKA NATIVE FEDERALLY RECOGNIZED TRIBE&quot;
+## &quot;ASIAN&quot;
+## &quot;ASIAN - ASIAN INDIAN&quot;
+## &quot;ASIAN - CAMBODIAN&quot;
+## &quot;ASIAN - CHINESE&quot;
+## &quot;ASIAN - FILIPINO&quot;
+## &quot;ASIAN - JAPANESE&quot;
+## &quot;ASIAN - KOREAN&quot;
+## &quot;ASIAN - OTHER&quot;
+## &quot;ASIAN - THAI&quot;
+## &quot;ASIAN - VIETNAMESE&quot;
+## &quot;BLACK/AFRICAN&quot;
+## &quot;BLACK/AFRICAN AMERICAN&quot;
+## &quot;BLACK/CAPE VERDEAN&quot;
+## &quot;BLACK/HAITIAN&quot;
+## &quot;CARIBBEAN ISLAND&quot;
+## &quot;HISPANIC/LATINO - CENTRAL AMERICAN (OTHER)&quot;
+## &quot;HISPANIC/LATINO - COLOMBIAN&quot;
+## &quot;HISPANIC/LATINO - CUBAN&quot;
+## &quot;HISPANIC/LATINO - DOMINICAN&quot;
+## &quot;HISPANIC/LATINO - GUATEMALAN&quot;
+## &quot;HISPANIC/LATINO - HONDURAN&quot;
+## &quot;HISPANIC/LATINO - MEXICAN&quot;
+## &quot;HISPANIC/LATINO - PUERTO RICAN&quot;
+## &quot;HISPANIC/LATINO - SALVADORAN&quot;
+## &quot;HISPANIC OR LATINO&quot;
+## &quot;MIDDLE EASTERN&quot;
+## &quot;MULTI RACE ETHNICITY&quot;
+## &quot;NATIVE HAWAIIAN OR OTHER PACIFIC ISLANDER&quot;
+## &quot;OTHER&quot;
+## &quot;PATIENT DECLINED TO ANSWER&quot;
+## &quot;PORTUGUESE&quot;
+## &quot;SOUTH AMERICAN&quot;
+## &quot;UNABLE TO OBTAIN&quot;
+## &quot;UNKNOWN/NOT SPECIFIED&quot;
+## &quot;WHITE&quot;
+## &quot;WHITE - BRAZILIAN&quot;
+## &quot;WHITE - EASTERN EUROPEAN&quot;
+## &quot;WHITE - OTHER EUROPEAN&quot;
+## &quot;WHITE - RUSSIAN&quot;</code></pre>
 <p>How many (unique) patients are Hispanic? (Hint: combine Linux commands <code>head</code>, <code>tail</code>, <code>awk</code>, <code>uniq</code>, <code>wc</code>, <code>sort</code> and so on using pipe.)</p>
 <pre class="bash"><code>awk -F',' '{if($14 ~ /HISPANIC/) { print $2 }}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq | wc -l</code></pre>
 <pre><code>## 1652</code></pre>
@@ -513,11 +661,29 @@ awk -F',' '{ print $14 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n + 2 
 <div id="q3.-more-fun-with-shell" class="section level2">
 <h2>Q3. More fun with shell</h2>
 <ol style="list-style-type: decimal">
-<li><p>You and your friend just have finished reading <em>Pride and Prejudice</em> by Jane Austen. Among the four main characters in the book, Elizabeth, Jane, Lydia, and Darcy, your friend thinks that Darcy was the most mentioned. You, however, are certain it was Elizabeth. Obtain the full text of the novel from <a href="https://www.gutenberg.org/files/1342/1342.txt" class="uri">https://www.gutenberg.org/files/1342/1342.txt</a> and save to your local folder.</p>
-<pre class="bash"><code>curl https://www.gutenberg.org/files/1342/1342.txt &gt; pride_and_prejudice.txt</code></pre>
+<li><p>You and your friend just have finished reading <em>Pride and Prejudice</em> by Jane Austen. Among the four main characters in the book, Elizabeth, Jane, Lydia, and Darcy, your friend thinks that Darcy was the most mentioned. You, however, are certain it was Elizabeth. Obtain the full text of the novel from <a href="http://www.gutenberg.org/cache/epub/42671/pg42671.txt" class="uri">http://www.gutenberg.org/cache/epub/42671/pg42671.txt</a> and save to your local folder.</p>
+<pre class="bash"><code>curl http://www.gutenberg.org/cache/epub/42671/pg42671.txt &gt; pride_and_prejudice.txt</code></pre>
 <p>Do <strong>not</strong> put this text file <code>pride_and_prejudice.txt</code> in Git. Using a <code>for</code> loop, how would you tabulate the number of times each of the four characters is mentioned?</p></li>
 </ol>
-<pre class="bash"><code> </code></pre>
+<p><strong>Solution:</strong></p>
+<pre class="bash"><code>names=&quot;Elizabeth Jane Lydia Darcy&quot;
+for name in $names
+do 
+  echo $name
+  grep -o -i $name pride_and_prejudice.txt | wc -l
+  echo -en '\n'
+done</code></pre>
+<pre><code>## Elizabeth
+## 634
+## 
+## Jane
+## 294
+## 
+## Lydia
+## 171
+## 
+## Darcy
+## 418</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li><p>What’s the difference between the following two commands?</p>
 <pre class="bash"><code>echo 'hello, world' &gt; test1.txt</code></pre>
@@ -538,13 +704,14 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
 </ol>
 <p><strong>Solution</strong>:</p>
 <pre class="bash"><code>./middle.sh pride_and_prejudice.txt 20 5</code></pre>
-<pre><code>##     &lt;/script&gt; 
+<pre><code>## 
+## Author: Jane Austen
 ## 
-##     &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/css/pg-002.css&quot;&gt;    &lt;link rel=&quot;shortcut icon&quot;   href=&quot;/favicon.ico&quot;&gt;
-##     &lt;title&gt;Page Not Found - Project Gutenberg&lt;/title&gt;
-##   &lt;/head&gt;</code></pre>
+## Editor: R. W. (Robert William) Chapman
+## </code></pre>
 <p>The output’s last line is Line 20, and there are a total of five lines (Line 16-20).</p>
-<p>The meaning of <code>&quot;$1&quot;</code>, <code>&quot;$2&quot;</code>, and <code>&quot;$3&quot;</code> in the shell script represents the order of the variables in the command <code>./middle.sh pride_and_prejudice.txt 20 5</code>. For example, in <code>head -n &quot;$2&quot; &quot;$1&quot;</code>, the <code>&quot;$1&quot;</code> refers to the <code>pride_and_prejudice.txt</code> and <code>&quot;$2&quot;</code> refers to 20, so that shows the first 20 lines in the <code>.txt.</code> file. That is piped into the <code>tail</code> command, and the <code>&quot;$3&quot;</code> refers to the 5, which means it only displays the last five lines.</p>
+<p>The meaning of <code>&quot;$1&quot;</code>, <code>&quot;$2&quot;</code>, and <code>&quot;$3&quot;</code> in the shell script represents the order of the variables in the command <code>./middle.sh pride_and_prejudice.txt 20 5</code>.</p>
+<p>For example, in <code>head -n &quot;$2&quot; &quot;$1&quot;</code>, the <code>&quot;$1&quot;</code> refers to the <code>pride_and_prejudice.txt</code> and <code>&quot;$2&quot;</code> refers to 20, so that shows the first 20 lines in the <code>pride_and_prejudice.txt.</code> file. That is piped into the <code>tail</code> command, and the <code>&quot;$3&quot;</code> refers to the 5, which means it only displays the last five lines.</p>
 <p>We need the first line of the shell script because executes the following command lines as shell.</p>
 </div>
 <div id="q4.-r-batch-run" class="section level2">
