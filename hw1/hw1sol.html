@@ -680,7 +680,7 @@ awk -F',' '{ print $14 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 |
 head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
 <p>Using <code>chmod</code> make the file executable by the owner, and run</p>
 <pre class="bash"><code>./middle.sh pride_and_prejudice.txt 20 5</code></pre>
-<p>Explain the output.</p></li>
+<p>Explain the output. Explain the meaning of <code>&quot;$1&quot;</code>, <code>&quot;$2&quot;</code>, and <code>&quot;$3&quot;</code> in this shell script. Why do we need the first line of the shell script?</p></li>
 </ol>
 <p><strong>Solution</strong>:</p>
 <pre class="bash"><code>./middle.sh pride_and_prejudice.txt 20 5</code></pre>
@@ -689,11 +689,9 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
 ##     &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/css/pg-002.css&quot;&gt;    &lt;link rel=&quot;shortcut icon&quot;   href=&quot;/favicon.ico&quot;&gt;
 ##     &lt;title&gt;Page Not Found - Project Gutenberg&lt;/title&gt;
 ##   &lt;/head&gt;</code></pre>
-<p>The output has a total of five lines with the last line being Line 20.</p>
-<p>Explain the meaning of <code>&quot;$1&quot;</code>, <code>&quot;$2&quot;</code>, and <code>&quot;$3&quot;</code> in this shell script.</p>
-<p><strong>Solution</strong>:</p>
-<p>Why do we need the first line of the shell script?</p>
-<p><strong>Solution</strong>:</p>
+<p>The output’s last line is Line 20, and there are a total of five lines (Line 16-20).</p>
+<p>The meaning of <code>&quot;$1&quot;</code>, <code>&quot;$2&quot;</code>, and <code>&quot;$3&quot;</code> in the shell script represents the</p>
+<p>We need the first line of the shell script because executes the following command lines as shell.</p>
 </div>
 <div id="q4.-r-batch-run" class="section level2">
 <h2>Q4. R Batch Run</h2>
@@ -756,8 +754,11 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
 ## # estimate mean
 ## estMeanPrimes(x)</code></pre>
 <ol start="2" style="list-style-type: decimal">
-<li><p>Modify the <a href="https://ucla-biostat203b-2020winter.github.io/slides/02-linux/autoSim.R"><code>autoSim.R</code></a> script to run simulations with combinations of sample sizes <code>nVals = seq(100, 500, by=100)</code> and distributions <code>distTypes = c(&quot;gaussian&quot;, &quot;t1&quot;, &quot;t5&quot;)</code> and write output to appropriately named files. Use <code>rep = 50</code>, and <code>seed = 203</code>.</p></li>
-<li><p>Write an R script to collect simulation results from output files and print average MSEs in a table of format</p></li>
+<li>Modify the <a href="https://ucla-biostat203b-2020winter.github.io/slides/02-linux/autoSim.R"><code>autoSim.R</code></a> script to run simulations with combinations of sample sizes <code>nVals = seq(100, 500, by=100)</code> and distributions <code>distTypes = c(&quot;gaussian&quot;, &quot;t1&quot;, &quot;t5&quot;)</code> and write output to appropriately named files. Use <code>rep = 50</code>, and <code>seed = 203</code>.</li>
+</ol>
+<pre class="bash"><code></code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Write an R script to collect simulation results from output files and print average MSEs in a table of format</li>
 </ol>
 <table>
 <thead>

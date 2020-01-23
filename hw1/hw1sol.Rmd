@@ -97,11 +97,11 @@ What are the possible values taken by each of the variable `INSURANCE`, `LANGUAG
 
 **Solution**: 
 ```{bash}
-awk -F',' '{ print $10 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
-awk -F',' '{ print $11 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
-awk -F',' '{ print $12 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
-awk -F',' '{ print $13 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
-awk -F',' '{ print $14 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
+awk -F',' '{ print $10 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n + 2 | sort | uniq
+awk -F',' '{ print $11 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n + 2 | sort | uniq
+awk -F',' '{ print $12 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n + 2 | sort | uniq
+awk -F',' '{ print $13 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n + 2 | sort | uniq
+awk -F',' '{ print $14 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n + 2 | sort | uniq
 ```
 
 How many (unique) patients are Hispanic? (Hint: combine Linux commands `head`, `tail`, `awk`, `uniq`, `wc`, `sort` and so on using pipe.)
@@ -147,22 +147,18 @@ Using `chmod` make the file executable by the owner, and run
     ```{bash eval=FALSE}
     ./middle.sh pride_and_prejudice.txt 20 5
     ```
-Explain the output.
+Explain the output. Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in this shell script. Why do we need the first line of the shell script?
 
 **Solution**:
 ```{bash}
 ./middle.sh pride_and_prejudice.txt 20 5
 ```
 
-The output has a total of five lines with the last line being Line 20. 
+The output's last line is Line 20, and there are a total of five lines (Line 16-20).
 
-Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in this shell script. 
+The meaning of `"$1"`, `"$2"`, and `"$3"` in the shell script represents the order of the variables in the command `./middle.sh pride_and_prejudice.txt 20 5`. For example, in `head -n "$2" "$1"`, the `"$1"` refers to the `pride_and_prejudice.txt` and `"$2"` refers to 20, so that shows the first 20 lines in the `.txt.` file. That is piped into the `tail` command, and the `"$3"` refers to the 5, which means it only displays the last five lines. 
 
-**Solution**:
-
-Why do we need the first line of the shell script?
-
-**Solution**:
+We need the first line of the shell script because executes the following command lines as shell. 
 
 ## Q4. R Batch Run
 
@@ -180,8 +176,11 @@ for both methods.
 cat runSim.R
 ```
 
-
 2. Modify the [`autoSim.R`](https://ucla-biostat203b-2020winter.github.io/slides/02-linux/autoSim.R) script to run simulations with combinations of sample sizes `nVals = seq(100, 500, by=100)` and distributions `distTypes = c("gaussian", "t1", "t5")` and write output to appropriately named files. Use `rep = 50`, and `seed = 203`. 
+
+```{bash}
+
+```
 
 3. Write an R script to collect simulation results from output files and print average MSEs in a table of format
 
