@@ -9,7 +9,7 @@ seed = 203
 rep = 50
 for (n in nVals) {
   for (i in distTypes) {
-    oFile <- paste(shQuote(i), "_dist_n", n, ".txt", sep="")
+    oFile <- paste(shQuote(i), "_dist_n", n, ".csv", sep="")
     arg = paste("n=", n,
                 " seed=", seed, " rep=", rep, " dist=", shQuote(shQuote(i)), sep="")
     sysCall = paste("nohup Rscript runSim.R ", arg, " > ", oFile, sep="")
