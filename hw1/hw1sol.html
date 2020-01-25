@@ -741,7 +741,7 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
 ## }
 ## 
 ## ## estimate mean only using observation with prime indices
-## estMeanPrimes = function (x) {
+## estMeanPrimes = function(x) {
 ##   n = length(x)
 ##   ind = sapply(1:n, isPrime)
 ##   return (mean(x[ind]))
@@ -774,10 +774,29 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
 ## 
 ## # estimate mean
 ## estMeanPrimes(x)</code></pre>
+<pre class="bash"><code>Rscript runSim.R n=100 seed=203  rep=50 dist=\&quot;gaussian\&quot;</code></pre>
+<pre><code>## [1] 0.01146443
+## [1] 0.03926458
+## [1] -0.1933706</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Modify the <a href="https://ucla-biostat203b-2020winter.github.io/slides/02-linux/autoSim.R"><code>autoSim.R</code></a> script to run simulations with combinations of sample sizes <code>nVals = seq(100, 500, by=100)</code> and distributions <code>distTypes = c(&quot;gaussian&quot;, &quot;t1&quot;, &quot;t5&quot;)</code> and write output to appropriately named files. Use <code>rep = 50</code>, and <code>seed = 203</code>.</li>
 </ol>
-<pre class="bash"><code></code></pre>
+<pre class="bash"><code>Rscript autoSim.R</code></pre>
+<pre><code>## [1] &quot;sysCall=nohup Rscript runSim.R n=100 seed=203 rep=50 dist=\&quot;'gaussian'\&quot; &gt; 'gaussian'_dist_n100.txt&quot;
+## [1] &quot;sysCall=nohup Rscript runSim.R n=100 seed=203 rep=50 dist=\&quot;'t1'\&quot; &gt; 't1'_dist_n100.txt&quot;
+## [1] &quot;sysCall=nohup Rscript runSim.R n=100 seed=203 rep=50 dist=\&quot;'t5'\&quot; &gt; 't5'_dist_n100.txt&quot;
+## [1] &quot;sysCall=nohup Rscript runSim.R n=200 seed=203 rep=50 dist=\&quot;'gaussian'\&quot; &gt; 'gaussian'_dist_n200.txt&quot;
+## [1] &quot;sysCall=nohup Rscript runSim.R n=200 seed=203 rep=50 dist=\&quot;'t1'\&quot; &gt; 't1'_dist_n200.txt&quot;
+## [1] &quot;sysCall=nohup Rscript runSim.R n=200 seed=203 rep=50 dist=\&quot;'t5'\&quot; &gt; 't5'_dist_n200.txt&quot;
+## [1] &quot;sysCall=nohup Rscript runSim.R n=300 seed=203 rep=50 dist=\&quot;'gaussian'\&quot; &gt; 'gaussian'_dist_n300.txt&quot;
+## [1] &quot;sysCall=nohup Rscript runSim.R n=300 seed=203 rep=50 dist=\&quot;'t1'\&quot; &gt; 't1'_dist_n300.txt&quot;
+## [1] &quot;sysCall=nohup Rscript runSim.R n=300 seed=203 rep=50 dist=\&quot;'t5'\&quot; &gt; 't5'_dist_n300.txt&quot;
+## [1] &quot;sysCall=nohup Rscript runSim.R n=400 seed=203 rep=50 dist=\&quot;'gaussian'\&quot; &gt; 'gaussian'_dist_n400.txt&quot;
+## [1] &quot;sysCall=nohup Rscript runSim.R n=400 seed=203 rep=50 dist=\&quot;'t1'\&quot; &gt; 't1'_dist_n400.txt&quot;
+## [1] &quot;sysCall=nohup Rscript runSim.R n=400 seed=203 rep=50 dist=\&quot;'t5'\&quot; &gt; 't5'_dist_n400.txt&quot;
+## [1] &quot;sysCall=nohup Rscript runSim.R n=500 seed=203 rep=50 dist=\&quot;'gaussian'\&quot; &gt; 'gaussian'_dist_n500.txt&quot;
+## [1] &quot;sysCall=nohup Rscript runSim.R n=500 seed=203 rep=50 dist=\&quot;'t1'\&quot; &gt; 't1'_dist_n500.txt&quot;
+## [1] &quot;sysCall=nohup Rscript runSim.R n=500 seed=203 rep=50 dist=\&quot;'t5'\&quot; &gt; 't5'_dist_n500.txt&quot;</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li>Write an R script to collect simulation results from output files and print average MSEs in a table of format</li>
 </ol>

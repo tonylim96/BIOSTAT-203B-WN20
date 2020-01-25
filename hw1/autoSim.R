@@ -13,7 +13,7 @@ for (n in nVals) {
     arg = paste("n=", n,
                 " seed=", seed, " rep=", rep, " dist=", shQuote(shQuote(i)), sep="")
     sysCall = paste("nohup Rscript runSim.R ", arg, " > ", oFile, sep="")
-    system(sysCall)
+    system(sysCall, wait = FALSE)
     print(paste("sysCall=", sysCall, sep=""))
   }
 }
