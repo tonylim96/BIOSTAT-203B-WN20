@@ -140,9 +140,9 @@ done
     ```
 
 **Solution**:
-If `test1.txt` does not exist, the first command would create the file that would contain "hello, world". If `test1.txt1` already exists, the command would overwrite the file with a file that "hello, world" in it. 
+If `test1.txt` does not exist, the first command would create a file that would contain "hello, world". If `test1.txt1` already exists, the command would overwrite that file with a file that contains "hello, world" in it. 
 
-If `test2.txt` does not exist, the second command would create the file that would contain "hello, world". If `test2.txt` already exists, the second command would add "hello, world" to the end of the file.
+If `test2.txt` does not exist, the second command would create a file that would contain "hello, world". If `test2.txt` already exists, the second command would add "hello, world" to the end of that file.
 
 3. Using your favorite text editor (e.g., `vi`), type the following and save the file as `middle.sh`:
     ```{bash eval=FALSE}
@@ -162,13 +162,13 @@ Explain the output. Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in this sh
 ./middle.sh pride_and_prejudice.txt 20 5
 ```
 
-The output's last line is Line 20, and there are a total of five lines (Line 16-20).
+The output's last line is Line 20, and there are a total of five lines (Lines 16-20).
 
-The meaning of `"$1"`, `"$2"`, and `"$3"` in the shell script represents the order of the variables in the command `./middle.sh pride_and_prejudice.txt 20 5`. 
+The meaning of `"$1"`, `"$2"`, and `"$3"` in the shell script represents the order of the arguments in the command `./middle.sh pride_and_prejudice.txt 20 5`. 
 
-For example, in `head -n "$2" "$1"`, the `"$1"` refers to the `pride_and_prejudice.txt` and `"$2"` refers to 20, so that shows the first 20 lines in the `pride_and_prejudice.txt.` file. That is piped into the `tail` command, and the `"$3"` refers to the 5, which means it only displays the last five lines. 
+For example, in `head -n "$2" "$1"`, the `"$1"` refers to `pride_and_prejudice.txt` and `"$2"` refers to 20, so the `head` command shows the first 20 lines in the `pride_and_prejudice.txt.` file. That is piped into the `tail` command, and the `"$3"` refers to the 5, which means it only displays the last five lines (Lines 16-20).
 
-We need the first line of the shell script because executes the following command lines as shell. 
+We need the first line of the shell script because it executes the following command lines as shell. 
 
 ## Q4. R Batch Run
 
@@ -184,10 +184,6 @@ for both methods.
 
 ```{bash}
 cat runSim.R
-```
-
-```{bash}
-Rscript runSim.R n=100 seed=203  rep=50 dist=\"gaussian\"
 ```
 
 2. Modify the [`autoSim.R`](https://ucla-biostat203b-2020winter.github.io/slides/02-linux/autoSim.R) script to run simulations with combinations of sample sizes `nVals = seq(100, 500, by=100)` and distributions `distTypes = c("gaussian", "t1", "t5")` and write output to appropriately named files. Use `rep = 50`, and `seed = 203`. 
@@ -210,4 +206,59 @@ Rscript autoSim.R
 | 400 | SampAvg  |       |       |          |
 | 500 | PrimeAvg |       |       |          |
 | 500 | SampAvg  |       |       |          |
+
+```{r}
+library("tidyverse")
+library("readr")
+```
+```{r}
+gaussian <- list.files(path = "/home/tonylim/biostat-203b-2020-winter/hw1", 
+                      pattern = "gauss*", 
+                      full.names = FALSE)
+
+t1 <- list.files(path = "/home/tonylim/biostat-203b-2020-winter/hw1", 
+                      pattern = "t1_*", 
+                      full.names = FALSE)
+
+t5 <- list.files(path = "/home/tonylim/biostat-203b-2020-winter/hw1", 
+                      pattern = "t5_*", 
+                      full.names = FALSE)
+
+gaussian <- ldply(gaussian, 
+                  read.table, 
+                  sep = "\t", 
+                  fill = TRUE, 
+                  header = FALSE, 
+                  col.names = "Gaussian", 
+                  stringsAsFactors = FALSE) %>%
+  dplyr::filter(row_number() %% 3 != 0)
+
+t1 <- ldply(t1, 
+            read.table, 
+            sep = "\t", 
+            fill = TRUE, 
+            header = FALSE, 
+            col.names = "t1", 
+            stringsAsFactors = FALSE) %>%
+  dplyr::filter(row_number() %% 3 != 0)
+
+t5 <- ldply(t5, 
+            read.table, 
+            sep = "\t", 
+            fill = TRUE, 
+            header = FALSE, 
+            col.names = "t5", 
+            stringsAsFactors = FALSE) %>%
+  dplyr::filter(row_number() %% 3 != 0)
+
+combined <- cbind.data.frame(gaussian, t5, t1)
+
+add_column(combined, 
+           n = c("100", "100", "200", "200", "300", 
+                 "300", "400", "400", "500", "500"), 
+           Method = c("PrimeAvg", "SampAvg", "PrimeAvg", "SampAvg", "PrimeAvg", 
+                      "SampAvg", "PrimeAvg", "SampAvg", "PrimeAvg", "SampAvg"), 
+           .before = 1)
+```
+
 
