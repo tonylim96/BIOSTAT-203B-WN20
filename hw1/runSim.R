@@ -15,7 +15,7 @@ isPrime = function(n) {
 }
 
 ## estimate mean only using observation with prime indices
-estMeanPrimes = function (x) {
+estMeanPrimes = function(x) {
   n = length(x)
   ind = sapply(1:n, isPrime)
   return (mean(x[ind]))
