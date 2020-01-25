@@ -56,7 +56,7 @@ Please, do **not** put these data files into Git; they are big. Also do **not** 
 
 **Solution:** The output only lists `.csv` files.
 
-```{bash, eval = TRUE, echo = TRUE}
+```{bash, eval = TRUE, echo = FALSE}
 for datafile in /home/203bdata/mimic-iii/*.csv
 do
   ls $datafile
@@ -65,8 +65,7 @@ done
 
 Display the number of lines in each `csv` file.
 
-/* REMEMBER TO PUT EVALU = TRUE */
-```{bash, eval = FALSE, echo = FALSE}
+```{bash, eval = TRUE, echo = FALSE}
 for datafile in /home/203bdata/mimic-iii/*.csv
   do
     wc -l $datafile
@@ -83,11 +82,15 @@ head /home/203bdata/mimic-iii/ADMISSIONS.csv
 
   How many rows are in this data file? 
 
+**Solution:** 
+
 ```{bash}
 awk -F',' 'END { print NR }' /home/203bdata/mimic-iii/ADMISSIONS.csv
 ```
 
 How many unique patients (identified by `SUBJECT_ID`) are in this data file? 
+
+**Solution:** 
 
 ```{bash}
 awk -F',' '{ print $2 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq | wc -l
@@ -96,6 +99,7 @@ awk -F',' '{ print $2 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq |
 What are the possible values taken by each of the variable `INSURANCE`, `LANGUAGE`, `RELIGION`, `MARITAL_STATUS`, and `ETHNICITY`? 
 
 **Solution**: 
+
 ```{bash}
 awk -F',' '{ print $10 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
 awk -F',' '{ print $11 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
@@ -106,6 +110,8 @@ awk -F',' '{ print $14 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 |
 ```
 
 How many (unique) patients are Hispanic? (Hint: combine Linux commands `head`, `tail`, `awk`, `uniq`, `wc`, `sort` and so on using pipe.)
+
+**Solution:** 
 
 ```{bash}
 awk -F',' '{if($14 ~ /HISPANIC/) { print $2 }}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq | wc -l
@@ -180,7 +186,7 @@ $$
 $$
 for both methods.
 
-**Solution:** This is my `runSim.R` code:
+**Solution:**
 
 ```{bash}
 cat runSim.R
@@ -207,7 +213,8 @@ Rscript autoSim.R
 | 500 | PrimeAvg |       |       |          |
 | 500 | SampAvg  |       |       |          |
 
-```{r}
+```{r, message = FALSE}
+library("plyr")
 library("tidyverse")
 library("readr")
 ```
@@ -260,5 +267,3 @@ add_column(combined,
                       "SampAvg", "PrimeAvg", "SampAvg", "PrimeAvg", "SampAvg"), 
            .before = 1)
 ```
-
-

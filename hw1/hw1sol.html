@@ -441,10 +441,6 @@ summary {
   done</code></pre></li>
 </ol>
 <p><strong>Solution:</strong> The output only lists <code>.csv</code> files.</p>
-<pre class="bash"><code>for datafile in /home/203bdata/mimic-iii/*.csv
-do
-  ls $datafile
-done</code></pre>
 <pre><code>## /home/203bdata/mimic-iii/ADMISSIONS.csv
 ## /home/203bdata/mimic-iii/CALLOUT.csv
 ## /home/203bdata/mimic-iii/CAREGIVERS.csv
@@ -472,7 +468,32 @@ done</code></pre>
 ## /home/203bdata/mimic-iii/SERVICES.csv
 ## /home/203bdata/mimic-iii/TRANSFERS.csv</code></pre>
 <p>Display the number of lines in each <code>csv</code> file.</p>
-<p>/* REMEMBER TO PUT EVALU = TRUE */</p>
+<pre><code>## 58977 /home/203bdata/mimic-iii/ADMISSIONS.csv
+## 34500 /home/203bdata/mimic-iii/CALLOUT.csv
+## 7568 /home/203bdata/mimic-iii/CAREGIVERS.csv
+## 1048575 /home/203bdata/mimic-iii/CHARTEVENTS.csv
+## 573147 /home/203bdata/mimic-iii/CPTEVENTS.csv
+## 4485938 /home/203bdata/mimic-iii/DATETIMEEVENTS.csv
+## 135 /home/203bdata/mimic-iii/D_CPT.csv
+## 651048 /home/203bdata/mimic-iii/DIAGNOSES_ICD.csv
+## 14568 /home/203bdata/mimic-iii/D_ICD_DIAGNOSES.csv
+## 3883 /home/203bdata/mimic-iii/D_ICD_PROCEDURES.csv
+## 12488 /home/203bdata/mimic-iii/D_ITEMS.csv
+## 754 /home/203bdata/mimic-iii/D_LABITEMS.csv
+## 125558 /home/203bdata/mimic-iii/DRGCODES.csv
+## 61533 /home/203bdata/mimic-iii/ICUSTAYS.csv
+## 17527936 /home/203bdata/mimic-iii/INPUTEVENTS_CV.csv
+## 3618992 /home/203bdata/mimic-iii/INPUTEVENTS_MV.csv
+## 27854056 /home/203bdata/mimic-iii/LABEVENTS.csv
+## 631727 /home/203bdata/mimic-iii/MICROBIOLOGYEVENTS.csv
+## 91691299 /home/203bdata/mimic-iii/NOTEEVENTS.csv
+## 4349219 /home/203bdata/mimic-iii/OUTPUTEVENTS.csv
+## 46521 /home/203bdata/mimic-iii/PATIENTS.csv
+## 4156451 /home/203bdata/mimic-iii/PRESCRIPTIONS.csv
+## 258067 /home/203bdata/mimic-iii/PROCEDUREEVENTS_MV.csv
+## 240096 /home/203bdata/mimic-iii/PROCEDURES_ICD.csv
+## 73344 /home/203bdata/mimic-iii/SERVICES.csv
+## 261898 /home/203bdata/mimic-iii/TRANSFERS.csv</code></pre>
 <ol start="4" style="list-style-type: decimal">
 <li>Display the first few lines of <code>ADMISSIONS.csv</code>.</li>
 </ol>
@@ -489,9 +510,11 @@ done</code></pre>
 ## 28,28,162569,2177-09-01 07:15:00,2177-09-06 16:00:00,,&quot;ELECTIVE&quot;,&quot;PHYS REFERRAL/NORMAL DELI&quot;,&quot;HOME HEALTH CARE&quot;,&quot;Medicare&quot;,,&quot;CATHOLIC&quot;,&quot;MARRIED&quot;,&quot;WHITE&quot;,,,&quot;CORONARY ARTERY DISEASE\CORONARY ARTERY BYPASS GRAFT/SDA&quot;,0,1
 ## 29,30,104557,2172-10-14 14:17:00,2172-10-19 14:37:00,,&quot;URGENT&quot;,&quot;TRANSFER FROM HOSP/EXTRAM&quot;,&quot;HOME HEALTH CARE&quot;,&quot;Medicare&quot;,,&quot;CATHOLIC&quot;,&quot;MARRIED&quot;,&quot;UNKNOWN/NOT SPECIFIED&quot;,,,&quot;UNSTABLE ANGINA\CATH&quot;,0,1</code></pre>
 <p>How many rows are in this data file?</p>
+<p><strong>Solution:</strong></p>
 <pre class="bash"><code>awk -F',' 'END { print NR }' /home/203bdata/mimic-iii/ADMISSIONS.csv</code></pre>
 <pre><code>## 58977</code></pre>
 <p>How many unique patients (identified by <code>SUBJECT_ID</code>) are in this data file?</p>
+<p><strong>Solution:</strong></p>
 <pre class="bash"><code>awk -F',' '{ print $2 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq | wc -l</code></pre>
 <pre><code>## 46521</code></pre>
 <p>What are the possible values taken by each of the variable <code>INSURANCE</code>, <code>LANGUAGE</code>, <code>RELIGION</code>, <code>MARITAL_STATUS</code>, and <code>ETHNICITY</code>?</p>
@@ -655,6 +678,7 @@ awk -F',' '{ print $14 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 |
 ## &quot;WHITE - OTHER EUROPEAN&quot;
 ## &quot;WHITE - RUSSIAN&quot;</code></pre>
 <p>How many (unique) patients are Hispanic? (Hint: combine Linux commands <code>head</code>, <code>tail</code>, <code>awk</code>, <code>uniq</code>, <code>wc</code>, <code>sort</code> and so on using pipe.)</p>
+<p><strong>Solution:</strong></p>
 <pre class="bash"><code>awk -F',' '{if($14 ~ /HISPANIC/) { print $2 }}' /home/203bdata/mimic-iii/ADMISSIONS.csv | sort | uniq | wc -l</code></pre>
 <pre><code>## 1652</code></pre>
 </div>
@@ -722,7 +746,7 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
   \frac{\sum_{r=1}^{\text{rep}} (\widehat \mu_r - \mu_{\text{true}})^2}{\text{rep}}
 \]</span> for both methods.</li>
 </ol>
-<p><strong>Solution:</strong> This is my <code>runSim.R</code> code:</p>
+<p><strong>Solution:</strong></p>
 <pre class="bash"><code>cat runSim.R</code></pre>
 <pre><code>## ## parsing command arguments
 ## for (arg in commandArgs(TRUE)) {
@@ -879,31 +903,9 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>library(&quot;tidyverse&quot;)</code></pre>
-<pre><code>## ── Attaching packages ─────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
-<pre><code>## ✓ ggplot2 3.2.1     ✓ purrr   0.3.3
-## ✓ tibble  2.1.3     ✓ dplyr   0.8.3
-## ✓ tidyr   1.0.0     ✓ stringr 1.4.0
-## ✓ readr   1.3.1     ✓ forcats 0.4.0</code></pre>
-<pre><code>## ── Conflicts ────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>library(&quot;plyr&quot;)</code></pre>
-<pre><code>## ------------------------------------------------------------------------------</code></pre>
-<pre><code>## You have loaded plyr after dplyr - this is likely to cause problems.
-## If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
-## library(plyr); library(dplyr)</code></pre>
-<pre><code>## ------------------------------------------------------------------------------</code></pre>
-<pre><code>## 
-## Attaching package: 'plyr'</code></pre>
-<pre><code>## The following objects are masked from 'package:dplyr':
-## 
-##     arrange, count, desc, failwith, id, mutate, rename, summarise,
-##     summarize</code></pre>
-<pre><code>## The following object is masked from 'package:purrr':
-## 
-##     compact</code></pre>
-<pre class="r"><code>library(&quot;readr&quot;)</code></pre>
+<pre class="r"><code>library(&quot;plyr&quot;)
+library(&quot;tidyverse&quot;)
+library(&quot;readr&quot;)</code></pre>
 <pre class="r"><code>gaussian &lt;- list.files(path = &quot;/home/tonylim/biostat-203b-2020-winter/hw1&quot;, 
                       pattern = &quot;gauss*&quot;, 
                       full.names = FALSE)
