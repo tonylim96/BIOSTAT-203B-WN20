@@ -500,7 +500,7 @@ done</code></pre>
 awk -F',' '{ print $11 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
 awk -F',' '{ print $12 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
 awk -F',' '{ print $13 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq
-echo -en '\n'
+echo
 awk -F',' '{ print $14 }' /home/203bdata/mimic-iii/ADMISSIONS.csv | tail -n +2 | sort | uniq</code></pre>
 <pre><code>## &quot;Government&quot;
 ## &quot;Medicaid&quot;
@@ -671,7 +671,7 @@ for name in $names
 do 
   echo $name
   grep -o -i $name pride_and_prejudice.txt | wc -l
-  echo -en '\n'
+  echo
 done</code></pre>
 <pre><code>## Elizabeth
 ## 634
