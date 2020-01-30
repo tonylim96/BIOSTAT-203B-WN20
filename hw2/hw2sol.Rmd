@@ -64,7 +64,7 @@ admission <- read_csv("/home/203bdata/mimic-iii/ADMISSIONS.csv")
 admission %>% print(width = Inf)
 ```
 
-### Admission Year
+### Admission year
 
 ```{r}
 admission %>%
@@ -75,12 +75,34 @@ admission %>%
 
 Data for ten years extended to 100 years. Therefore, average admission per year is about 6000, which is about 16 admissions per day.
 
+### Admission month
+
+### Admission week day  
+### Admission hour
+### Admission minute
+
+Admission minute is rounded to nearest 15/30/45 because human nurses round when entering data.
+
+### Length of hospital stay  
+### Admission type  
+### Number of admissions per patient  
+### Admission location  
+### Insurance  
+### Language  
+### Religion  
+### Martial status  
+### Ethnicity  
+### Death 
+
 ## Q2
 
 Link the data in `ADMISSION.csv` and `PATIENTS.csv` (<https://mimic.physionet.org/mimictables/patients/>) and summarize following variables using appropriate graphs:  
 
 - gender  
 - age at admission 
+
+### Gender
+### Age at admission
 
 ## Q3
 
@@ -90,6 +112,11 @@ Link the data in `ADMISSION.csv` and `PATIENTS.csv` (<https://mimic.physionet.or
 - first ICU unit  
 - gender  
 - age  
+
+### Length of ICU stay
+### First ICU unit
+### Gender
+### Age
 
 ## Q4 
 
