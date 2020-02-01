@@ -16,7 +16,6 @@ knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
 sessionInfo()
 ```
 
-
 Use tidyverse (ggpot2, dplyr) to explore the [MIMIC-III](https://mimic.physionet.org) data introduced in [homework 1](https://ucla-biostat203b-2020winter.github.io/hw/hw1/hw1.html).
 
 ## Q1
@@ -70,29 +69,100 @@ admission %>% print(width = Inf)
 admission %>%
   mutate(adm_year = year(ADMITTIME)) %>%
   ggplot() + 
-  geom_bar(mapping = aes(x = adm_year))
+  geom_bar(mapping = aes(x = adm_year)) +
+  ggtitle("Count of admissions by admission year") +
+  xlab("Admission year") +
+  ylab("Count")
 ```
 
-Data for ten years extended to 100 years. Therefore, average admission per year is about 6000, which is about 16 admissions per day.
+Data for 12 years extended to 100 years. Therefore, average admission per year is about 6000, which is about 16 admissions per day.
 
 ### Admission month
 
-### Admission week day  
+```{r}
+admission %>%
+  mutate(adm_month = month(ADMITTIME, label = TRUE)) %>%
+  ggplot() + 
+  geom_bar(mapping = aes(x = adm_month)) +
+  ggtitle("Count of admissions by admission month") +
+  xlab("Admission month") +
+  ylab("Count")
+```
+
+### Admission week day
+
+```{r}
+admission %>%
+  mutate(adm_weekdays = weekdays(ADMITTIME)) %>%
+  ggplot() + 
+  geom_bar(mapping = aes(x = adm_weekdays)) +
+  ggtitle("Count of admissions by admission week day") +
+  xlab("Admission day") +
+  ylab("Count")
+```
+
 ### Admission hour
+
+```{r}
+admission %>%
+  mutate(adm_hour = hour(ADMITTIME)) %>%
+  ggplot() + 
+  geom_bar(mapping = aes(x = adm_hour)) +
+  ggtitle("Count of admissions by admission hour") +
+  xlab("Admission hour") +
+  ylab("Count")
+```
+
 ### Admission minute
+
+```{r}
+admission %>%
+  mutate(adm_min = minute(ADMITTIME)) %>%
+  ggplot() + 
+  geom_bar(mapping = aes(x = adm_min)) +
+  ggtitle("Count of admissions by admission minute") +
+  xlab("Admission minute") +
+  ylab("Count") +
+  scale_x_continuous(breaks = c(0, 15, 30, 45, 60))
+```
 
 Admission minute is rounded to nearest 15/30/45 because human nurses round when entering data.
 
 ### Length of hospital stay  
+
+```{r}
+admission %>%
+  mutate(los_days = as.numeric(as.duration(DISCHTIME - ADMITTIME) / 86400)) %>%
+  ggplot() + 
+  geom_boxplot(mapping = aes(x = factor(1), y = los_days)) +
+  ggtitle("Length of stay in days") +
+  ylab("Length of stay (days)")
+```
+
+300 days / 10ish = 30 days
+
 ### Admission type  
-### Number of admissions per patient  
-### Admission location  
-### Insurance  
-### Language  
-### Religion  
-### Martial status  
-### Ethnicity  
-### Death 
+
+```{R}
+admission %>%
+  ggplot() + 
+  geom_bar(mapping = aes(x = ADMISSION_TYPE)) +
+  ggtitle("Count by admission type") +
+  xlab("Admission type") +
+  ylab("Count")
+```
+
+### Number of admissions per patient
+
+
+
+### Admission location
+### Insurance
+### Language
+### Religion
+### Martial status
+### Ethnicity
+### Death
 
 ## Q2
 
