@@ -1,22 +1,27 @@
 ---
-title: "Biostat 203B Homework 2"
+title: "BIOSTAT 203B Homework 2"
 author: Tony Lim
-subtitle: Due Feb 7 @ 11:59PM
+subtitle: Due Friday, 2/7 @ 11:59 PM
 output: 
   html_document:
       toc: true
       toc-depth: 4
-
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
 ```
+
+
 ```{r}
 sessionInfo()
 ```
 
+-----
+
 Use tidyverse (ggpot2, dplyr) to explore the [MIMIC-III](https://mimic.physionet.org) data introduced in [homework 1](https://ucla-biostat203b-2020winter.github.io/hw/hw1/hw1.html).
+
+-----
 
 ## Q1
 
@@ -38,8 +43,6 @@ Demographic information of the patients admitted into hospital is available in `
 - death 
 
 Note it is possible that one patient (uniquely identified by the `SUBJECT_ID`) is admitted into hospital multiple times. When summarizing some demographic information, it makes sense to summarize based on only unique patients. 
-
-**Solution**
 
 ### Prerequisities
 
@@ -64,7 +67,7 @@ admission <- read_csv("/home/203bdata/mimic-iii/ADMISSIONS.csv",
                                        SUBJECT_ID = col_integer(),
                                        HADM_ID = col_integer(),
                                        HOSPITAL_EXPIRE_FLAG = col_logical(),
-                                       HAS_CHARTEVVENTS_DATA = col_logical()))
+                                       HAS_CHARTEVENTS_DATA = col_logical()))
 
 admission %>% print(width = Inf)
 ```
@@ -248,6 +251,8 @@ admission %>%
                               "TRUE" = "Death in the hospital"))
 ```
 
+-----
+
 ## Q2
 
 Link the data in `ADMISSION.csv` and `PATIENTS.csv` (<https://mimic.physionet.org/mimictables/patients/>) and summarize following variables using appropriate graphs:  
@@ -257,6 +262,8 @@ Link the data in `ADMISSION.csv` and `PATIENTS.csv` (<https://mimic.physionet.or
 
 ### Gender
 ### Age at admission
+
+-----
 
 ## Q3
 
@@ -271,6 +278,8 @@ Link the data in `ADMISSION.csv` and `PATIENTS.csv` (<https://mimic.physionet.or
 ### First ICU unit
 ### Gender
 ### Age
+
+-----
 
 ## Q4 
 
