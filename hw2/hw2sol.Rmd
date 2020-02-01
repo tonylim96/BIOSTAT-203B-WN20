@@ -59,7 +59,13 @@ admission %>% print(width = Inf)
 ```
 
 ```{r}
-admission <- read_csv("/home/203bdata/mimic-iii/ADMISSIONS.csv")
+admission <- read_csv("/home/203bdata/mimic-iii/ADMISSIONS.csv", 
+                      col_types = cols(ROW_ID = col_integer(),
+                                       SUBJECT_ID = col_integer(),
+                                       HADM_ID = col_integer(),
+                                       HOSPITAL_EXPIRE_FLAG = col_logical(),
+                                       HAS_CHARTEVVENTS_DATA = col_logical()))
+
 admission %>% print(width = Inf)
 ```
 
@@ -157,12 +163,90 @@ admission %>%
 
 
 ### Admission location
+
+```{R}
+admission %>%
+  ggplot() + 
+  geom_bar(mapping = aes(x = ADMISSION_LOCATION)) +
+  ggtitle("Count by admission type") +
+  xlab("Admission type") +
+  ylab("Count") +
+  coord_flip()
+```
+
 ### Insurance
+
+```{R}
+admission %>%
+  ggplot() + 
+  geom_bar(mapping = aes(x = INSURANCE)) +
+  ggtitle("Count by insurance type") +
+  xlab("Insurance type") +
+  ylab("Count")
+```
+
 ### Language
+
+```{R}
+admission %>%
+  ggplot() + 
+  geom_bar(mapping = aes(x = LANGUAGE)) +
+  ggtitle("Count by insurance") +
+  xlab("Insurance") +
+  ylab("Count") +
+  coord_flip()
+
+table(admission$LANGUAGE)
+```
+
 ### Religion
+
+```{R}
+admission %>%
+  ggplot() + 
+  geom_bar(mapping = aes(x = RELIGION)) +
+  ggtitle("Count by religion") +
+  xlab("Religion") +
+  ylab("Count") +
+  coord_flip()
+```
+
 ### Martial status
+
+```{R}
+admission %>%
+  ggplot() + 
+  geom_bar(mapping = aes(x = MARITAL_STATUS)) +
+  ggtitle("Count by marital status") +
+  xlab("Marital status") +
+  ylab("Count") +
+  coord_flip()
+```
+
 ### Ethnicity
+
+```{R}
+admission %>%
+  ggplot() + 
+  geom_bar(mapping = aes(x = ETHNICITY)) +
+  ggtitle("Count by ethnicity") +
+  xlab("Ethnicity") +
+  ylab("Count") +
+  coord_flip()
+```
+
 ### Death
+
+```{R}
+admission %>%
+  ggplot() + 
+  geom_bar(mapping = aes(x = HOSPITAL_EXPIRE_FLAG), width = 0.25) +
+  ggtitle("Count by survival status") +
+  xlab("Survival status") +
+  ylab("Count") +
+  scale_x_discrete(labels = c("FALSE" = "Survival to hospital discharge",
+                              "TRUE" = "Death in the hospital"))
+```
 
 ## Q2
 
