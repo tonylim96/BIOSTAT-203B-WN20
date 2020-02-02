@@ -287,20 +287,12 @@ combine %>% print(width = Inf)
 
 ```{r}
 combine %>% 
-  group_by(SUBJECT_ID, HADM_ID) %>%
-  summarise(
-    n = n_distinct(SUBJECT_ID))
-
-```
-
-
-```{r}
-combine %>% 
-  group_by(SUBJECT_ID) %>%
+  group_by(SUBJECT_ID, GENDER) %>%
+  summarise(n = n_distinct(SUBJECT_ID)) %>%
   ggplot() +
   geom_bar(mapping = aes(x = GENDER)) +
-  ggtitle("Count of admissions by admission month") +
-  xlab("Admission month") +
+  ggtitle("Count of admissions by gender") +
+  xlab("Gender") +
   ylab("Count")
 ```
 
@@ -333,8 +325,6 @@ combine %>%
 Compile a tibble that contains the first ICU stay of unique patients, with the patient's demographic information, the first systolic blood pressure measurement during ICU stay, and whether the patient died within 30 days of hospital admission.
 
 ```{bash}
-head /home/203bdata/mimic-iii/ADMISSIONS.csv
-echo
 head /home/203bdata/mimic-iii/CHARTEVENTS.csv
 echo
 head /home/203bdata/mimic-iii/D_ITEMS.csv
@@ -347,7 +337,12 @@ chartevents %>% print(width = Inf)
 
 d_items <- read_csv("/home/203bdata/mimic-iii/D_ITEMS.csv")
 
-d_items %>% print(width = Inf) %>%
+systolic <- d_items %>%
   filter(grepl("systolic", LABEL))
+
+systolic
+
+chartevents %>%
+  filter(ITEMID %in% systolic$ITEMID)
 ```
 
