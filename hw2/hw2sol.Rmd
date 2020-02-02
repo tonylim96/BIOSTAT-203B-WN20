@@ -316,8 +316,39 @@ combine %>%
 - gender  
 - age  
 
+```{r}
+icustays <- read_csv("/home/203bdata/mimic-iii/ICUSTAYS.csv")
+icustays %>% print(width = Inf) 
+
+combine2 <- inner_join(combine, icustays, by = "SUBJECT_ID")
+combine2 %>% print(width = Inf)
+```
+
 ### Length of ICU stay
+
+```{r}
+icustays %>%
+  ggplot() + 
+  geom_histogram(mapping = aes(x = LOS)) + 
+  labs(title = "Count and length of stay", 
+       x = "Length of stay (days)", 
+       y = "Count")
+```
+
 ### First ICU unit
+
+```{r}
+icustays %>% 
+  group_by(SUBJECT_ID, FIRST_CAREUNIT) %>%
+  summarise(n = n_distinct(SUBJECT_ID)) %>%
+  ggplot() +
+  geom_bar(mapping = aes(x = FIRST_CAREUNIT)) +
+  labs(title = "Count of first ICU unit", 
+       x = "First ICU unit", 
+       y = "Count")
+```
+
+
 ### Gender
 ### Age
 
