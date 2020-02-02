@@ -57,25 +57,25 @@ head /home/203bdata/mimic-iii/ADMISSIONS.csv
 ```
 
 ```{r}
-admission <- read_csv("/home/203bdata/mimic-iii/ADMISSIONS.csv")
-admission %>% print(width = Inf)
+admissions <- read_csv("/home/203bdata/mimic-iii/ADMISSIONS.csv")
+admissions %>% print(width = Inf)
 ```
 
 ```{r}
-admission <- read_csv("/home/203bdata/mimic-iii/ADMISSIONS.csv", 
+admissions <- read_csv("/home/203bdata/mimic-iii/ADMISSIONS.csv", 
                       col_types = cols(ROW_ID = col_integer(),
                                        SUBJECT_ID = col_integer(),
                                        HADM_ID = col_integer(),
                                        HOSPITAL_EXPIRE_FLAG = col_logical(),
                                        HAS_CHARTEVENTS_DATA = col_logical()))
 
-admission %>% print(width = Inf)
+admissions %>% print(width = Inf)
 ```
 
 ### Admission year
 
 ```{r}
-admission %>%
+admissions %>%
   mutate(adm_year = year(ADMITTIME)) %>%
   ggplot() + 
   geom_bar(mapping = aes(x = adm_year)) +
@@ -89,7 +89,7 @@ Data for 12 years extended to 100 years. Therefore, average admission per year i
 ### Admission month
 
 ```{r}
-admission %>%
+admissions %>%
   mutate(adm_month = month(ADMITTIME, label = TRUE)) %>%
   ggplot() + 
   geom_bar(mapping = aes(x = adm_month)) +
@@ -101,7 +101,7 @@ admission %>%
 ### Admission week day
 
 ```{r}
-admission %>%
+admissions %>%
   mutate(adm_weekdays = weekdays(ADMITTIME)) %>%
   ggplot() + 
   geom_bar(mapping = aes(x = adm_weekdays)) +
@@ -113,7 +113,7 @@ admission %>%
 ### Admission hour
 
 ```{r}
-admission %>%
+admissions %>%
   mutate(adm_hour = hour(ADMITTIME)) %>%
   ggplot() + 
   geom_bar(mapping = aes(x = adm_hour)) +
@@ -125,7 +125,7 @@ admission %>%
 ### Admission minute
 
 ```{r}
-admission %>%
+admissions %>%
   mutate(adm_min = minute(ADMITTIME)) %>%
   ggplot() + 
   geom_bar(mapping = aes(x = adm_min)) +
@@ -140,7 +140,7 @@ Admission minute is rounded to nearest 15/30/45 because human nurses round when 
 ### Length of hospital stay  
 
 ```{r}
-admission %>%
+admissions %>%
   mutate(los_days = as.numeric(as.duration(DISCHTIME - ADMITTIME) / 86400)) %>%
   ggplot() + 
   geom_boxplot(mapping = aes(x = factor(1), y = los_days)) +
@@ -153,7 +153,7 @@ admission %>%
 ### Admission type  
 
 ```{R}
-admission %>%
+admissions %>%
   ggplot() + 
   geom_bar(mapping = aes(x = ADMISSION_TYPE)) +
   ggtitle("Count by admission type") +
@@ -168,7 +168,7 @@ admission %>%
 ### Admission location
 
 ```{R}
-admission %>%
+admissions %>%
   ggplot() + 
   geom_bar(mapping = aes(x = ADMISSION_LOCATION)) +
   ggtitle("Count by admission type") +
@@ -180,7 +180,7 @@ admission %>%
 ### Insurance
 
 ```{R}
-admission %>%
+admissions %>%
   ggplot() + 
   geom_bar(mapping = aes(x = INSURANCE)) +
   ggtitle("Count by insurance type") +
@@ -191,7 +191,7 @@ admission %>%
 ### Language
 
 ```{R}
-admission %>%
+admissions %>%
   ggplot() + 
   geom_bar(mapping = aes(x = LANGUAGE)) +
   ggtitle("Count by insurance") +
@@ -199,13 +199,13 @@ admission %>%
   ylab("Count") +
   coord_flip()
 
-table(admission$LANGUAGE)
+table(admissions$LANGUAGE)
 ```
 
 ### Religion
 
 ```{R}
-admission %>%
+admissions %>%
   ggplot() + 
   geom_bar(mapping = aes(x = RELIGION)) +
   ggtitle("Count by religion") +
@@ -217,7 +217,7 @@ admission %>%
 ### Martial status
 
 ```{R}
-admission %>%
+admissions %>%
   ggplot() + 
   geom_bar(mapping = aes(x = MARITAL_STATUS)) +
   ggtitle("Count by marital status") +
@@ -229,7 +229,7 @@ admission %>%
 ### Ethnicity
 
 ```{R}
-admission %>%
+admissions %>%
   ggplot() + 
   geom_bar(mapping = aes(x = ETHNICITY)) +
   ggtitle("Count by ethnicity") +
@@ -241,7 +241,7 @@ admission %>%
 ### Death
 
 ```{R}
-admission %>%
+admissions %>%
   ggplot() + 
   geom_bar(mapping = aes(x = HOSPITAL_EXPIRE_FLAG), width = 0.25) +
   ggtitle("Count by survival status") +
@@ -260,7 +260,50 @@ Link the data in `ADMISSION.csv` and `PATIENTS.csv` (<https://mimic.physionet.or
 - gender  
 - age at admission 
 
+```{bash}
+head /home/203bdata/mimic-iii/ADMISSIONS.csv
+echo
+head /home/203bdata/mimic-iii/PATIENTS.csv
+```
+
+```{r}
+admissions <- read_csv("/home/203bdata/mimic-iii/ADMISSIONS.csv", 
+                      col_types = cols(ROW_ID = col_integer(),
+                                       SUBJECT_ID = col_integer(),
+                                       HADM_ID = col_integer(),
+                                       HOSPITAL_EXPIRE_FLAG = col_logical(),
+                                       HAS_CHARTEVENTS_DATA = col_logical()))
+
+patients <- read_csv("/home/203bdata/mimic-iii/PATIENTS.csv")
+patients %>% print(width = Inf)
+```
+
+```{r}
+combine <- inner_join(admissions, patients, by = "SUBJECT_ID")
+combine %>% print(width = Inf)
+```
+
 ### Gender
+
+```{r}
+combine %>% 
+  group_by(SUBJECT_ID, HADM_ID) %>%
+  summarise(
+    n = n_distinct(SUBJECT_ID))
+
+```
+
+
+```{r}
+combine %>% 
+  group_by(SUBJECT_ID) %>%
+  ggplot() +
+  geom_bar(mapping = aes(x = GENDER)) +
+  ggtitle("Count of admissions by admission month") +
+  xlab("Admission month") +
+  ylab("Count")
+```
+
 ### Age at admission
 
 -----
@@ -288,3 +331,17 @@ Link the data in `ADMISSION.csv` and `PATIENTS.csv` (<https://mimic.physionet.or
 `D_ITEMS.csv` (<https://mimic.physionet.org/mimictables/d_items/>) is the dictionary for the `ITEMID` in `CHARTEVENTS.csv`. Find potential values of `ITEMID` that correspond to systolic blood pressure, i.e., `LABEL` contains the string `systolic`. 
 
 Compile a tibble that contains the first ICU stay of unique patients, with the patient's demographic information, the first systolic blood pressure measurement during ICU stay, and whether the patient died within 30 days of hospitcal admission.
+
+```{bash}
+head /home/203bdata/mimic-iii/ADMISSIONS.csv
+echo
+head /home/203bdata/mimic-iii/CHARTEVENTS.csv
+echo
+head /home/203bdata/mimic-iii/D_ITEMS.csv
+```
+
+
+```{r}
+
+```
+
