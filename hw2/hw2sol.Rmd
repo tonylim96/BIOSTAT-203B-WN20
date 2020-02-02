@@ -102,7 +102,7 @@ admissions %>%
 
 ```{r}
 admissions %>%
-  mutate(adm_weekdays = weekdays(ADMITTIME)) %>%
+  mutate(adm_weekdays = wday(ADMITTIME, label = TRUE)) %>%
   ggplot() + 
   geom_bar(mapping = aes(x = adm_weekdays)) +
   ggtitle("Count of admissions by admission week day") +
@@ -286,9 +286,9 @@ combine %>% print(width = Inf)
 ### Gender
 
 ```{r}
-combine %>% 
+combine %>%
   group_by(SUBJECT_ID, GENDER) %>%
-  summarise(n = n_distinct(SUBJECT_ID)) %>%
+  summarise(n = n_distinct(SUBJECT_ID),) %>%
   ggplot() +
   geom_bar(mapping = aes(x = GENDER)) +
   ggtitle("Count of admissions by gender") +
@@ -297,6 +297,13 @@ combine %>%
 ```
 
 ### Age at admission
+
+```{r}
+combine %>%
+  group_by(SUBJECT_ID, ADMITTIME, DOB) %>%
+  summarise(n = n_distinct(SUBJECT_ID),
+            adm_age = (ADMITTIME - DOB))
+```
 
 -----
 
@@ -332,15 +339,14 @@ head /home/203bdata/mimic-iii/D_ITEMS.csv
 
 
 ```{r}
-chartevents <- read_csv("/home/203bdata/mimic-iii/CHARTEVENTS.csv")
-chartevents %>% print(width = Inf)
+chartevents <- read_csv("/home/203bdata/mimic-iii/CHARTEVENTS.csv") %>% 
+  print(width = Inf)
 
 d_items <- read_csv("/home/203bdata/mimic-iii/D_ITEMS.csv")
 
 systolic <- d_items %>%
-  filter(grepl("systolic", LABEL))
-
-systolic
+  filter(grepl("systolic", LABEL)) %>% 
+  print(width = Inf)
 
 chartevents %>%
   filter(ITEMID %in% systolic$ITEMID)
