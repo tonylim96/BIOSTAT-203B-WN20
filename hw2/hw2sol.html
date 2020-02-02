@@ -1078,7 +1078,7 @@ combine %&gt;% print(width = Inf)</code></pre>
 <h2>Q4</h2>
 <p><code>CHARTEVENTS.csv</code> (<a href="https://mimic.physionet.org/mimictables/chartevents/" class="uri">https://mimic.physionet.org/mimictables/chartevents/</a>) contains all the charted data available for a patient. During their ICU stay, the primary repository of a patient’s information is their electronic chart. The <code>ITEMID</code> variable indicates a single measurement type in the database. The <code>VALUE</code> variable is the value measured for <code>ITEMID</code>.</p>
 <p><code>D_ITEMS.csv</code> (<a href="https://mimic.physionet.org/mimictables/d_items/" class="uri">https://mimic.physionet.org/mimictables/d_items/</a>) is the dictionary for the <code>ITEMID</code> in <code>CHARTEVENTS.csv</code>. Find potential values of <code>ITEMID</code> that correspond to systolic blood pressure, i.e., <code>LABEL</code> contains the string <code>systolic</code>.</p>
-<p>Compile a tibble that contains the first ICU stay of unique patients, with the patient’s demographic information, the first systolic blood pressure measurement during ICU stay, and whether the patient died within 30 days of hospitcal admission.</p>
+<p>Compile a tibble that contains the first ICU stay of unique patients, with the patient’s demographic information, the first systolic blood pressure measurement during ICU stay, and whether the patient died within 30 days of hospital admission.</p>
 <pre class="bash"><code>head /home/203bdata/mimic-iii/ADMISSIONS.csv
 echo
 head /home/203bdata/mimic-iii/CHARTEVENTS.csv
@@ -1116,6 +1116,112 @@ head /home/203bdata/mimic-iii/D_ITEMS.csv</code></pre>
 ## 1158,930,&quot;Ext&quot;,,&quot;carevue&quot;,&quot;chartevents&quot;,,,,
 ## 1159,935,&quot;Allergy 3&quot;,,&quot;carevue&quot;,&quot;chartevents&quot;,,,,
 ## 1160,938,&quot;blood cultures&quot;,,&quot;carevue&quot;,&quot;chartevents&quot;,,,,</code></pre>
+<pre class="r"><code>chartevents &lt;- read_csv(&quot;/home/203bdata/mimic-iii/CHARTEVENTS.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   ROW_ID = col_double(),
+##   SUBJECT_ID = col_double(),
+##   HADM_ID = col_double(),
+##   ICUSTAY_ID = col_double(),
+##   ITEMID = col_double(),
+##   CHARTTIME = col_character(),
+##   STORETIME = col_character(),
+##   CGID = col_double(),
+##   VALUE = col_double(),
+##   VALUENUM = col_double(),
+##   VALUEUOM = col_character(),
+##   WARNING = col_double(),
+##   ERROR = col_double(),
+##   RESULTSTATUS = col_logical(),
+##   STOPPED = col_logical()
+## )</code></pre>
+<pre class="r"><code>chartevents %&gt;% print(width = Inf)</code></pre>
+<pre><code>## # A tibble: 1,048,575 x 15
+##    ROW_ID SUBJECT_ID HADM_ID ICUSTAY_ID ITEMID CHARTTIME     STORETIME      CGID
+##     &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;         &lt;dbl&gt;
+##  1    788         36  165660     241249 223834 5/12/34 12:00 5/12/34 13:56 17525
+##  2    789         36  165660     241249 223835 5/12/34 12:00 5/12/34 13:56 17525
+##  3    790         36  165660     241249 224328 5/12/34 12:00 5/12/34 12:18 20823
+##  4    791         36  165660     241249 224329 5/12/34 12:00 5/12/34 12:19 20823
+##  5    792         36  165660     241249 224330 5/12/34 12:00 5/12/34 12:19 20823
+##  6    793         36  165660     241249 224331 5/12/34 12:00 5/12/34 12:19 20823
+##  7    794         36  165660     241249 224332 5/12/34 12:00 5/12/34 14:44 17525
+##  8    795         36  165660     241249 224663 5/12/34 12:00 5/12/34 14:44 17525
+##  9    796         36  165660     241249 224665 5/12/34 12:00 5/12/34 14:44 17525
+## 10    797         36  165660     241249 220224 5/12/34 12:35 5/12/34 12:38 20889
+##     VALUE VALUENUM VALUEUOM WARNING ERROR RESULTSTATUS STOPPED
+##     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;lgl&gt;        &lt;lgl&gt;  
+##  1  15       15    L/min          0     0 NA           NA     
+##  2 100      100    &lt;NA&gt;           0     0 NA           NA     
+##  3   0.37     0.37 &lt;NA&gt;           0     0 NA           NA     
+##  4   6        6    min            0     0 NA           NA     
+##  5   2.5      2.5  &lt;NA&gt;           0     0 NA           NA     
+##  6   0        0    ml/hr          0     0 NA           NA     
+##  7   3        3    &lt;NA&gt;           0     0 NA           NA     
+##  8   8        8    &lt;NA&gt;           0     0 NA           NA     
+##  9   1.11     1.11 &lt;NA&gt;           0     0 NA           NA     
+## 10  58       58    mmHg           1     0 NA           NA     
+## # … with 1,048,565 more rows</code></pre>
+<pre class="r"><code>d_items &lt;- read_csv(&quot;/home/203bdata/mimic-iii/D_ITEMS.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   ROW_ID = col_double(),
+##   ITEMID = col_double(),
+##   LABEL = col_character(),
+##   ABBREVIATION = col_logical(),
+##   DBSOURCE = col_character(),
+##   LINKSTO = col_character(),
+##   CATEGORY = col_character(),
+##   UNITNAME = col_logical(),
+##   PARAM_TYPE = col_logical(),
+##   CONCEPTID = col_logical()
+## )</code></pre>
+<pre><code>## Warning: 7218 parsing failures.
+##  row          col           expected      actual                                   file
+## 8674 ABBREVIATION 1/0/T/F/TRUE/FALSE Ensure      '/home/203bdata/mimic-iii/D_ITEMS.csv'
+## 8674 UNITNAME     1/0/T/F/TRUE/FALSE mL          '/home/203bdata/mimic-iii/D_ITEMS.csv'
+## 8674 PARAM_TYPE   1/0/T/F/TRUE/FALSE Solution    '/home/203bdata/mimic-iii/D_ITEMS.csv'
+## 8675 ABBREVIATION 1/0/T/F/TRUE/FALSE Ensure Plus '/home/203bdata/mimic-iii/D_ITEMS.csv'
+## 8675 UNITNAME     1/0/T/F/TRUE/FALSE mL          '/home/203bdata/mimic-iii/D_ITEMS.csv'
+## .... ............ .................. ........... ......................................
+## See problems(...) for more details.</code></pre>
+<pre class="r"><code>d_items %&gt;% print(width = Inf) %&gt;%
+  filter(grepl(&quot;systolic&quot;, LABEL))</code></pre>
+<pre><code>## # A tibble: 12,487 x 10
+##    ROW_ID ITEMID LABEL                                       ABBREVIATION
+##     &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;                                       &lt;lgl&gt;       
+##  1    457    497 Patient controlled analgesia (PCA) [Inject] NA          
+##  2    458    498 PCA Lockout (Min)                           NA          
+##  3    459    499 PCA Medication                              NA          
+##  4    460    500 PCA Total Dose                              NA          
+##  5    461    501 PCV Exh Vt (Obser)                          NA          
+##  6   1157    927 Allergy 2                                   NA          
+##  7   1158    930 Ext                                         NA          
+##  8   1159    935 Allergy 3                                   NA          
+##  9   1160    938 blood cultures                              NA          
+## 10   1161    940 trach care                                  NA          
+##    DBSOURCE LINKSTO     CATEGORY UNITNAME PARAM_TYPE CONCEPTID
+##    &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;    &lt;lgl&gt;    &lt;lgl&gt;      &lt;lgl&gt;    
+##  1 carevue  chartevents &lt;NA&gt;     NA       NA         NA       
+##  2 carevue  chartevents &lt;NA&gt;     NA       NA         NA       
+##  3 carevue  chartevents &lt;NA&gt;     NA       NA         NA       
+##  4 carevue  chartevents &lt;NA&gt;     NA       NA         NA       
+##  5 carevue  chartevents &lt;NA&gt;     NA       NA         NA       
+##  6 carevue  chartevents &lt;NA&gt;     NA       NA         NA       
+##  7 carevue  chartevents &lt;NA&gt;     NA       NA         NA       
+##  8 carevue  chartevents &lt;NA&gt;     NA       NA         NA       
+##  9 carevue  chartevents &lt;NA&gt;     NA       NA         NA       
+## 10 carevue  chartevents &lt;NA&gt;     NA       NA         NA       
+## # … with 12,477 more rows</code></pre>
+<pre><code>## # A tibble: 5 x 10
+##   ROW_ID ITEMID LABEL ABBREVIATION DBSOURCE LINKSTO CATEGORY UNITNAME PARAM_TYPE
+##    &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;lgl&gt;        &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;    &lt;lgl&gt;    &lt;lgl&gt;     
+## 1  14629 226850 RV s… NA           metavis… charte… PA Line… NA       NA        
+## 2  14631 226852 PA s… NA           metavis… charte… PA Line… NA       NA        
+## 3  12716 220050 Arte… NA           metavis… charte… Routine… NA       NA        
+## 4  12721 220059 Pulm… NA           metavis… charte… Hemodyn… NA       NA        
+## 5  12734 220179 Non … NA           metavis… charte… Routine… NA       NA        
+## # … with 1 more variable: CONCEPTID &lt;lgl&gt;</code></pre>
 </div>
 
 
