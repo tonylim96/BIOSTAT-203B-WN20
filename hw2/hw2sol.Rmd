@@ -12,7 +12,6 @@ output:
 knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
 ```
 
-
 ```{r}
 sessionInfo()
 ```
@@ -287,8 +286,7 @@ combine %>% print(width = Inf)
 
 ```{r}
 combine %>%
-  group_by(SUBJECT_ID, GENDER) %>%
-  summarise(n = n_distinct(SUBJECT_ID),) %>%
+  distinct(SUBJECT_ID, .keep_all = TRUE) %>%
   ggplot() +
   geom_bar(mapping = aes(x = GENDER)) +
   ggtitle("Count of admissions by gender") +
@@ -299,10 +297,20 @@ combine %>%
 ### Age at admission
 
 ```{r}
+# combine %>%
+#   group_by(SUBJECT_ID, ADMITTIME, DOB) %>%
+#   summarise(n = n_distinct(SUBJECT_ID),
+#             adm_age = (ADMITTIME - DOB))
+```
+
+```{r}
 combine %>%
+  distinct(SUBJECT_ID, .keep_all = TRUE) %>%
   group_by(SUBJECT_ID, ADMITTIME, DOB) %>%
-  summarise(n = n_distinct(SUBJECT_ID),
-            adm_age = (ADMITTIME - DOB))
+  summarise(adm_age = ADMITTIME - DOB) %>%
+  ggplot() +
+  geom_histogram(mapping = aes(x = adm_age))
+
 ```
 
 -----
@@ -348,9 +356,13 @@ icustays %>%
        y = "Count")
 ```
 
-
 ### Gender
+
+
+
 ### Age
+
+
 
 -----
 
@@ -382,4 +394,3 @@ systolic <- d_items %>%
 chartevents %>%
   filter(ITEMID %in% systolic$ITEMID)
 ```
-
