@@ -300,16 +300,19 @@ combine %>%
 # combine %>%
 #   group_by(SUBJECT_ID, ADMITTIME, DOB) %>%
 #   summarise(n = n_distinct(SUBJECT_ID),
-#             adm_age = (ADMITTIME - DOB))
+#             adm_age = ((ADMITTIME - DOB) / 31557600))
 ```
 
 ```{r}
 combine %>%
   distinct(SUBJECT_ID, .keep_all = TRUE) %>%
-  group_by(SUBJECT_ID, ADMITTIME, DOB) %>%
-  summarise(adm_age = ADMITTIME - DOB) %>%
+  mutate(adm_age = (as.numeric(ADMITTIME - DOB) / 31557600)) %>%
   ggplot() +
   geom_histogram(mapping = aes(x = adm_age))
+
+# %>%
+#   ggplot() +
+#   geom_histogram(mapping = aes(x = adm_age))
 ```
 
 -----
@@ -392,5 +395,7 @@ systolic <- d_items %>%
 
 chartevents %>%
   filter(ITEMID %in% systolic$ITEMID) %>%
-  order(SUBJECT_ID, CHARTTIME)
+  arrange(SUBJECT_ID, CHARTTIME)
+
+# Start with icustay and then find unique ICU stays (same patient might appear multiple times, but you want each unique ICU), find the first systolic pressure for each unique ICU stay
 ```
