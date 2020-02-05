@@ -310,7 +310,6 @@ combine %>%
   summarise(adm_age = ADMITTIME - DOB) %>%
   ggplot() +
   geom_histogram(mapping = aes(x = adm_age))
-
 ```
 
 -----
@@ -392,5 +391,6 @@ systolic <- d_items %>%
   print(width = Inf)
 
 chartevents %>%
-  filter(ITEMID %in% systolic$ITEMID)
+  filter(ITEMID %in% systolic$ITEMID) %>%
+  order(SUBJECT_ID, CHARTTIME)
 ```
