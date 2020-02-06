@@ -374,6 +374,7 @@ icustays %>%
 ### Age
 
 
+icu intime - dob (need to link two things together)
 
 -----
 
@@ -406,19 +407,48 @@ systolic <- d_items %>%
 sys_chartevents <- chartevents %>%
   filter(ITEMID %in% systolic$ITEMID) %>%
   arrange(SUBJECT_ID, CHARTTIME) %>%
+
   print(width = Inf)
+
+sys_chartevents
 
 # Start with icustay and then find unique ICU stays (same patient might appear multiple times, but you want each unique ICU), find the first systolic pressure for each unique ICU stay
   
 icustays %>%
+  print(width = Inf)
+
+icustays %>%
+  arrange(SUBJECT_ID, ICUSTAY_ID, INTIME) %>%
+  distinct(ICUSTAY_ID, .keep_all = TRUE)
+  
+icustays %>%
+  # Finds unique ICU stays and selects the earliest one
+  arrange(SUBJECT_ID, ICUSTAY_ID, INTIME) %>%
   distinct(ICUSTAY_ID, .keep_all = TRUE) %>%
-  arrange(SUBJECT_ID, ICUSTAY_ID) %>%
-  left_join(sys_chartevents, by = "ICUSTAY_ID") %>%
+  left_join(sys_chartevents, by = "ICUSTAY_ID")
+
+icustays %>%
+  # Finds unique ICU stays and selects the earliest one
+  arrange(SUBJECT_ID, ICUSTAY_ID, INTIME) %>%
+  distinct(ICUSTAY_ID, .keep_all = TRUE) %>%
+  right_join(sys_chartevents, by = "ICUSTAY_ID") %>%
+  # Sort by SUBJECT_ID and then CHARTTIME
   arrange(SUBJECT_ID.x, CHARTTIME) %>%
+  # Selects the first ICU stay
   distinct(ICUSTAY_ID, .keep_all =  TRUE) %>%
-  drop_na(VALUE) %>%
   print(width = Inf)
 
 
+icustays %>%
+  # Finds unique ICU stays and selects the earliest one
+  arrange(SUBJECT_ID, ICUSTAY_ID, INTIME) %>%
+  distinct(ICUSTAY_ID, .keep_all = TRUE) %>%
+  left_join(sys_chartevents, by = "ICUSTAY_ID") %>%
+  # Sort by SUBJECT_ID and then CHARTTIME
+  arrange(SUBJECT_ID.x, CHARTTIME) %>%
+  # Selects the first ICU stay
+  distinct(ICUSTAY_ID, .keep_all =  TRUE) %>%
+  drop_na(VALUE) %>%
+  print(width = Inf)
 
 ```
