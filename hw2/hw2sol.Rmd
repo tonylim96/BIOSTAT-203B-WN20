@@ -121,6 +121,8 @@ admissions %>%
   ylab("Count")
 ```
 
+It appears there is a spike at 7:00 AM. This may be the hospitals' opening time, so patients want to be seen as soon as possible. 
+
 ### Admission minute
 
 ```{r}
@@ -134,17 +136,18 @@ admissions %>%
   scale_x_continuous(breaks = c(0, 15, 30, 45, 60))
 ```
 
-Admission minute is rounded to nearest 15/30/45 because human nurses round when entering data.
+It appears there are spikes at 15/30/45 minutes. This may be due to nurses rounding when they manually entering data for `ADMITTIME`.
 
-### Length of hospital stay  
+### Length of hospital stay
 
 ```{r}
 admissions %>%
   mutate(los_days = as.numeric(as.duration(DISCHTIME - ADMITTIME) / 86400)) %>%
   ggplot() + 
-  geom_boxplot(mapping = aes(x = factor(1), y = los_days)) +
+  geom_histogram(mapping = aes(x = los_days)) +
   ggtitle("Length of stay in days") +
-  ylab("Length of stay (days)")
+  xlab("Length of stay (days)") + 
+  ylab("Count")
 ```
 
 300 days / 10ish = 30 days
@@ -347,17 +350,6 @@ icustays %>%
 ### First ICU unit
 
 ```{r}
-# icustays %>% 
-#   group_by(SUBJECT_ID, FIRST_CAREUNIT) %>%
-#   summarise(n = n_distinct(SUBJECT_ID)) %>%
-#   ggplot() +
-#   geom_bar(mapping = aes(x = FIRST_CAREUNIT)) +
-#   labs(title = "Count of first ICU unit", 
-#        x = "First ICU unit", 
-#        y = "Count")
-```
-
-```{r}
 icustays %>% 
   distinct(SUBJECT_ID, .keep_all = TRUE) %>%
   ggplot() +
@@ -372,6 +364,16 @@ icustays %>%
 
 
 ### Age
+
+```{r}
+icustays %>%
+  arrange(SUBJECT_ID, INTIME) %>%
+  distinct(SUBJECT_ID, .keep_all = TRUE) %>%
+  left_join(patients, by = "SUBJECT_ID") %>%
+  mutate(age = (as.numeric(INTIME - DOB) / 525600)) %>%
+  ggplot() +
+  geom_histogram(mapping = aes(x = age))
+```
 
 
 icu intime - dob (need to link two things together)
@@ -407,26 +409,19 @@ systolic <- d_items %>%
 sys_chartevents <- chartevents %>%
   filter(ITEMID %in% systolic$ITEMID) %>%
   arrange(SUBJECT_ID, CHARTTIME) %>%
-
   print(width = Inf)
+```
 
-sys_chartevents
-
-# Start with icustay and then find unique ICU stays (same patient might appear multiple times, but you want each unique ICU), find the first systolic pressure for each unique ICU stay
-  
+```{r}
 icustays %>%
   print(width = Inf)
 
 icustays %>%
   arrange(SUBJECT_ID, ICUSTAY_ID, INTIME) %>%
   distinct(ICUSTAY_ID, .keep_all = TRUE)
-  
-icustays %>%
-  # Finds unique ICU stays and selects the earliest one
-  arrange(SUBJECT_ID, ICUSTAY_ID, INTIME) %>%
-  distinct(ICUSTAY_ID, .keep_all = TRUE) %>%
-  left_join(sys_chartevents, by = "ICUSTAY_ID")
+```
 
+```{r}
 icustays %>%
   # Finds unique ICU stays and selects the earliest one
   arrange(SUBJECT_ID, ICUSTAY_ID, INTIME) %>%
@@ -437,18 +432,4 @@ icustays %>%
   # Selects the first ICU stay
   distinct(ICUSTAY_ID, .keep_all =  TRUE) %>%
   print(width = Inf)
-
-
-icustays %>%
-  # Finds unique ICU stays and selects the earliest one
-  arrange(SUBJECT_ID, ICUSTAY_ID, INTIME) %>%
-  distinct(ICUSTAY_ID, .keep_all = TRUE) %>%
-  left_join(sys_chartevents, by = "ICUSTAY_ID") %>%
-  # Sort by SUBJECT_ID and then CHARTTIME
-  arrange(SUBJECT_ID.x, CHARTTIME) %>%
-  # Selects the first ICU stay
-  distinct(ICUSTAY_ID, .keep_all =  TRUE) %>%
-  drop_na(VALUE) %>%
-  print(width = Inf)
-
 ```
