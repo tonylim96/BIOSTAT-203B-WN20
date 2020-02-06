@@ -272,9 +272,12 @@ admissions <- read_csv("/home/203bdata/mimic-iii/ADMISSIONS.csv",
                                        HADM_ID = col_integer(),
                                        HOSPITAL_EXPIRE_FLAG = col_logical(),
                                        HAS_CHARTEVENTS_DATA = col_logical()))
+admissions %>%
+  print(width = Inf)
 
 patients <- read_csv("/home/203bdata/mimic-iii/PATIENTS.csv")
-patients %>% print(width = Inf)
+patients %>% 
+  print(width = Inf)
 ```
 
 ```{r}
@@ -309,10 +312,6 @@ combine %>%
   mutate(adm_age = (as.numeric(ADMITTIME - DOB) / 31557600)) %>%
   ggplot() +
   geom_histogram(mapping = aes(x = adm_age))
-
-# %>%
-#   ggplot() +
-#   geom_histogram(mapping = aes(x = adm_age))
 ```
 
 -----
@@ -348,9 +347,19 @@ icustays %>%
 ### First ICU unit
 
 ```{r}
+# icustays %>% 
+#   group_by(SUBJECT_ID, FIRST_CAREUNIT) %>%
+#   summarise(n = n_distinct(SUBJECT_ID)) %>%
+#   ggplot() +
+#   geom_bar(mapping = aes(x = FIRST_CAREUNIT)) +
+#   labs(title = "Count of first ICU unit", 
+#        x = "First ICU unit", 
+#        y = "Count")
+```
+
+```{r}
 icustays %>% 
-  group_by(SUBJECT_ID, FIRST_CAREUNIT) %>%
-  summarise(n = n_distinct(SUBJECT_ID)) %>%
+  distinct(SUBJECT_ID, .keep_all = TRUE) %>%
   ggplot() +
   geom_bar(mapping = aes(x = FIRST_CAREUNIT)) +
   labs(title = "Count of first ICU unit", 
@@ -387,15 +396,29 @@ head /home/203bdata/mimic-iii/D_ITEMS.csv
 chartevents <- read_csv("/home/203bdata/mimic-iii/CHARTEVENTS.csv") %>% 
   print(width = Inf)
 
-d_items <- read_csv("/home/203bdata/mimic-iii/D_ITEMS.csv")
+d_items <- read_csv("/home/203bdata/mimic-iii/D_ITEMS.csv") %>%
+  print(width = Inf)
 
 systolic <- d_items %>%
   filter(grepl("systolic", LABEL)) %>% 
   print(width = Inf)
 
-chartevents %>%
+sys_chartevents <- chartevents %>%
   filter(ITEMID %in% systolic$ITEMID) %>%
-  arrange(SUBJECT_ID, CHARTTIME)
+  arrange(SUBJECT_ID, CHARTTIME) %>%
+  print(width = Inf)
 
 # Start with icustay and then find unique ICU stays (same patient might appear multiple times, but you want each unique ICU), find the first systolic pressure for each unique ICU stay
+  
+icustays %>%
+  distinct(ICUSTAY_ID, .keep_all = TRUE) %>%
+  arrange(SUBJECT_ID, ICUSTAY_ID) %>%
+  left_join(sys_chartevents, by = "ICUSTAY_ID") %>%
+  arrange(SUBJECT_ID.x, CHARTTIME) %>%
+  distinct(ICUSTAY_ID, .keep_all =  TRUE) %>%
+  drop_na(VALUE) %>%
+  print(width = Inf)
+
+
+
 ```
