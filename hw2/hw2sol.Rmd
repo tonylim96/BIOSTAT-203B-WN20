@@ -76,8 +76,8 @@ admissions %>% print(width = Inf)
 ```{r}
 admissions %>%
   mutate(adm_year = year(ADMITTIME)) %>%
-  ggplot() + 
-  geom_bar(mapping = aes(x = adm_year)) +
+  ggplot(mapping = aes(x = adm_year)) + 
+  geom_bar(fill = "blue") +
   ggtitle("Count of admissions by admission year") +
   xlab("Admission year") +
   ylab("Count")
@@ -166,7 +166,10 @@ admissions %>%
 ### Number of admissions per patient
 
 ```{r}
-
+admissions %>%
+  group_by(SUBJECT_ID) %>%
+  dplyr::summarise(n = n()) %>%
+  arrange(desc(n))
 ```
 
 
@@ -196,12 +199,15 @@ admissions %>%
 ### Language
 
 ```{R}
-admissions %>%
-  count("LANGUAGE") %>%
-  arrange(desc(freq)) %>%
+tmp <- admissions %>%
+  plyr::count("LANGUAGE")
+
+tmp
+
+tmp %>% arrange(desc(freq))  %>%
   filter(rank(desc(freq)) < 11) %>%
   ggplot() +
-  geom_bar(mapping = aes(x = reorder(LANGUAGE, freq), y = freq), 
+  geom_bar(mapping = aes(x = reorder(LANGUAGE, freq), y = freq),
            stat = "identity") +
   ggtitle("Language") +
   xlab("Language") +
@@ -213,7 +219,7 @@ admissions %>%
 
 ```{R}
 admissions %>%
-  count("RELIGION") %>%
+  plyr::count("RELIGION") %>%
   arrange(desc(freq)) %>%
   filter(rank(desc(freq)) < 11) %>%
   ggplot() +
@@ -241,7 +247,7 @@ admissions %>%
 
 ```{R}
 admissions %>%
-  count("ETHNICITY") %>%
+  plyr::count("ETHNICITY") %>%
   arrange(desc(freq)) %>%
   filter(rank(desc(freq)) < 11) %>%
   ggplot() +
