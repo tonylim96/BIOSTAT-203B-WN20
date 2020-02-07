@@ -206,7 +206,8 @@ admissions %>%
 ```{R}
 admissions %>%
   plyr::count("LANGUAGE") %>% 
-  arrange(desc(freq))  %>%
+  arrange(desc(freq)) %>%
+  drop_na(LANGUAGE) %>%
   filter(rank(desc(freq)) < 11) %>%
   ggplot() +
   geom_bar(mapping = aes(x = reorder(LANGUAGE, freq), y = freq),
@@ -224,6 +225,7 @@ admissions %>%
 admissions %>%
   plyr::count("RELIGION") %>%
   arrange(desc(freq)) %>%
+  drop_na(RELIGION) %>%
   filter(rank(desc(freq)) < 11) %>%
   ggplot() +
   geom_bar(mapping = aes(x = reorder(RELIGION, freq), y = freq), 
@@ -239,6 +241,7 @@ admissions %>%
 
 ```{R}
 admissions %>%
+  drop_na(MARITAL_STATUS) %>%
   ggplot() + 
   geom_bar(mapping = aes(x = MARITAL_STATUS), fill = "#F2300E") +
   ggtitle("Count by marital status") +
