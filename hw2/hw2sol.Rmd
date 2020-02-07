@@ -165,6 +165,9 @@ admissions %>%
 
 ### Number of admissions per patient
 
+```{r}
+
+```
 
 
 ### Admission location
@@ -194,22 +197,28 @@ admissions %>%
 
 ```{R}
 admissions %>%
-  ggplot() + 
-  geom_bar(mapping = aes(x = LANGUAGE)) +
-  ggtitle("Count by insurance") +
-  xlab("Insurance") +
+  count("LANGUAGE") %>%
+  arrange(desc(freq)) %>%
+  filter(rank(desc(freq)) < 11) %>%
+  ggplot() +
+  geom_bar(mapping = aes(x = reorder(LANGUAGE, freq), y = freq), 
+           stat = "identity") +
+  ggtitle("Language") +
+  xlab("Language") +
   ylab("Count") +
   coord_flip()
-
-table(admissions$LANGUAGE)
 ```
 
 ### Religion
 
 ```{R}
 admissions %>%
-  ggplot() + 
-  geom_bar(mapping = aes(x = RELIGION)) +
+  count("RELIGION") %>%
+  arrange(desc(freq)) %>%
+  filter(rank(desc(freq)) < 11) %>%
+  ggplot() +
+  geom_bar(mapping = aes(x = reorder(RELIGION, freq), y = freq), 
+           stat = "identity") +
   ggtitle("Count by religion") +
   xlab("Religion") +
   ylab("Count") +
@@ -232,8 +241,12 @@ admissions %>%
 
 ```{R}
 admissions %>%
-  ggplot() + 
-  geom_bar(mapping = aes(x = ETHNICITY)) +
+  count("ETHNICITY") %>%
+  arrange(desc(freq)) %>%
+  filter(rank(desc(freq)) < 11) %>%
+  ggplot() +
+  geom_bar(mapping = aes(x = reorder(ETHNICITY, freq), y = freq), 
+           stat = "identity") +
   ggtitle("Count by ethnicity") +
   xlab("Ethnicity") +
   ylab("Count") +
