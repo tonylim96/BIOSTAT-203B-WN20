@@ -76,8 +76,8 @@ admissions %>% print(width = Inf)
 ```{r}
 admissions %>%
   mutate(adm_year = year(ADMITTIME)) %>%
-  ggplot(mapping = aes(x = adm_year)) + 
-  geom_bar(fill = "blue") +
+  ggplot() + 
+  geom_bar(mapping = aes(x = adm_year), fill = "#3C99B2") +
   ggtitle("Count of admissions by admission year") +
   xlab("Admission year") +
   ylab("Count")
@@ -91,7 +91,7 @@ Data for 12 years extended to 100 years. Therefore, average admission per year i
 admissions %>%
   mutate(adm_month = month(ADMITTIME, label = TRUE)) %>%
   ggplot() + 
-  geom_bar(mapping = aes(x = adm_month)) +
+  geom_bar(mapping = aes(x = adm_month), fill = "#78b7c5") +
   ggtitle("Count of admissions by admission month") +
   xlab("Admission month") +
   ylab("Count")
@@ -103,7 +103,7 @@ admissions %>%
 admissions %>%
   mutate(adm_weekdays = wday(ADMITTIME, label = TRUE)) %>%
   ggplot() + 
-  geom_bar(mapping = aes(x = adm_weekdays)) +
+  geom_bar(mapping = aes(x = adm_weekdays), fill = "#EBCC2A") +
   ggtitle("Count of admissions by admission week day") +
   xlab("Admission day") +
   ylab("Count")
@@ -115,7 +115,7 @@ admissions %>%
 admissions %>%
   mutate(adm_hour = hour(ADMITTIME)) %>%
   ggplot() + 
-  geom_bar(mapping = aes(x = adm_hour)) +
+  geom_bar(mapping = aes(x = adm_hour), fill = "#E1AF00") +
   ggtitle("Count of admissions by admission hour") +
   xlab("Admission hour") +
   ylab("Count")
@@ -129,7 +129,7 @@ It appears there is a spike at 7:00 AM. This may be the hospitals' opening time,
 admissions %>%
   mutate(adm_min = minute(ADMITTIME)) %>%
   ggplot() + 
-  geom_bar(mapping = aes(x = adm_min)) +
+  geom_bar(mapping = aes(x = adm_min), fill = "#F22300") +
   ggtitle("Count of admissions by admission minute") +
   xlab("Admission minute") +
   ylab("Count") +
@@ -144,7 +144,7 @@ It appears there are spikes at 15/30/45 minutes. This may be due to nurses round
 admissions %>%
   mutate(los_days = as.numeric(as.duration(DISCHTIME - ADMITTIME) / 86400)) %>%
   ggplot() + 
-  geom_histogram(mapping = aes(x = los_days)) +
+  geom_histogram(mapping = aes(x = los_days), fill = "#01A08A") +
   ggtitle("Length of stay in days") +
   xlab("Length of stay (days)") + 
   ylab("Count")
@@ -157,7 +157,7 @@ admissions %>%
 ```{R}
 admissions %>%
   ggplot() + 
-  geom_bar(mapping = aes(x = ADMISSION_TYPE)) +
+  geom_bar(mapping = aes(x = ADMISSION_TYPE), fill = "#F98400") +
   ggtitle("Count by admission type") +
   xlab("Admission type") +
   ylab("Count")
@@ -169,7 +169,12 @@ admissions %>%
 admissions %>%
   group_by(SUBJECT_ID) %>%
   dplyr::summarise(n = n()) %>%
-  arrange(desc(n))
+  arrange(desc(n)) %>%
+  ggplot() + 
+  geom_histogram(mapping = aes(x = n), fill = "#5BBBD5") + 
+  labs(title = "Number of admissions per patient", 
+       x = "Number of admissions",
+       y = "Count")
 ```
 
 
@@ -178,7 +183,7 @@ admissions %>%
 ```{R}
 admissions %>%
   ggplot() + 
-  geom_bar(mapping = aes(x = ADMISSION_LOCATION)) +
+  geom_bar(mapping = aes(x = ADMISSION_LOCATION), fill = "#E1BE6C") +
   ggtitle("Count by admission type") +
   xlab("Admission type") +
   ylab("Count") +
@@ -190,7 +195,7 @@ admissions %>%
 ```{R}
 admissions %>%
   ggplot() + 
-  geom_bar(mapping = aes(x = INSURANCE)) +
+  geom_bar(mapping = aes(x = INSURANCE), fill = "#EABE94") +
   ggtitle("Count by insurance type") +
   xlab("Insurance type") +
   ylab("Count")
@@ -199,16 +204,14 @@ admissions %>%
 ### Language
 
 ```{R}
-tmp <- admissions %>%
-  plyr::count("LANGUAGE")
-
-tmp
-
-tmp %>% arrange(desc(freq))  %>%
+admissions %>%
+  plyr::count("LANGUAGE") %>% 
+  arrange(desc(freq))  %>%
   filter(rank(desc(freq)) < 11) %>%
   ggplot() +
   geom_bar(mapping = aes(x = reorder(LANGUAGE, freq), y = freq),
-           stat = "identity") +
+           stat = "identity",
+           fill = "#0C775E") +
   ggtitle("Language") +
   xlab("Language") +
   ylab("Count") +
@@ -224,7 +227,8 @@ admissions %>%
   filter(rank(desc(freq)) < 11) %>%
   ggplot() +
   geom_bar(mapping = aes(x = reorder(RELIGION, freq), y = freq), 
-           stat = "identity") +
+           stat = "identity",
+           fill = "#35274A") +
   ggtitle("Count by religion") +
   xlab("Religion") +
   ylab("Count") +
@@ -236,7 +240,7 @@ admissions %>%
 ```{R}
 admissions %>%
   ggplot() + 
-  geom_bar(mapping = aes(x = MARITAL_STATUS)) +
+  geom_bar(mapping = aes(x = MARITAL_STATUS), fill = "#F2300E") +
   ggtitle("Count by marital status") +
   xlab("Marital status") +
   ylab("Count") +
@@ -252,7 +256,8 @@ admissions %>%
   filter(rank(desc(freq)) < 11) %>%
   ggplot() +
   geom_bar(mapping = aes(x = reorder(ETHNICITY, freq), y = freq), 
-           stat = "identity") +
+           stat = "identity",
+           fill = "#ECCBAD") +
   ggtitle("Count by ethnicity") +
   xlab("Ethnicity") +
   ylab("Count") +
@@ -264,7 +269,9 @@ admissions %>%
 ```{R}
 admissions %>%
   ggplot() + 
-  geom_bar(mapping = aes(x = HOSPITAL_EXPIRE_FLAG), width = 0.25) +
+  geom_bar(mapping = aes(x = HOSPITAL_EXPIRE_FLAG), 
+           width = 0.25, 
+           fill = "#056C9A") +
   ggtitle("Count by survival status") +
   xlab("Survival status") +
   ylab("Count") +
@@ -313,7 +320,8 @@ combine %>% print(width = Inf)
 combine %>%
   distinct(SUBJECT_ID, .keep_all = TRUE) %>%
   ggplot() +
-  geom_bar(mapping = aes(x = GENDER)) +
+  geom_bar(mapping = aes(x = GENDER),
+           fill = "#D69C4F") +
   ggtitle("Count of admissions by gender") +
   xlab("Gender") +
   ylab("Count")
@@ -322,18 +330,15 @@ combine %>%
 ### Age at admission
 
 ```{r}
-# combine %>%
-#   group_by(SUBJECT_ID, ADMITTIME, DOB) %>%
-#   summarise(n = n_distinct(SUBJECT_ID),
-#             adm_age = ((ADMITTIME - DOB) / 31557600))
-```
-
-```{r}
 combine %>%
   distinct(SUBJECT_ID, .keep_all = TRUE) %>%
   mutate(adm_age = (as.numeric(ADMITTIME - DOB) / 31557600)) %>%
   ggplot() +
-  geom_histogram(mapping = aes(x = adm_age))
+  geom_histogram(mapping = aes(x = adm_age),
+                 fill = "#AADDDE") +
+  labs(title = "Age at admission",
+       x  = "Admission age",
+       y = "Count")
 ```
 
 -----
@@ -360,7 +365,8 @@ combine2 %>% print(width = Inf)
 ```{r}
 icustays %>%
   ggplot() + 
-  geom_histogram(mapping = aes(x = LOS)) + 
+  geom_histogram(mapping = aes(x = LOS),
+                 fill = "#000000") + 
   labs(title = "Count and length of stay", 
        x = "Length of stay (days)", 
        y = "Count")
@@ -372,7 +378,8 @@ icustays %>%
 icustays %>% 
   distinct(SUBJECT_ID, .keep_all = TRUE) %>%
   ggplot() +
-  geom_bar(mapping = aes(x = FIRST_CAREUNIT)) +
+  geom_bar(mapping = aes(x = FIRST_CAREUNIT), 
+           fill = "#446454") +
   labs(title = "Count of first ICU unit", 
        x = "First ICU unit", 
        y = "Count")
@@ -380,7 +387,16 @@ icustays %>%
 
 ### Gender
 
-
+```{r}
+combine2 %>%
+  distinct(SUBJECT_ID, .keep_all = TRUE) %>%
+  ggplot() +
+  geom_bar(mapping = aes(x = FIRST_CAREUNIT, fill = GENDER)) + 
+  scale_fill_manual(values = c("#FDD361","#D3DDDC")) +
+  labs(title = "Count of first ICU unit by gender",
+       x = "First ICU unit",
+       y = "Count")
+```
 
 ### Age
 
@@ -391,11 +407,12 @@ icustays %>%
   left_join(patients, by = "SUBJECT_ID") %>%
   mutate(age = (as.numeric(INTIME - DOB) / 525600)) %>%
   ggplot() +
-  geom_histogram(mapping = aes(x = age))
+  geom_histogram(mapping = aes(x = age),
+                 fill = "#C6B19C") +
+  labs(title = "Count of age",
+       x = "Age",
+       y = "Count")
 ```
-
-
-icu intime - dob (need to link two things together)
 
 -----
 
