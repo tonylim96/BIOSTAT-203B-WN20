@@ -252,7 +252,7 @@ admissions %>%
   coord_flip()
 ```
 
-The most common religion among patients is Catholicism. However, many patients have Not specified (11,753) or Unobtainable (8,269) for their religion.
+The most common religion among patients is Catholicism. Many patients have Not specified (11,753) or Unobtainable (8,269) for their religion.
 
 ### Martial status
 
@@ -334,6 +334,8 @@ combine <- inner_join(admissions, patients, by = "SUBJECT_ID")
 combine %>% print(width = Inf)
 ```
 
+`combine` is created by doing an `inner_join` between `ADMISSIONS.csv` and `PATIENTS.csv`.
+
 ### Gender
 
 ```{r}
@@ -385,6 +387,8 @@ icustays <- read_csv("/home/203bdata/mimic-iii/ICUSTAYS.csv")
 combine2 <- inner_join(combine, icustays, by = "SUBJECT_ID")
 combine2 %>% print(width = Inf)
 ```
+
+`combine2` is a dataset that combines data from `ADMISSIONS.csv`, `PATIENTS.csv`, and `ICUSTAYS.csv`.
 
 ### Length of ICU stay
 
@@ -473,6 +477,7 @@ systolic <- d_items %>%
   filter(grepl("systolic", LABEL)) %>% 
   print(width = Inf)
 ```
+
 There are five items in the `LABEL` variable that measure systolic pressure. 
 
 ```{r}
@@ -482,7 +487,7 @@ sys_chartevents <- chartevents %>%
   print(width = Inf)
 ```
 
-This step subsetted `chartevents` to only include rows that measured systolic pressure. 
+`sys_chartevents` is a subset of `chartevents` that only includes rows that measure systolic pressure. 
 
 ```{r}
 icustays %>%
@@ -493,10 +498,19 @@ icustays %>%
   distinct(ICUSTAY_ID, .keep_all = TRUE)
 ```
 
-I wanted to check whether the `icustays` dataset had unique ICU visits, which it does since both datasets contain the same number of rows.
+I wanted to check whether the `icustays` dataset had only unique ICU visits, which it does since both datasets contain the same number of rows.
 
 ```{r}
-icustays %>%
+new_admissions <- admissions %>%
+  mutate(death_time = as.numeric(DEATHTIME - ADMITTIME)) %>%
+  subset(death_time <= 2592000) %>%
+  dplyr::rename(SUBJECT_ID.x = SUBJECT_ID)
+```
+
+`new_admissions` is a subset of `admissions` depending on whether the patient died within 30 days of hospital admissions (2,592,000 seconds).
+
+```{r}
+tibble <- icustays %>%
   # Finds unique ICU stays and selects the earliest one
   arrange(SUBJECT_ID, ICUSTAY_ID, INTIME) %>%
   distinct(ICUSTAY_ID, .keep_all = TRUE) %>%
@@ -505,9 +519,22 @@ icustays %>%
   arrange(SUBJECT_ID.x, CHARTTIME) %>%
   # Selects the first ICU stay
   distinct(ICUSTAY_ID, .keep_all =  TRUE) %>%
+  left_join(systolic, by = "ITEMID") %>%
+  left_join(new_admissions, by = "SUBJECT_ID.x") %>%
+  select(SUBJECT_ID.x, FIRST_CAREUNIT, VALUE, VALUEUOM, 
+         LABEL, INSURANCE:ETHNICITY, death_time) %>%
+  dplyr::rename(SUBJECT_ID = SUBJECT_ID.x, DEATH_30D = death_time) %>%
+  mutate(DEATH_30D = as.numeric(DEATH_30D))
+
+tibble$DEATH_30D[is.na(tibble$DEATH_30D)] <- 0
+tibble$DEATH_30D[tibble$DEATH_30D > 0] <- 1
+
+tibble %>%
   print(width = Inf)
 ```
 
-I right-joined `icustays` with `sys_chartevents` (the subsetted chartevents dataset that only contained rows with a systolic pressure reading). I arranged by `SUBJECT_ID.x` and `CHARTTIME` to make sure the first systolic pressure reading was first and then selected only the first reading.
+I sorted `icustays` by `INTIME`, so I could select the first ICU stay for each unique ICU stay. I right-joined `icustays` with `sys_chartevents` (the subsetted chartevents dataset that only contained rows with a systolic pressure reading). I arranged by `SUBJECT_ID.x` and `CHARTTIME` to make sure the first systolic pressure reading was first and then selected only the first reading. I then left-joined with `systolic` to add the `LABEL` column. I left-joined with `new_admissions` to include the `death_time` variable.
 
-As a result, there are 808 unique ICU stays. Some patients may have multiple unique ICU stays. For example, `SUBJECT_ID` 109 has 27 unique ICU stays. 
+As a result, there are 808 unique ICU stays. Some patients may have multiple unique ICU stays. For example, Subject 109 has 27 unique ICU stays. 
+
+Note: A value of 1 in the `DEATH_30D` column means the patient died within 30 days of hospital admission 
