@@ -83,7 +83,7 @@ admissions %>%
   ylab("Count")
 ```
 
-Data for 12 years extended to 100 years. Therefore, average admission per year is about 6000, which is about 16 admissions per day.
+`ADMISSIONS.csv` covered an admission period between 1 June 2001 and 10 October 2012 (about 11.33 years). However, we see this data has been extended to about 100 years. Therefore, although the average admission per year is about 600 in the bar plot, it should be closer to ~6,800 admissions per year (11.33*600), which is about 18.6 admissions per day.
 
 ### Admission month
 
@@ -97,6 +97,8 @@ admissions %>%
   ylab("Count")
 ```
 
+There does not appear to be a significant difference in the number of admissions when examining by month.
+
 ### Admission week day
 
 ```{r}
@@ -108,6 +110,8 @@ admissions %>%
   xlab("Admission day") +
   ylab("Count")
 ```
+
+The weekend (Saturday and Sunday) appears to lower total admission counts than the weekdays. 
 
 ### Admission hour
 
@@ -121,7 +125,7 @@ admissions %>%
   ylab("Count")
 ```
 
-It appears there is a spike at 7:00 AM. This may be the hospitals' opening time, so patients want to be seen as soon as possible. 
+It appears there is a spike in admission count at 7:00 AM. This may be the hospitals' opening time, and some patients may want to be seen as soon as possible if they experience something overnight.
 
 ### Admission minute
 
@@ -136,7 +140,7 @@ admissions %>%
   scale_x_continuous(breaks = c(0, 15, 30, 45, 60))
 ```
 
-It appears there are spikes at 15/30/45 minutes. This may be due to nurses rounding when they manually entering data for `ADMITTIME`.
+It appears there are spikes in admission count at 15/30/45 minutes. This may be due to nurses rounding the time when they manually entering data for `ADMITTIME`.
 
 ### Length of hospital stay
 
@@ -150,7 +154,7 @@ admissions %>%
   ylab("Count")
 ```
 
-300 days / 10ish = 30 days
+The longest length of stay is 294.66 days, which seems like an extremely long period. However, because the data has been extended, it is possible the longest length of stay should be around 26 days (294.66/11.33).
 
 ### Admission type  
 
@@ -163,6 +167,8 @@ admissions %>%
   ylab("Count")
 ```
 
+A large majority of admissions fall under the Emergency category.
+
 ### Number of admissions per patient
 
 ```{r}
@@ -171,12 +177,13 @@ admissions %>%
   dplyr::summarise(n = n()) %>%
   arrange(desc(n)) %>%
   ggplot() + 
-  geom_histogram(mapping = aes(x = n), fill = "#5BBBD5") + 
+  geom_histogram(mapping = aes(x = n), fill = "#5BBBD5", bins = 40) + 
   labs(title = "Number of admissions per patient", 
        x = "Number of admissions",
        y = "Count")
 ```
 
+The majority of patients have only have one admission to the hospital. However, some patients are heavy utilizers, skewing the histogram to the right. For example, Subject 13033 has a total of 42 admissions. 
 
 ### Admission location
 
@@ -190,6 +197,8 @@ admissions %>%
   coord_flip()
 ```
 
+The most common previous locations of the patient prior to arriving at the hospital includes ER admit, Physician referral/normal delivery, Clinic referral, and Transfer from hospital.
+
 ### Insurance
 
 ```{R}
@@ -200,6 +209,8 @@ admissions %>%
   xlab("Insurance type") +
   ylab("Count")
 ```
+
+The most common form of insurance is Medicare following by private insurance. 
 
 ### Language
 
@@ -219,6 +230,10 @@ admissions %>%
   coord_flip()
 ```
 
+English is the most common language. 
+
+Note: there are 25,332 counts of NA omitted from the bar plot.
+
 ### Religion
 
 ```{R}
@@ -237,6 +252,8 @@ admissions %>%
   coord_flip()
 ```
 
+The most common religion among patients is Catholicism. However, many patients have Not specified (11,753) or Unobtainable (8,269) for their religion.
+
 ### Martial status
 
 ```{R}
@@ -249,6 +266,8 @@ admissions %>%
   ylab("Count") +
   coord_flip()
 ```
+
+Regarding marital status, the most common category is Married followed by Single and then Widowed.
 
 ### Ethnicity
 
@@ -267,20 +286,28 @@ admissions %>%
   coord_flip()
 ```
 
+The most common ethnicity category is White followed by Black/African American. 
+
 ### Death
 
 ```{R}
 admissions %>%
   ggplot() + 
-  geom_bar(mapping = aes(x = HOSPITAL_EXPIRE_FLAG), 
-           width = 0.25, 
-           fill = "#056C9A") +
+  geom_bar(mapping = aes(x = HOSPITAL_EXPIRE_FLAG), fill = "#056C9A") +
   ggtitle("Count by survival status") +
   xlab("Survival status") +
   ylab("Count") +
   scale_x_discrete(labels = c("FALSE" = "Survival to hospital discharge",
                               "TRUE" = "Death in the hospital"))
+
+admissions %>%
+  group_by(HOSPITAL_EXPIRE_FLAG) %>%
+  dplyr::summarise(n = n()) %>%
+  arrange(desc(n)) %>%
+  dplyr::rename(Survival = HOSPITAL_EXPIRE_FLAG, Count = n)
 ```
+
+Almost 10% of patients do not survive to hospital discharge. 
 
 -----
 
@@ -291,12 +318,6 @@ Link the data in `ADMISSION.csv` and `PATIENTS.csv` (<https://mimic.physionet.or
 - gender  
 - age at admission 
 
-```{bash}
-head /home/203bdata/mimic-iii/ADMISSIONS.csv
-echo
-head /home/203bdata/mimic-iii/PATIENTS.csv
-```
-
 ```{r}
 admissions <- read_csv("/home/203bdata/mimic-iii/ADMISSIONS.csv", 
                       col_types = cols(ROW_ID = col_integer(),
@@ -304,12 +325,8 @@ admissions <- read_csv("/home/203bdata/mimic-iii/ADMISSIONS.csv",
                                        HADM_ID = col_integer(),
                                        HOSPITAL_EXPIRE_FLAG = col_logical(),
                                        HAS_CHARTEVENTS_DATA = col_logical()))
-admissions %>%
-  print(width = Inf)
 
 patients <- read_csv("/home/203bdata/mimic-iii/PATIENTS.csv")
-patients %>% 
-  print(width = Inf)
 ```
 
 ```{r}
@@ -324,11 +341,14 @@ combine %>%
   distinct(SUBJECT_ID, .keep_all = TRUE) %>%
   ggplot() +
   geom_bar(mapping = aes(x = GENDER),
-           fill = "#D69C4F") +
+           fill = c("#FDD361","#D3DDDC")) +
   ggtitle("Count of admissions by gender") +
   xlab("Gender") +
-  ylab("Count")
+  ylab("Count") +
+  scale_x_discrete(labels = c("Female", "Male"))
 ```
+
+There are more male admissions than female admissions.
 
 ### Age at admission
 
@@ -344,6 +364,10 @@ combine %>%
        y = "Count")
 ```
 
+There are many newborns being seen at the hospital. 
+
+Note: there are no patients who are over 300 years old, but rather, their ages are inaccurate due to scrambling the dates in the dataset. 
+
 -----
 
 ## Q3
@@ -357,7 +381,6 @@ combine %>%
 
 ```{r}
 icustays <- read_csv("/home/203bdata/mimic-iii/ICUSTAYS.csv")
-icustays %>% print(width = Inf) 
 
 combine2 <- inner_join(combine, icustays, by = "SUBJECT_ID")
 combine2 %>% print(width = Inf)
@@ -375,6 +398,8 @@ icustays %>%
        y = "Count")
 ```
 
+The histogram is skewed to the right. However, the majority of patients have a length of stay of 1 day.
+
 ### First ICU unit
 
 ```{r}
@@ -388,6 +413,8 @@ icustays %>%
        y = "Count")
 ```
 
+The most common first ICU unit for patients is the MICU (medical intensive care unit).
+
 ### Gender
 
 ```{r}
@@ -395,11 +422,15 @@ combine2 %>%
   distinct(SUBJECT_ID, .keep_all = TRUE) %>%
   ggplot() +
   geom_bar(mapping = aes(x = FIRST_CAREUNIT, fill = GENDER)) + 
-  scale_fill_manual(values = c("#FDD361","#D3DDDC")) +
+  scale_fill_manual(name = "Gender", 
+                    values = c("#FDD361","#D3DDDC"), 
+                    labels = c("Female", "Male")) +
   labs(title = "Count of first ICU unit by gender",
        x = "First ICU unit",
        y = "Count")
 ```
+
+For most of the first ICU units, the proportion of females and males are relatively similar. However, CSRU (cardiac surgery recovery unit) and TSICU (trauma/surgical intensive care unit) have a higher male proportion. 
 
 ### Age
 
@@ -417,6 +448,8 @@ icustays %>%
        y = "Count")
 ```
 
+It appears the age distribution for the the `ICUSTAYS.csv` dataset is similar to the age distribution for the `ADMISSION.csv` dataset. Perhaps many of the hospital admits eventually lead to an ICU stay, resulting in a relatively similar patient population in both datasets.
+
 -----
 
 ## Q4 
@@ -426,13 +459,6 @@ icustays %>%
 `D_ITEMS.csv` (<https://mimic.physionet.org/mimictables/d_items/>) is the dictionary for the `ITEMID` in `CHARTEVENTS.csv`. Find potential values of `ITEMID` that correspond to systolic blood pressure, i.e., `LABEL` contains the string `systolic`. 
 
 Compile a tibble that contains the first ICU stay of unique patients, with the patient's demographic information, the first systolic blood pressure measurement during ICU stay, and whether the patient died within 30 days of hospital admission.
-
-```{bash}
-head /home/203bdata/mimic-iii/CHARTEVENTS.csv
-echo
-head /home/203bdata/mimic-iii/D_ITEMS.csv
-```
-
 
 ```{r}
 chartevents <- read_csv("/home/203bdata/mimic-iii/CHARTEVENTS.csv") %>% 
