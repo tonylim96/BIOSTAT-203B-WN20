@@ -245,6 +245,21 @@ ncov_tbl %>%
   right_join(chn_prov, by = c("Province/State" = "NAME_ENG")) # join map and virus data
 ```
 
+Finding the unique Country/Region variables
+```{r}
+ncov_tbl %>%
+  distinct(`Country/Region`) %>%
+  print(width = Inf)
+```
+
+```{r}
+ncov_tbl %>%
+  filter(`Country/Region` %in% c("US")) %>%
+  distinct(`Province/State`) %>%
+  print(width = Inf)
+```
+
+
 Plot confirmed cases on a specific date:
 ```{r}
 library(wesanderson)
