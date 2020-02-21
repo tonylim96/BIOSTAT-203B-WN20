@@ -1,7 +1,6 @@
 ---
-title: "BIOSTAT 203B Homework 3"
-author: Tony Lim
-subtitle: Due Friday, 2/28 @ 11:59 PM
+title: "Biostat 203B Homework 3"
+subtitle: Due ~~Feb 21~~ Feb 28 @ 11:59PM
 output:
   # ioslides_presentation: default
   html_document:
@@ -10,7 +9,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+knitr::opts_chunk$set(echo = TRUE, cache = FALSE)
 ```
 
 ## Task
@@ -21,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
 
 3. Publish your Shiny app to <https://www.shinyapps.io> and share the link.
 
-4. (Optional) Submit your app to the 2020 Shiny Contest (deadline 20 March 2020 at 5pm ET). 
+4. (Optinal) Submit your app to the 2020 Shiny Contest (deadline 20 March 2020 at 5pm ET). 
 
 Below is some data exploration, which may help you get started. You do _not_ have to use it. Note below code may change frequently.
 
@@ -35,7 +34,7 @@ Below is some data exploration, which may help you get started. You do _not_ hav
 ```{r include=FALSE}
 library(tidyverse)
 library(lubridate)
-library(sf)
+library(fs)
 ```
 
 ## Import JHU SSE data on GitHub into R
