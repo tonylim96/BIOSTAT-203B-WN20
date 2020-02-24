@@ -47,16 +47,12 @@ ncov_tbl <- confirmed_long %>%
 ui <- fluidPage(
 
     # Application title
-    titlePanel("Old Faithful Geyser Data"),
+    titlePanel("Coronavirus Disease 2019 (COVID-19) Data"),
 
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
+            dateRangeInput(date, "date")
         ),
 
         # Show a plot of the generated distribution

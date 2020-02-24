@@ -10,7 +10,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = FALSE)
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
 ```
 
 ## Task
@@ -84,8 +84,15 @@ ncov_tbl <- confirmed_long %>%
   pivot_longer(confirmed:death, 
                names_to = "Case", 
                values_to = "Count")
+
 ncov_tbl %>% print(width = Inf)
 ```
+
+```{r}
+# Earliest case
+ncov_tbl %>% arrange(Date) %>% print(width = Inf)
+```
+
 
 ## Other data sources
 
@@ -257,6 +264,25 @@ ncov_tbl %>%
   filter(`Country/Region` %in% c("US")) %>%
   distinct(`Province/State`) %>%
   print(width = Inf)
+
+state <- ncov_tbl %>%
+  filter(`Country/Region` %in% c("US")) %>%
+  mutate(State = `Province/State`) %>%
+  print
+
+state$State[state$State == "Seattle, WA"] <- "WA"
+state
+```
+
+```{r}
+install.packages("usmap")
+library(usmap)
+library(ggplot2)
+
+plot_usmap(regions = "counties") + 
+  labs(title = "US Counties",
+       subtitle = "This is a blank map of the counties of the United States.") + 
+  theme(panel.background = element_rect(color = "black", fill = "lightblue"))
 ```
 
 
