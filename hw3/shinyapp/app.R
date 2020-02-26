@@ -278,11 +278,12 @@ server <- function(input, output) {
         getSymbols("^HSI", # S&P 500 (^GSPC), Dow Jones (^DJI), NASDAQ (^IXIC), Russell 2000 (^RUT), FTSE 100 (^FTSE), Nikkei 225 (^N225), HANG SENG INDEX (^HSI)
                    src = "yahoo", 
                    auto.assign = FALSE, 
-                   from = min(ncov_tbl$Date),
+                   from = input$date_id[1],
                    to = input$date_id[2]) %>% 
             as_tibble(rownames = "Date") %>%
             mutate(Date = date(Date)) %>%
             ggplot() + 
+            labs(title = paste(input$stock_id, "from", input$date_id[1], "to", input$date_id[2])) +
             geom_line(mapping = aes(x = Date, y = HSI.Adjusted)) +
             theme_bw()
     })
