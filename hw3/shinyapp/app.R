@@ -12,6 +12,10 @@ library(tidyverse)
 library(lubridate)
 library(fs)
 library(sf)
+library(quantmod)
+
+'%ni%' <- Negate('%in%')
+c(1,3,11) %ni% 1:10
 
 (confirmed <- read_csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"))
 
@@ -137,7 +141,8 @@ plotdate <- "2020-02-14"
 case <- "confirmed"
 
 ncov_tbl %>%
-    filter(`Country/Region` %in% c("Mainland China", "Macau", "Hong Kong", "Taiwan")) %>%
+    filter(`Country/Region` %in% c("Mainland China", "Macau", 
+                                   "Hong Kong", "Taiwan")) %>%
     filter(Date == plotdate, Case == case) %>%
     group_by(`Province/State`) %>%  
     top_n(1, Date) %>%
@@ -147,7 +152,8 @@ plotdate <- "2020-02-14"
 case <- "confirmed"
 
 ncov_tbl %>%
-    filter(`Country/Region` %in% c("Mainland China", "Macau", "Hong Kong", "Taiwan")) %>%
+    filter(`Country/Region` %in% c("Mainland China", "Macau", 
+                                   "Hong Kong", "Taiwan")) %>%
     filter(Date == plotdate, Case == case) %>%
     group_by(`Province/State`) %>%  
     top_n(1, Date) %>% # take the latest count on that date
@@ -173,9 +179,15 @@ ui <- fluidPage(
         sidebarPanel(
             dateRangeInput("date", "Date range:", 
                            start = "2020-01-21", 
+                           end = Sys.Date() - 1,
                            min = "2020-01-21"), 
+            
             checkboxGroupInput(inputId = "country", 
                                label = "Countries:", 
+                               choices = c("China", "United States", "Other")),
+            
+            checkboxGroupInput(inputId = "stock", 
+                               label = "Stock:", 
                                choices = c("China", "United States", "Other"))
         ),
         
@@ -196,7 +208,6 @@ ui <- fluidPage(
     )
 )
 
-# Need to have different bar plots/maps depend on which country/region is selected
 server <- function(input, output) {
     
     output$bargraph <- renderPlot({
@@ -207,18 +218,60 @@ server <- function(input, output) {
                        `Date` == input$date) %>%
                 group_by(`Province/State`) %>%
                 ggplot() +
-                geom_col(mapping = aes(x = `Province/State`, y = `Count`, fill = `Case`)) + 
+                geom_col(mapping = aes(
+                    x = `Province/State`, 
+                    y = `Count`, 
+                    fill = `Case`)) + 
                 scale_y_log10() +
-                labs(title = paste("COVID-19 data up to", 
-                                   format(input$date, format = "%A, %B %d, %Y" ))) + 
+                labs(title = paste("COVID-19 data for", 
+                                   input$country, 
+                                   "up to", 
+                                   format(input$date, 
+                                          format = "%A, %B %d, %Y"))) + 
                 theme(axis.text.x = element_text(angle = 90))
-            }
+            } else if (input$country == "United States") {
+                ncov_tbl %>%
+                    filter(`Country/Region` %in% c("US"), 
+                           `Date` == input$date) %>%
+                group_by(`Province/State`) %>%
+                ggplot() +
+                geom_col(mapping = aes(
+                    x = `Province/State`, 
+                    y = `Count`, 
+                    fill = `Case`)) + 
+                # scale_y_log10() +
+                labs(title = paste("COVID-19 data for", 
+                                   input$country, 
+                                   "up to", 
+                                   format(input$date, 
+                                          format = "%A, %B %d, %Y"))) + 
+                theme(axis.text.x = element_text(angle = 45))
+            } else if (input$country == "Other") {
+                ncov_tbl %>%
+                    filter(`Country/Region` %ni% c("Mainland China", "Macau", 
+                                                   "Hong Kong", "Taiwan", "US"), 
+                           `Date` == input$date) %>%
+                    group_by(`Country/Region`) %>%
+                    arrange(desc(`Count`)) %>%
+                    ggplot() +
+                    geom_col(mapping = aes(
+                        x = `Country/Region`, 
+                        y = `Count`, 
+                        fill = `Case`)) + 
+                    # scale_y_log10() +
+                    labs(title = paste("COVID-19 data for", 
+                                       input$country, 
+                                       "up to", 
+                                       format(input$date, 
+                                              format = "%A, %B %d, %Y"))) + 
+                    theme(axis.text.x = element_text(angle = 45))
+                }
         })
     
     output$map <- renderPlot({
         
     })
-}
+    }
 
 
 # Run the application 

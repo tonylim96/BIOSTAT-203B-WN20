@@ -274,6 +274,44 @@ state$State[state$State == "Seattle, WA"] <- "WA"
 state
 ```
 
+
+```{r}
+ncov_tbl %>%
+                filter(`Country/Region` %in% c("US"), 
+                       `Date` == date) %>%
+                group_by(`Province/State`) %>%
+                ggplot() +
+                geom_col(mapping = aes(x = `Province/State`, y = `Count`, fill = `Case`)) + 
+                # scale_y_log10() +
+                labs(title = paste("COVID-19 data up to", 
+                                   format(date, format = "%A, %B %d, %Y" ))) + 
+                theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+ncov_tbl %>%
+  filter(`Country/Region` %ni% c("Mainland China", "Macau", 
+                                 "Hong Kong", "Taiwan", "US"), 
+         `Date` == date) %>%
+  group_by(`Country/Region`) %>%
+  arrange(desc(`Count`)) %>%
+  filter(rank(desc(`Count`)) < 6) %>%
+  print(width = Inf)
+  
+  ggplot() +
+  geom_col(mapping = aes(
+      x = `Province/State`, 
+      y = `Count`, 
+      fill = `Case`)) + 
+  # scale_y_log10() +
+  labs(title = paste("COVID-19 data for",
+                     "up to", 
+                     format(date, 
+                            format = "%A, %B %d, %Y"))) + 
+  theme(axis.text.x = element_text(angle = 45))
+```
+
+
 ```{r}
 install.packages("usmap")
 library(usmap)
