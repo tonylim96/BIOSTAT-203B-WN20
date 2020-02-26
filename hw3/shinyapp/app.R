@@ -171,7 +171,9 @@ ui <- fluidPage(
     sidebarLayout(
         
         sidebarPanel(
-            dateRangeInput("date", "Date range:", start = "2019-12-31"), 
+            dateRangeInput("date", "Date range:", 
+                           start = "2020-01-21", 
+                           min = "2020-01-21"), 
             checkboxGroupInput(inputId = "country", 
                                label = "Countries:", 
                                choices = c("China", "United States", "Other"))
@@ -205,7 +207,8 @@ server <- function(input, output) {
             ggplot() +
             geom_col(mapping = aes(x = `Province/State`, y = `Count`, fill = `Case`)) + 
             scale_y_log10() +
-            labs(title = paste("COVID-19 data up to", output$date)) + 
+            labs(title = paste("COVID-19 data up to", 
+                               format(input$date, format = "%A, %B %d, %Y" ))) + 
             theme(axis.text.x = element_text(angle = 90))
     })
     
