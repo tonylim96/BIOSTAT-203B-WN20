@@ -177,18 +177,19 @@ ui <- fluidPage(
     sidebarLayout(
         
         sidebarPanel(
-            dateRangeInput("date", "Date range:", 
-                           start = "2020-01-21", 
+            dateRangeInput(inputId = "date_id", 
+                           label = "Date range:", 
+                           start = min(ncov_tbl$Date), 
                            end = Sys.Date() - 1,
-                           min = "2020-01-21"), 
+                           min = min(ncov_tbl$Date)), 
             
-            checkboxGroupInput(inputId = "country", 
+            checkboxGroupInput(inputId = "country_id", 
                                label = "Countries:", 
                                choices = c("China", "United States", "Other")),
             
-            checkboxGroupInput(inputId = "stock", 
+            checkboxGroupInput(inputId = "stock_id", 
                                label = "Stock:", 
-                               choices = c("China", "United States", "Other"))
+                               choices = c("SHCOMP", "HSI", "S&P 500"))
         ),
         
         # sidebarLayout(
@@ -203,7 +204,8 @@ ui <- fluidPage(
         # Show a plot of the generated distribution
         mainPanel(
             plotOutput("bargraph"), 
-            plotOutput("map")
+            plotOutput("map"),
+            plotOutput("stock")
         )
     )
 )
@@ -211,11 +213,11 @@ ui <- fluidPage(
 server <- function(input, output) {
     
     output$bargraph <- renderPlot({
-        if (input$country == "China") {
+        if (input$country_id == "China") {
             ncov_tbl %>%
                 filter(`Country/Region` %in% c("Mainland China", "Macau", 
                                                "Hong Kong", "Taiwan"), 
-                       `Date` == input$date) %>%
+                       `Date` == input$date_id[2]) %>%
                 group_by(`Province/State`) %>%
                 ggplot() +
                 geom_col(mapping = aes(
@@ -224,15 +226,15 @@ server <- function(input, output) {
                     fill = `Case`)) + 
                 scale_y_log10() +
                 labs(title = paste("COVID-19 data for", 
-                                   input$country, 
+                                   input$country_id, 
                                    "up to", 
-                                   format(input$date, 
+                                   format(input$date_id[2], 
                                           format = "%A, %B %d, %Y"))) + 
                 theme(axis.text.x = element_text(angle = 90))
-            } else if (input$country == "United States") {
+            } else if (input$country_id == "United States") {
                 ncov_tbl %>%
                     filter(`Country/Region` %in% c("US"), 
-                           `Date` == input$date) %>%
+                           `Date` == input$date_id[2]) %>%
                 group_by(`Province/State`) %>%
                 ggplot() +
                 geom_col(mapping = aes(
@@ -241,16 +243,16 @@ server <- function(input, output) {
                     fill = `Case`)) + 
                 # scale_y_log10() +
                 labs(title = paste("COVID-19 data for", 
-                                   input$country, 
+                                   input$country_id, 
                                    "up to", 
-                                   format(input$date, 
+                                   format(input$date_id[2], 
                                           format = "%A, %B %d, %Y"))) + 
                 theme(axis.text.x = element_text(angle = 45))
-            } else if (input$country == "Other") {
+            } else if (input$country_id == "Other") {
                 ncov_tbl %>%
                     filter(`Country/Region` %ni% c("Mainland China", "Macau", 
                                                    "Hong Kong", "Taiwan", "US"), 
-                           `Date` == input$date) %>%
+                           `Date` == input$date_id[2]) %>%
                     group_by(`Country/Region`) %>%
                     arrange(desc(`Count`)) %>%
                     ggplot() +
@@ -260,9 +262,9 @@ server <- function(input, output) {
                         fill = `Case`)) + 
                     # scale_y_log10() +
                     labs(title = paste("COVID-19 data for", 
-                                       input$country, 
+                                       input$country_id, 
                                        "up to", 
-                                       format(input$date, 
+                                       format(input$date_id[2], 
                                               format = "%A, %B %d, %Y"))) + 
                     theme(axis.text.x = element_text(angle = 45))
                 }
@@ -271,7 +273,20 @@ server <- function(input, output) {
     output$map <- renderPlot({
         
     })
-    }
+    
+    output$stock <- renderPlot({
+        getSymbols("^HSI", # S&P 500 (^GSPC), Dow Jones (^DJI), NASDAQ (^IXIC), Russell 2000 (^RUT), FTSE 100 (^FTSE), Nikkei 225 (^N225), HANG SENG INDEX (^HSI)
+                   src = "yahoo", 
+                   auto.assign = FALSE, 
+                   from = min(ncov_tbl$Date),
+                   to = input$date_id[2]) %>% 
+            as_tibble(rownames = "Date") %>%
+            mutate(Date = date(Date)) %>%
+            ggplot() + 
+            geom_line(mapping = aes(x = Date, y = HSI.Adjusted)) +
+            theme_bw()
+    })
+}
 
 
 # Run the application 

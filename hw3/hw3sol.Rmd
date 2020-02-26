@@ -447,6 +447,9 @@ stock <- getSymbols("^HSI", # S&P 500 (^GSPC), Dow Jones (^DJI), NASDAQ (^IXIC),
   geom_line(mapping = aes(x = Date, y = HSI.Adjusted)) +
   theme_bw()
 stock
+
+min(ncov_tbl$Date)
+
 # chartSeries(stock, theme = chartTheme("white"),
 #            type = "line", log.scale = FALSE, TA = NULL)
 ```
