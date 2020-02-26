@@ -171,10 +171,10 @@ ui <- fluidPage(
     sidebarLayout(
         
         sidebarPanel(
-            dateRangeInput(date, "Date range:", start = "2019-12-31"), 
+            dateRangeInput("date", "Date range:", start = "2019-12-31"), 
             checkboxGroupInput(inputId = "country", 
                                label = "Countries:", 
-                               choices = c("China", "United States"))
+                               choices = c("China", "United States", "Other"))
         ),
         
         # sidebarLayout(
@@ -188,7 +188,8 @@ ui <- fluidPage(
 
         # Show a plot of the generated distribution
         mainPanel(
-           plotOutput("map")
+            plotOutput("bargraph"), 
+            plotOutput("map")
         )
     )
 )
@@ -196,17 +197,20 @@ ui <- fluidPage(
 # Need to have different bar plots/maps depend on which country/region is selected
 server <- function(input, output) {
 
-    
-    output$map <- renderPlot({
+    output$bargraph <- renderPlot({
         ncov_tbl %>%
             filter(`Country/Region` %in% c("Mainland China", "Macau", "Hong Kong", "Taiwan"), 
-                   `Date` == date) %>%
+                   `Date` == input$date) %>%
             group_by(`Province/State`) %>%
             ggplot() +
             geom_col(mapping = aes(x = `Province/State`, y = `Count`, fill = `Case`)) + 
             scale_y_log10() +
-            labs(title = c("COVID-19 data up to ", input$date)) + 
+            labs(title = paste("COVID-19 data up to", output$date)) + 
             theme(axis.text.x = element_text(angle = 90))
+    })
+    
+    output$map <- renderPlot({
+        
     })
 }
 
