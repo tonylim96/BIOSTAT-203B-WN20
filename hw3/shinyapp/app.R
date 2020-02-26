@@ -135,6 +135,7 @@ chn_prov <- chn_map %>%
 
 plotdate <- "2020-02-14"
 case <- "confirmed"
+
 ncov_tbl %>%
     filter(`Country/Region` %in% c("Mainland China", "Macau", "Hong Kong", "Taiwan")) %>%
     filter(Date == plotdate, Case == case) %>%
@@ -170,7 +171,10 @@ ui <- fluidPage(
     sidebarLayout(
         
         sidebarPanel(
-            dateRangeInput(date, "Date range:", start = "2019-12-31")
+            dateRangeInput(date, "Date range:", start = "2019-12-31"), 
+            checkboxGroupInput(inputId = "country", 
+                               label = "Countries:", 
+                               choices = c("China", "United States"))
         ),
         
         # sidebarLayout(

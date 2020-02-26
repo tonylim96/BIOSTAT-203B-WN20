@@ -359,37 +359,37 @@ ncov_tbl %>%
 ```
 
 Plot the date at all time points (this takes long, a couple minutes):
-```{r, eval = !file.exists("confirmed_anim.gif") | (file_info("confirmed_anim.gif") %>% pull(modification_time) %>% date() < today())}
-library(gganimate)
-library(transformr)
-
-case = "confirmed"
-
-(p <- ncov_tbl %>%  
-  filter(`Country/Region` %in% c("Mainland China", "Macau", "Hong Kong", "Taiwan")) %>%
-  filter(Case == case) %>%
-  right_join(chn_prov, by = c("Province/State" = "NAME_ENG")) %>%
-  ggplot() + 
-  geom_sf(mapping = aes(fill = Count, geometry = geometry)) + 
-  # scale_fill_gradient(low = "white",
-  #                     high = "red",
-  #                     trans = "log10",
-  #                     limits = c(1, 100000),
-  #                     breaks = c(1, 10, 100, 1000, 10000),
-  #                     name = "") +
-  scale_fill_gradientn(colours = wes_palette("Zissou1", 100, type = "continuous"),
-                       trans = "log10") + 
-  theme_bw() +
-  labs(title = str_c(case, " cases")))
-```
+# ```{r, eval = !file.exists("confirmed_anim.gif") | (file_info("confirmed_anim.gif") %>% pull(modification_time) %>% date() < today())}
+# library(gganimate)
+# library(transformr)
+# 
+# case = "confirmed"
+# 
+# (p <- ncov_tbl %>%  
+#   filter(`Country/Region` %in% c("Mainland China", "Macau", "Hong Kong", "Taiwan")) %>%
+#   filter(Case == case) %>%
+#   right_join(chn_prov, by = c("Province/State" = "NAME_ENG")) %>%
+#   ggplot() + 
+#   geom_sf(mapping = aes(fill = Count, geometry = geometry)) + 
+#   # scale_fill_gradient(low = "white",
+#   #                     high = "red",
+#   #                     trans = "log10",
+#   #                     limits = c(1, 100000),
+#   #                     breaks = c(1, 10, 100, 1000, 10000),
+#   #                     name = "") +
+#   scale_fill_gradientn(colours = wes_palette("Zissou1", 100, type = "continuous"),
+#                        trans = "log10") + 
+#   theme_bw() +
+#   labs(title = str_c(case, " cases")))
+# ```
 Make animation and save as gif (this takes long, a couple minutes)
-```{r, eval = !file_exists("confirmed_anim.gif") | (file_info("confirmed_anim.gif") %>% pull(modification_time) %>% date() < today())}
-(anim <- p + 
-  transition_time(Date) + 
-  labs(title = "Confirmed Cases", subtitle = "Date: {frame_time}"))
-animate(anim, renderer = gifski_renderer())
-anim_save("confirmed_anim.gif")
-```
+# ```{r, eval = !file_exists("confirmed_anim.gif") | (file_info("confirmed_anim.gif") %>% pull(modification_time) %>% date() < today())}
+# (anim <- p + 
+#   transition_time(Date) + 
+#   labs(title = "Confirmed Cases", subtitle = "Date: {frame_time}"))
+# animate(anim, renderer = gifski_renderer())
+# anim_save("confirmed_anim.gif")
+# ```
 <p align="center">
   <img src="./confirmed_anim.gif">
 </p>
