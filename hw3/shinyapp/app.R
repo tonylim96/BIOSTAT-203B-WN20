@@ -177,6 +177,8 @@ ui <- fluidPage(
     sidebarLayout(
         
         sidebarPanel(
+            style = "position:fixed;width:inherit;",
+            
             dateRangeInput(inputId = "date_id", 
                            label = "Date range:", 
                            start = min(ncov_tbl$Date), 
@@ -187,10 +189,20 @@ ui <- fluidPage(
                                label = "Countries:", 
                                choices = c("China", "United States", "Other")),
             
-            checkboxGroupInput(inputId = "stock_id", 
-                               label = "Stock:", 
-                               choices = c("SHCOMP", "HSI", "S&P 500"))
-        ),
+            checkboxGroupInput(inputId = "index_id", 
+                               label = "Indices:", 
+                               choices = c("Dow Jones Industrial Average (^DJI)",
+                                           "FTSE 100 (^FTSE)",
+                                           "Hang Seng Index (^HSI)",
+                                           "KOSPI Composite Index (^KS11)",
+                                           "NASDAQ (^IXIC)",
+                                           "Nikkei 225 (^N225)",
+                                           "Russell 2000 (^RUT)",
+                                           "SSE Composite Index (^SSEC)",
+                                           "STI Index (^STI)",
+                                           "S&P 500 (^GSPC)",
+                                           "TSEC weighted index (^TWII)")),
+            ),
         
         # sidebarLayout(
         #     sliderInput("DatesMerge",
@@ -225,11 +237,16 @@ server <- function(input, output) {
                     y = `Count`, 
                     fill = `Case`)) + 
                 scale_y_log10() +
-                labs(title = paste("COVID-19 data for", 
+                labs(title = paste("COVID-19 data for ", 
                                    input$country_id, 
-                                   "up to", 
+                                   " (", 
+                                   format(input$date_id[1], 
+                                          format = "%b %d, %Y"),
+                                   " - ",
                                    format(input$date_id[2], 
-                                          format = "%A, %B %d, %Y"))) + 
+                                          format = "%b %d, %Y"),
+                                   ")",
+                                   sep = "")) + 
                 theme(axis.text.x = element_text(angle = 90))
             } else if (input$country_id == "United States") {
                 ncov_tbl %>%
@@ -242,11 +259,16 @@ server <- function(input, output) {
                     y = `Count`, 
                     fill = `Case`)) + 
                 # scale_y_log10() +
-                labs(title = paste("COVID-19 data for", 
+                labs(title = paste("COVID-19 data for ", 
                                    input$country_id, 
-                                   "up to", 
+                                   " (", 
+                                   format(input$date_id[1], 
+                                          format = "%b %d, %Y"),
+                                   " - ",
                                    format(input$date_id[2], 
-                                          format = "%A, %B %d, %Y"))) + 
+                                          format = "%b %d, %Y"),
+                                   ")",
+                                   sep = "")) + 
                 theme(axis.text.x = element_text(angle = 45))
             } else if (input$country_id == "Other") {
                 ncov_tbl %>%
@@ -261,11 +283,16 @@ server <- function(input, output) {
                         y = `Count`, 
                         fill = `Case`)) + 
                     # scale_y_log10() +
-                    labs(title = paste("COVID-19 data for", 
+                    labs(title = paste("COVID-19 data for ", 
                                        input$country_id, 
-                                       "up to", 
+                                       " (", 
+                                       format(input$date_id[1], 
+                                              format = "%b %d, %Y"),
+                                       " - ",
                                        format(input$date_id[2], 
-                                              format = "%A, %B %d, %Y"))) + 
+                                              format = "%b %d, %Y"),
+                                       ")",
+                                       sep = "")) + 
                     theme(axis.text.x = element_text(angle = 45))
                 }
         })
@@ -275,7 +302,7 @@ server <- function(input, output) {
     })
     
     output$stock <- renderPlot({
-        getSymbols("^HSI", # S&P 500 (^GSPC), Dow Jones (^DJI), NASDAQ (^IXIC), Russell 2000 (^RUT), FTSE 100 (^FTSE), Nikkei 225 (^N225), HANG SENG INDEX (^HSI)
+        getSymbols("^HSI",
                    src = "yahoo", 
                    auto.assign = FALSE, 
                    from = input$date_id[1],
@@ -283,7 +310,13 @@ server <- function(input, output) {
             as_tibble(rownames = "Date") %>%
             mutate(Date = date(Date)) %>%
             ggplot() + 
-            labs(title = paste(input$stock_id, "from", input$date_id[1], "to", input$date_id[2])) +
+            labs(title = paste(input$index_id, 
+                               "from", 
+                               format(input$date_id[1], 
+                                      format = "%b %d, %Y"), 
+                               "to", 
+                               format(input$date_id[2], 
+                                      format = "%b %d, %Y"))) +
             geom_line(mapping = aes(x = Date, y = HSI.Adjusted)) +
             theme_bw()
     })
