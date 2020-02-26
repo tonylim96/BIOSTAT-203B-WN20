@@ -198,19 +198,22 @@ ui <- fluidPage(
 
 # Need to have different bar plots/maps depend on which country/region is selected
 server <- function(input, output) {
-
+    
     output$bargraph <- renderPlot({
-        ncov_tbl %>%
-            filter(`Country/Region` %in% c("Mainland China", "Macau", "Hong Kong", "Taiwan"), 
-                   `Date` == input$date) %>%
-            group_by(`Province/State`) %>%
-            ggplot() +
-            geom_col(mapping = aes(x = `Province/State`, y = `Count`, fill = `Case`)) + 
-            scale_y_log10() +
-            labs(title = paste("COVID-19 data up to", 
-                               format(input$date, format = "%A, %B %d, %Y" ))) + 
-            theme(axis.text.x = element_text(angle = 90))
-    })
+        if (input$country == "China") {
+            ncov_tbl %>%
+                filter(`Country/Region` %in% c("Mainland China", "Macau", 
+                                               "Hong Kong", "Taiwan"), 
+                       `Date` == input$date) %>%
+                group_by(`Province/State`) %>%
+                ggplot() +
+                geom_col(mapping = aes(x = `Province/State`, y = `Count`, fill = `Case`)) + 
+                scale_y_log10() +
+                labs(title = paste("COVID-19 data up to", 
+                                   format(input$date, format = "%A, %B %d, %Y" ))) + 
+                theme(axis.text.x = element_text(angle = 90))
+            }
+        })
     
     output$map <- renderPlot({
         
