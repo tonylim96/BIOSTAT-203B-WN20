@@ -40,11 +40,11 @@ ncov_tbl <- confirmed_long %>%
                  names_to = "Case", 
                  values_to = "Count")
 
-# chn_map <- st_read("./bou2_4p.shp", as_tibble = TRUE) %>%
-#     mutate(NAME = iconv(NAME, from = "GBK"),
-#            BOU2_4M_ = as.integer(BOU2_4M_),
-#            BOU2_4M_ID = as.integer(BOU2_4M_ID)) %>%
-#     mutate(NAME = str_replace_na(NAME, replacement = "澳门特别行政区"))
+chn_map <- st_read("./bou2_4p.shp", as_tibble = TRUE) %>%
+    mutate(NAME = iconv(NAME, from = "GBK"),
+           BOU2_4M_ = as.integer(BOU2_4M_),
+           BOU2_4M_ID = as.integer(BOU2_4M_ID)) %>%
+    mutate(NAME = str_replace_na(NAME, replacement = "澳门特别行政区"))
 
 translate <- function(x) {
     sapply(x, function(chn_name) {
@@ -140,22 +140,7 @@ ncov_tbl %>%
     top_n(1, Date) %>%
     right_join(chn_prov, by = c("Province/State" = "NAME_ENG")) # join map and virus data
 
-plotdate <- "2020-02-14"
 case <- "confirmed"
-
-ncov_tbl %>%
-    filter(`Country/Region` %in% c("Mainland China", "Macau", 
-                                   "Hong Kong", "Taiwan")) %>%
-    filter(Date == plotdate, Case == case) %>%
-    group_by(`Province/State`) %>%  
-    top_n(1, Date) %>% # take the latest count on that date
-    right_join(chn_prov, by = c("Province/State" = "NAME_ENG")) %>%
-    ggplot() +
-    geom_sf(mapping = aes(fill = Count, geometry = geometry)) +
-    scale_fill_gradientn(colors = wes_palette("Zissou1", 100, type = "continuous"),
-                         trans = "log10") + 
-    theme_bw() +
-    labs(title = str_c(case, " cases"), subtitle = plotdate)
 
 ###### User interface #####
 ui <- fluidPage(
@@ -173,13 +158,14 @@ ui <- fluidPage(
                            end = Sys.Date() - 1,
                            min = min(ncov_tbl$Date)), 
             
-            checkboxGroupInput(inputId = "country_id", 
+            radioButtons(inputId = "country_id", 
                                label = "Countries:", 
                                choices = c("China", "United States", "Other")),
             
-            checkboxGroupInput(inputId = "index_id", 
+            selectInput(inputId = "index_id", 
                                label = "Indices:", 
-                               choices = c("Dow Jones Industrial Average (^DJI)",
+                               choices = c("Dow Jones Industrial Average 
+                                           (^DJI)",
                                            "FTSE 100 (^FTSE)",
                                            "Hang Seng Index (^HSI)",
                                            "KOSPI Composite Index (^KS11)",
@@ -190,6 +176,8 @@ ui <- fluidPage(
                                            "STI Index (^STI)",
                                            "S&P 500 (^GSPC)",
                                            "TSEC Weighted Index (^TWII)")),
+            
+            
             ),
 
         mainPanel(
@@ -284,18 +272,36 @@ server <- function(input, output) {
     
     output$map <- renderPlot({
         if (input$country_id == "China") {
+            ncov_tbl %>%
+                filter(`Country/Region` %in% c("Mainland China", "Macau", 
+                                               "Hong Kong", "Taiwan")) %>%
+                filter(Date == input$date_id[2], Case == case) %>%
+                group_by(`Province/State`) %>%  
+                top_n(1, Date) %>%
+                right_join(chn_prov, by = c("Province/State" = "NAME_ENG")) %>%
+                ggplot() +
+                geom_sf(mapping = aes(fill = Count, geometry = geometry)) +
+                scale_fill_gradientn(colors = wes_palette("Zissou1", 100, type = "continuous"),
+                                     trans = "log10") + 
+                theme_bw() +
+                labs(title = str_c(case, " cases"), subtitle = input$date_id[2])
 
         } else if (input$country_id =="United States") {
             state <- ncov_tbl %>%
                 filter(`Country/Region` %in% c("US"), 
                        `Date` == input$date_id[2]) %>%
                 filter(`Case` == "confirmed") %>%
-                separate(col = "Province/State", into = c("City", "state"), sep = ", ") %>%
+                separate(col = "Province/State", 
+                         into = c("City", "state"), 
+                         sep = ", ") %>%
                 filter(`state` %in% state.abb) %>%
                 group_by(state) %>%
                 summarise(n = n_distinct(state), Count = sum(Count))
             
-                plot_usmap(regions = "states", data = state, values = "Count", color = "black") + 
+                plot_usmap(regions = "states", 
+                           data = state, 
+                           values = "Count", 
+                           color = "black") + 
                 scale_fill_continuous(name = "Count", label = scales::comma) + 
                 theme(legend.position = "right")
         }
