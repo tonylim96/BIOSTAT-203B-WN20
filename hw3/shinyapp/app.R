@@ -1,18 +1,10 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
+library(fs)
+library(lubridate)
+library(quantmod)
+library(sf)
 library(shiny)
 library(tidyverse)
-library(lubridate)
-library(fs)
-library(sf)
-library(quantmod)
+library(usmap)
 
 '%ni%' <- Negate('%in%')
 c(1,3,11) %ni% 1:10
@@ -165,15 +157,11 @@ ncov_tbl %>%
     theme_bw() +
     labs(title = str_c(case, " cases"), subtitle = plotdate)
 
-
-
-# Define UI for application that draws a histogram
+###### User interface #####
 ui <- fluidPage(
 
-    # Application title
     titlePanel("Coronavirus Disease 2019 (COVID-19) Data"),
 
-    # Sidebar with a slider input for number of bins 
     sidebarLayout(
         
         sidebarPanel(
@@ -203,17 +191,7 @@ ui <- fluidPage(
                                            "S&P 500 (^GSPC)",
                                            "TSEC Weighted Index (^TWII)")),
             ),
-        
-        # sidebarLayout(
-        #     sliderInput("DatesMerge",
-        #                 "Dates:",
-        #                 min = as.Date("2019-12-31","%Y-%m-%d"),
-        #                 max = Sys.Date(),
-        #                 value = as.Date("2016-12-31"),
-        #                 timeFormat="%Y-%m-%d"
-        #     ),
 
-        # Show a plot of the generated distribution
         mainPanel(
             plotOutput("bargraph"), 
             plotOutput("map"),
@@ -222,6 +200,7 @@ ui <- fluidPage(
     )
 )
 
+##### Server #####
 server <- function(input, output) {
     
     output$bargraph <- renderPlot({
@@ -304,7 +283,21 @@ server <- function(input, output) {
         })
     
     output$map <- renderPlot({
-        
+        if (input$country_id == "China") {
+
+        } else if (input$country_id =="United States") {
+            state <- ncov_tbl %>%
+                filter(`Country/Region` %in% c("US"), 
+                       `Date` == input$date_id[2]) %>%
+                filter(`Case` == "confirmed") %>%
+                separate(col = "Province/State", into = c("City", "state"), sep = ", ") %>%
+                filter(`state` %in% state.abb) %>%
+                group_by("state")
+            
+                plot_usmap(regions = "states", data = state, values = "Count", color = "black") + 
+                scale_fill_continuous(name = "Count", label = scales::comma) + 
+                theme(legend.position = "right")
+        }
     })
     
     output$stock <- renderPlot({
@@ -328,6 +321,5 @@ server <- function(input, output) {
     })
 }
 
-
-# Run the application 
+##### Run #####
 shinyApp(ui = ui, server = server)
