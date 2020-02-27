@@ -292,7 +292,8 @@ server <- function(input, output) {
                 filter(`Case` == "confirmed") %>%
                 separate(col = "Province/State", into = c("City", "state"), sep = ", ") %>%
                 filter(`state` %in% state.abb) %>%
-                group_by("state")
+                group_by(state) %>%
+                summarise(n = n_distinct(state), Count = sum(Count))
             
                 plot_usmap(regions = "states", data = state, values = "Count", color = "black") + 
                 scale_fill_continuous(name = "Count", label = scales::comma) + 

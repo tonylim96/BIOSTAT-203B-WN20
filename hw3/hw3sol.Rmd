@@ -275,13 +275,14 @@ state <- ncov_tbl %>%
 
 ```{r}
 
-state <- ncov_tbl %>%
+ncov_tbl %>%
     filter(`Country/Region` %in% c("US"), 
            `Date` == plotdate) %>%
     filter(`Case` == "confirmed") %>%
     separate(col = "Province/State", into = c("City", "state"), sep = ", ") %>%
   filter(`state` %in% state.abb) %>%
-  group_by("state") %>%
+  group_by(state) %>%
+  summarise(n = n_distinct(state), sum = sum(Count)) %>%
   print(width = Inf)
 
   plot_usmap(regions = "states", data = state, values = "Count", color = "black") + 
