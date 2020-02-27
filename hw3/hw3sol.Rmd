@@ -267,11 +267,9 @@ ncov_tbl %>%
 
 state <- ncov_tbl %>%
   filter(`Country/Region` %in% c("US")) %>%
-  mutate(State = `Province/State`) %>%
+  separate(col = "Province/State", into = c("City", "State"), sep = ", ") %>%
   print
 
-state$State[state$State == "Seattle, WA"] <- "WA"
-state
 ```
 
 

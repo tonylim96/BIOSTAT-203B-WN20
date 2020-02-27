@@ -252,49 +252,55 @@ server <- function(input, output) {
                 ncov_tbl %>%
                     filter(`Country/Region` %in% c("US"), 
                            `Date` == input$date_id[2]) %>%
-                group_by(`Province/State`) %>%
-                ggplot() +
-                geom_col(mapping = aes(
-                    x = `Province/State`, 
-                    y = `Count`, 
-                    fill = `Case`)) + 
-                # scale_y_log10() +
-                labs(title = paste("COVID-19 data for ", 
-                                   input$country_id, 
-                                   " (", 
-                                   format(min(ncov_tbl$Date), 
-                                          format = "%b %d, %Y"),
-                                   " - ",
-                                   format(input$date_id[2], 
-                                          format = "%b %d, %Y"),
-                                   ")",
-                                   sep = "")) + 
-                theme(axis.text.x = element_text(angle = 45))
-            } else if (input$country_id == "Other") {
-                ncov_tbl %>%
-                    filter(`Country/Region` %ni% c("Mainland China", "Macau", 
-                                                   "Hong Kong", "Taiwan", "US"), 
-                           `Date` == input$date_id[2]) %>%
-                    group_by(`Country/Region`) %>%
-                    arrange(desc(`Count`)) %>%
+                    separate(col = "Province/State", 
+                             into = c("City", "State"), 
+                             sep = ", ") %>%
+                    group_by(`State`) %>%
                     ggplot() +
                     geom_col(mapping = aes(
-                        x = `Country/Region`, 
+                        x = `State`, 
                         y = `Count`, 
                         fill = `Case`)) + 
                     # scale_y_log10() +
                     labs(title = paste("COVID-19 data for ", 
-                                       input$country_id, 
-                                       " (", 
+                                       input$country_id,
+                                       " (",
                                        format(min(ncov_tbl$Date), 
-                                              format = "%b %d, %Y"),
+                                          format = "%b %d, %Y"),
                                        " - ",
-                                       format(input$date_id[2], 
+                                       format(input$date_id[2],
                                               format = "%b %d, %Y"),
                                        ")",
-                                       sep = "")) + 
-                    theme(axis.text.x = element_text(angle = 45))
-                }
+                                       sep = "")) +
+                    theme(axis.text.x = element_text(angle = 90))
+                } else if (input$country_id == "Other") {
+                    ncov_tbl %>%
+                        filter(`Country/Region` %ni% c("Mainland China", 
+                                                       "Macau",
+                                                       "Hong Kong", 
+                                                       "Taiwan", 
+                                                       "US"), 
+                               `Date` == input$date_id[2]) %>%
+                        group_by(`Country/Region`) %>%
+                        arrange(desc(`Count`)) %>%
+                        ggplot() +
+                        geom_col(mapping = aes(
+                            x = `Country/Region`, 
+                            y = `Count`, 
+                            fill = `Case`)) + 
+                        # scale_y_log10() +
+                        labs(title = paste("COVID-19 data for ",
+                                           input$country_id,
+                                           " (", 
+                                           format(min(ncov_tbl$Date), 
+                                                  format = "%b %d, %Y"),
+                                           " - ",
+                                           format(input$date_id[2],
+                                                  format = "%b %d, %Y"),
+                                           ")",
+                                           sep = "")) + 
+                        theme(axis.text.x = element_text(angle = 45))
+                    }
         })
     
     output$map <- renderPlot({
