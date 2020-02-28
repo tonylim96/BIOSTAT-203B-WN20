@@ -308,7 +308,11 @@ server <- function(input, output) {
     })
     
     output$stock <- renderPlot({
-        getSymbols("^HSI",
+        a <- regmatches(input$index_id, gregexpr("(?<=\\().*?(?=\\))", input$index_id, perl = T))[[1]]
+        
+        b <- paste(str_remove(a, "[^[:punct:]]"), ".Adjusted", sep = "")
+        
+        getSymbols(a,
                    src = "yahoo", 
                    auto.assign = FALSE, 
                    from = input$date_id[1],
@@ -316,15 +320,28 @@ server <- function(input, output) {
             as_tibble(rownames = "Date") %>%
             mutate(Date = date(Date)) %>%
             ggplot() + 
-            labs(title = paste(input$index_id, 
-                               "from", 
-                               format(input$date_id[1], 
-                                      format = "%b %d, %Y"), 
-                               "to", 
-                               format(input$date_id[2], 
-                                      format = "%b %d, %Y"))) +
-            geom_line(mapping = aes(x = Date, y = HSI.Adjusted)) +
+            labs(title = "hi",
+                 y = b) +
+            geom_line(mapping = aes(x = Date, y = eval(parse(text = b)))) +
             theme_bw()
+        
+        # getSymbols(regmatches(input$index_id, gregexpr("(?<=\\().*?(?=\\))", input$index_id, perl = T))[[1]],
+        #            src = "yahoo", 
+        #            auto.assign = FALSE, 
+        #            from = input$date_id[1],
+        #            to = input$date_id[2]) %>% 
+        #     as_tibble(rownames = "Date") %>%
+        #     mutate(Date = date(Date)) %>%
+        #     ggplot() + 
+        #     labs(title = paste(input$index_id, 
+        #                        "from", 
+        #                        format(input$date_id[1], 
+        #                               format = "%b %d, %Y"), 
+        #                        "to", 
+        #                        format(input$date_id[2], 
+        #                               format = "%b %d, %Y"))) +
+        #     geom_line(mapping = aes(x = Date, y = HSI.Adjusted)) +
+        #     theme_bw()
     })
 }
 

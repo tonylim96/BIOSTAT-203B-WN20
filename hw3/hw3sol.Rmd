@@ -473,3 +473,46 @@ min(ncov_tbl$Date)
 ## Mapping countries
 
 TODO
+
+
+```{r}
+xdate <- "2020-01-22"
+plotdate <- "2020-02-27"
+
+(x <- "(^DJI)")
+(y <- regmatches(x, gregexpr("(?<=\\().*?(?=\\))", x, perl = T))[[1]])
+
+(z <- paste(str_remove(y, "[^[:punct:]]"), ".Adjusted", sep = ""))
+
+eval(parse(z))
+# paste(regmatches(x, gregexpr("(?<=\\().*?(?=\\))", x, perl = T))[[1]], ".Adjusted", sep = "")
+
+getSymbols(regmatches(x, gregexpr("(?<=\\().*?(?=\\))", x, perl = T))[[1]],
+                   src = "yahoo", 
+                   auto.assign = FALSE, 
+                   from = xdate,
+                   to = plotdate) %>% 
+            as_tibble(rownames = "Date") %>%
+            mutate(Date = date(Date)) %>%
+            ggplot() + 
+            labs(title = "hi",
+                 y = z) +
+            geom_line(mapping = aes(x = Date, y = eval(parse(text = z)))) +
+            theme_bw()
+
+getSymbols("^DJI",
+                   src = "yahoo", 
+                   auto.assign = FALSE, 
+                   from = xdate,
+                   to = plotdate) %>% 
+            as_tibble(rownames = "Date") %>%
+            mutate(Date = date(Date)) %>%
+            ggplot() + 
+            labs(title = "hi",
+                 y = "poop") +
+            geom_line(mapping = aes(x = Date, y = DJI.Adjusted)) +
+  theme_bw()
+```
+
+
+
