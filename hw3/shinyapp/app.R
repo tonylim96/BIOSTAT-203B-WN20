@@ -204,18 +204,22 @@ server <- function(input, output) {
                     x = `Province/State`,
                     y = `Count`,
                     fill = `Case`)) +
-                    # Maybe remove dodge
-                    # , position = "dodge") +
+                # scale_fill_manual(values = c("#FFBF00", "#D2222D", "#238823")) +
+                scale_fill_manual("Case status", 
+                                  labels = c("Confirmed", "Death", "Recovered"),
+                                  values = c("#FAD50F", "#CB2313", "#273046")) +
+                # Maybe remove dodge
+                # , position = "dodge") +
                 scale_y_log10() +
                 labs(title = str_c("COVID-19 data for ",
                                    input$country_id,
                                    sep = ""),
                      subtitle = str_c(format(min(ncov_tbl$Date),
-                                          format = "%b %d, %Y"),
-                                   " - ",
-                                   format(input$date_id[2],
-                                          format = "%b %d, %Y"),
-                                   sep = ""),
+                                             format = "%b %d, %Y"),
+                                      " - ",
+                                      format(input$date_id[2],
+                                             format = "%b %d, %Y"),
+                                      sep = ""),
                      x = "Province") +
                 theme_light() +
                 theme(axis.text.x = element_text(angle = 90))
@@ -232,6 +236,9 @@ server <- function(input, output) {
                         x = `State`, 
                         y = `Count`, 
                         fill = `Case`)) + 
+                    scale_fill_manual("Case status", 
+                                      labels = c("Confirmed", "Death", "Recovered"),
+                                      values = c("#FAD50F", "#CB2313", "#273046")) +
                     # scale_y_log10() +
                     labs(title = str_c("COVID-19 data for ", 
                                        input$country_id,
@@ -260,6 +267,9 @@ server <- function(input, output) {
                             x = `Country/Region`, 
                             y = `Count`, 
                             fill = `Case`)) + 
+                        scale_fill_manual("Case status", 
+                                          labels = c("Confirmed", "Death", "Recovered"),
+                                          values = c("#FAD50F", "#CB2313", "#273046")) +
                         # scale_y_log10() +
                         labs(title = str_c("COVID-19 data for ", 
                                            input$country_id,
@@ -288,8 +298,8 @@ server <- function(input, output) {
                 right_join(chn_prov, by = c("Province/State" = "NAME_ENG")) %>%
                 ggplot() +
                 geom_sf(mapping = aes(fill = Count, geometry = geometry)) +
-                # scale_fill_gradientn(colors = wes_palette("Zissou1", 100, type = "continuous"),
-                #                      trans = "log10") +
+                scale_fill_gradientn(colors = wes_palette("Zissou1", 100, type = "continuous"),
+                                     trans = "log10") +
                 labs(title = str_c(input$case_id, 
                                    " cases in ", 
                                    input$country_id), 
