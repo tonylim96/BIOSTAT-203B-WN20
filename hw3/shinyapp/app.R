@@ -150,6 +150,10 @@ ui <- fluidPage(
                                label = "Countries:", 
                                choices = c("China", "United States", "Other")),
             
+            radioButtons(inputId = "case_id",
+                         label = "Case status:",
+                         choices = c("Confirmed", "Death", "Recovered")),
+            
             selectInput(inputId = "index_id", 
                                label = "Indices:", 
                                choices = c("Dow Jones Industrial Average (^DJI)",
@@ -262,8 +266,9 @@ server <- function(input, output) {
         if (input$country_id == "China") {
             ncov_tbl %>%
                 filter(`Country/Region` %in% c("Mainland China", "Macau", 
-                                               "Hong Kong", "Taiwan")) %>%
-                filter(Date == input$date_id[2], Case == case) %>%
+                                               "Hong Kong", "Taiwan"),
+                       Date == input$date_id[2], 
+                       Case == tolower(input$case_id)) %>%
                 group_by(`Province/State`) %>%  
                 top_n(1, Date) %>%
                 right_join(chn_prov, by = c("Province/State" = "NAME_ENG")) %>%
@@ -275,19 +280,18 @@ server <- function(input, output) {
                 labs(title = str_c(case, " cases"), 
                      subtitle = format(input$date_id[2], 
                                        format = "%b %d, %Y")) +
-                theme_map()
-                
-                # theme(panel.grid.major = element_line(colour = "transparent"))
+                theme_map() + 
+                theme(plot.title = element_text(face = "plain"))
 
         } else if (input$country_id =="United States") {
             state <- ncov_tbl %>%
-                filter(`Country/Region` %in% c("US"), 
-                       `Date` == input$date_id[2]) %>%
-                filter(`Case` == "confirmed") %>%
                 separate(col = "Province/State", 
                          into = c("City", "state"), 
                          sep = ", ") %>%
-                filter(`state` %in% state.abb) %>%
+                filter(`Country/Region` %in% c("US"), 
+                       `Date` == input$date_id[2],
+                       `Case` == tolower(input$case_id),
+                       `state` %in% state.abb) %>%
                 group_by(state) %>%
                 summarise(n = n_distinct(state), Count = sum(Count))
             
