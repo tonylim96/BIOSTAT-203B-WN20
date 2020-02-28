@@ -172,8 +172,9 @@ ui <- fluidPage(
             ),
 
         mainPanel(
-            plotOutput("bargraph"), 
             plotOutput("map"),
+            plotOutput("bargraph"), 
+            plotOutput("line"),
             plotOutput("index")
         )
         
@@ -190,6 +191,55 @@ ui <- fluidPage(
 
 # Server ----
 server <- function(input, output) {
+
+# Maps ----
+    output$map <- renderPlot({
+        if (input$country_id == "China") {
+            ncov_tbl %>%
+                filter(`Country/Region` %in% c("Mainland China", "Macau", 
+                                               "Hong Kong", "Taiwan"),
+                       Date == input$date_id[2], 
+                       Case == tolower(input$case_id)) %>%
+                group_by(`Province/State`) %>%  
+                top_n(1, Date) %>%
+                right_join(chn_prov, by = c("Province/State" = "NAME_ENG")) %>%
+                ggplot() +
+                geom_sf(mapping = aes(fill = Count, geometry = geometry)) +
+                scale_fill_gradientn(colors = wes_palette("Zissou1", 100, type = "continuous"),
+                                     trans = "log10") +
+                labs(title = str_c(input$case_id, 
+                                   " cases in ", 
+                                   input$country_id), 
+                     subtitle = format(input$date_id[2], 
+                                       format = "%b %d, %Y")) +
+                theme_map() + 
+                theme(plot.title = element_text(face = "plain"))
+        } else if (input$country_id =="United States") {
+            state <- ncov_tbl %>%
+                separate(col = "Province/State", 
+                         into = c("City", "state"), 
+                         sep = ", ") %>%
+                filter(`Country/Region` %in% c("US"), 
+                       `Date` == input$date_id[2],
+                       `Case` == tolower(input$case_id),
+                       `state` %in% state.abb) %>%
+                group_by(state) %>%
+                summarise(n = n_distinct(state), Count = sum(Count))
+            
+            plot_usmap(regions = "states", 
+                       data = state,
+                       values = "Count",
+                       color = "black") +
+                scale_fill_gradientn(name = "Count", colors = wes_palette("Zissou1", 100, type = "continuous")) +
+                # scale_fill_continuous(name = "Count", label = scales::comma) +
+                theme(legend.position = "right") +
+                labs(title = str_c(input$case_id, 
+                                   " cases in ", 
+                                   input$country_id), 
+                     subtitle = format(input$date_id[2], 
+                                       format = "%b %d, %Y")) 
+        }
+    })
 
 # Bar graphs ----
     output$bargraph <- renderPlot({
@@ -284,77 +334,110 @@ server <- function(input, output) {
                         theme(axis.text.x = element_text(angle = 90))
                     }
         })
-
-# Maps ----
-    output$map <- renderPlot({
+    
+# Line ----
+    output$line <- renderPlot({
         if (input$country_id == "China") {
             ncov_tbl %>%
-                filter(`Country/Region` %in% c("Mainland China", "Macau", 
-                                               "Hong Kong", "Taiwan"),
-                       Date == input$date_id[2], 
-                       Case == tolower(input$case_id)) %>%
-                group_by(`Province/State`) %>%  
-                top_n(1, Date) %>%
-                right_join(chn_prov, by = c("Province/State" = "NAME_ENG")) %>%
+                filter(`Country/Region` %in% c("Mainland China", "Macau", "Hong Kong", "Taiwan")) %>%
+                group_by(Date, Case) %>%  
+                summarise(total_count = sum(Count)) %>%
+                subset(Date >= input$date_id[1] & Date <= input$date_id[2]) %>%
                 ggplot() +
-                geom_sf(mapping = aes(fill = Count, geometry = geometry)) +
-                scale_fill_gradientn(colors = wes_palette("Zissou1", 100, type = "continuous"),
-                                     trans = "log10") +
-                labs(title = str_c(input$case_id, 
-                                   " cases in ", 
-                                   input$country_id), 
-                     subtitle = format(input$date_id[2], 
-                                       format = "%b %d, %Y")) +
-                theme_map() + 
-                theme(plot.title = element_text(face = "plain"))
-        } else if (input$country_id =="United States") {
-            state <- ncov_tbl %>%
-                separate(col = "Province/State", 
-                         into = c("City", "state"), 
-                         sep = ", ") %>%
-                filter(`Country/Region` %in% c("US"), 
-                       `Date` == input$date_id[2],
-                       `Case` == tolower(input$case_id),
-                       `state` %in% state.abb) %>%
-                group_by(state) %>%
-                summarise(n = n_distinct(state), Count = sum(Count))
-            
-            plot_usmap(regions = "states", 
-                       data = state,
-                       values = "Count",
-                       color = "black") +
-                scale_fill_continuous(name = "Count", label = scales::comma) +
-                theme(legend.position = "right") +
-                labs(title = str_c(input$case_id, 
-                                   " cases in ", 
-                                   input$country_id), 
-                     subtitle = format(input$date_id[2], 
-                                       format = "%b %d, %Y")) 
-        }
+                geom_line(mapping = aes(x = Date, y = total_count, color = Case), size = 2) + 
+                scale_colour_manual("Case status", 
+                                  labels = c("Confirmed", "Death", "Recovered"),
+                                  values = c("#FAD50F", "#CB2313", "#273046")) + 
+                # scale_y_log10() + 
+                labs(title = str_c("COVID-19 data for ", 
+                                   input$country_id,
+                                   " by case status over time",
+                                   sep = ""), 
+                     subtitle = str_c(format(min(ncov_tbl$Date), 
+                                             format = "%b %d, %Y"),
+                                      " - ",
+                                      format(input$date_id[2], 
+                                             format = "%b %d, %Y"),
+                                      sep = ""),
+                     y = "Count") +
+                theme_light()
+        } else if (input$country_id == "United States") {
+            ncov_tbl %>%
+                filter(`Country/Region` %in% c("US")) %>%
+                group_by(Date, Case) %>%  
+                summarise(total_count = sum(Count)) %>%
+                subset(Date >= input$date_id[1] & Date <= input$date_id[2]) %>%
+                ggplot() +
+                geom_line(mapping = aes(x = Date, y = total_count, color = Case), size = 2) + 
+                scale_colour_manual("Case status", 
+                                    labels = c("Confirmed", "Death", "Recovered"),
+                                    values = c("#FAD50F", "#CB2313", "#273046")) + 
+                scale_y_log10() + 
+                labs(title = str_c("COVID-19 data for ", 
+                                   input$country_id,
+                                   " by case status over time",
+                                   sep = ""), 
+                     subtitle = str_c(format(min(ncov_tbl$Date), 
+                                             format = "%b %d, %Y"),
+                                      " - ",
+                                      format(input$date_id[2], 
+                                             format = "%b %d, %Y"),
+                                      sep = ""),
+                     y = "Count") +
+                theme_light()
+        } else if (input$country_id == "Other") {
+            ncov_tbl %>%
+                filter(`Country/Region` %ni% c("Mainland China", 
+                                               "Macau",
+                                               "Hong Kong", 
+                                               "Taiwan", 
+                                               "US")) %>%
+                group_by(Date, Case) %>% 
+                summarise(total_count = sum(Count)) %>%
+                subset(Date >= input$date_id[1] & Date <= input$date_id[2]) %>%
+                ggplot() +
+                geom_line(mapping = aes(x = Date, y = total_count, color = Case), size = 2) +
+                scale_colour_manual("Case status",
+                                    labels = c("Confirmed", "Death", "Recovered"),
+                                    values = c("#FAD50F", "#CB2313", "#273046")) + 
+                scale_y_log10() + 
+                labs(title = str_c("COVID-19 data for ", 
+                                   input$country_id,
+                                   " by case status over time",
+                                   sep = ""),
+                     subtitle = str_c(format(min(ncov_tbl$Date),
+                                             format = "%b %d, %Y"),
+                                      " - ",
+                                      format(input$date_id[2],
+                                             format = "%b %d, %Y"),
+                                      sep = ""),
+                     y = "Count") +
+                theme_light()
+            }
     })
 
-#### Indices ####
+# Indices ----
     output$index <- renderPlot({
-        a <- regmatches(input$index_id, 
-                        gregexpr("(?<=\\().*?(?=\\))", 
-                                 input$index_id, 
+        a <- regmatches(input$index_id,
+                        gregexpr("(?<=\\().*?(?=\\))",
+                                 input$index_id,
                                  perl = T))[[1]]
-        
+
         b <- str_c(str_remove(a, "[^[:punct:]]"), ".Adjusted", sep = "")
-        
+
         getSymbols(a,
-                   src = "yahoo", 
-                   auto.assign = FALSE, 
+                   src = "yahoo",
+                   auto.assign = FALSE,
                    from = input$date_id[1],
-                   to = input$date_id[2]) %>% 
+                   to = input$date_id[2]) %>%
             as_tibble(rownames = "Date") %>%
             mutate(Date = date(Date)) %>%
-            ggplot() + 
+            ggplot() +
             labs(title = input$index_id,
-                 subtitle = str_c(format(min(ncov_tbl$Date), 
+                 subtitle = str_c(format(min(ncov_tbl$Date),
                                          format = "%b %d, %Y"),
                                   " - ",
-                                  format(input$date_id[2], 
+                                  format(input$date_id[2],
                                          format = "%b %d, %Y"),
                                   sep = ""),
                  y = b) +

@@ -275,56 +275,56 @@ state <- ncov_tbl %>%
 
 ```{r}
 
-ncov_tbl %>%
-    filter(`Country/Region` %in% c("US"), 
-           `Date` == plotdate) %>%
-    filter(`Case` == "confirmed") %>%
-    separate(col = "Province/State", into = c("City", "state"), sep = ", ") %>%
-  filter(`state` %in% state.abb) %>%
-  group_by(state) %>%
-  summarise(n = n_distinct(state), sum = sum(Count)) %>%
-  print(width = Inf)
-
-  plot_usmap(regions = "states", data = state, values = "Count", color = "black") + 
-    scale_fill_continuous(name = "Count", label = scales::comma) + 
-    theme(legend.position = "right")
+# ncov_tbl %>%
+#     filter(`Country/Region` %in% c("US"), 
+#            `Date` == plotdate) %>%
+#     filter(`Case` == "confirmed") %>%
+#     separate(col = "Province/State", into = c("City", "state"), sep = ", ") %>%
+#   filter(`state` %in% state.abb) %>%
+#   group_by(state) %>%
+#   summarise(n = n_distinct(state), sum = sum(Count)) %>%
+#   print(width = Inf)
+# 
+#   plot_usmap(regions = "states", data = state, values = "Count", color = "black") + 
+#     scale_fill_continuous(name = "Count", label = scales::comma) + 
+#     theme(legend.position = "right")
 ```
 
 
 ```{r}
-ncov_tbl %>%
-                filter(`Country/Region` %in% c("US"), 
-                       `Date` == date) %>%
-                group_by(`Province/State`) %>%
-                ggplot() +
-                geom_col(mapping = aes(x = `Province/State`, y = `Count`, fill = `Case`)) + 
-                # scale_y_log10() +
-                labs(title = paste("COVID-19 data up to", 
-                                   format(date, format = "%A, %B %d, %Y" ))) + 
-                theme(axis.text.x = element_text(angle = 90))
+# ncov_tbl %>%
+#                 filter(`Country/Region` %in% c("US"), 
+#                        `Date` == date) %>%
+#                 group_by(`Province/State`) %>%
+#                 ggplot() +
+#                 geom_col(mapping = aes(x = `Province/State`, y = `Count`, fill = `Case`)) + 
+#                 # scale_y_log10() +
+#                 labs(title = paste("COVID-19 data up to", 
+#                                    format(date, format = "%A, %B %d, %Y" ))) + 
+#                 theme(axis.text.x = element_text(angle = 90))
 ```
 
 ```{r}
-ncov_tbl %>%
-  filter(`Country/Region` %ni% c("Mainland China", "Macau", 
-                                 "Hong Kong", "Taiwan", "US"), 
-         `Date` == date) %>%
-  group_by(`Country/Region`) %>%
-  arrange(desc(`Count`)) %>%
-  filter(rank(desc(`Count`)) < 6) %>%
-  print(width = Inf)
+# ncov_tbl %>%
+#   filter(`Country/Region` %ni% c("Mainland China", "Macau", 
+#                                  "Hong Kong", "Taiwan", "US"), 
+#          `Date` == date) %>%
+#   group_by(`Country/Region`) %>%
+#   arrange(desc(`Count`)) %>%
+#   filter(rank(desc(`Count`)) < 6) %>%
+#   print(width = Inf)
   
-  ggplot() +
-  geom_col(mapping = aes(
-      x = `Province/State`, 
-      y = `Count`, 
-      fill = `Case`)) + 
-  # scale_y_log10() +
-  labs(title = paste("COVID-19 data for",
-                     "up to", 
-                     format(date, 
-                            format = "%A, %B %d, %Y"))) + 
-  theme(axis.text.x = element_text(angle = 45))
+  # ggplot() +
+  # geom_col(mapping = aes(
+  #     x = `Province/State`, 
+  #     y = `Count`, 
+  #     fill = `Case`)) + 
+  # # scale_y_log10() +
+  # labs(title = paste("COVID-19 data for",
+  #                    "up to", 
+  #                    format(date, 
+  #                           format = "%A, %B %d, %Y"))) + 
+  # theme(axis.text.x = element_text(angle = 45))
 ```
 
 
@@ -371,10 +371,16 @@ ncov_tbl %>%
 
 To plot the line graph of confirmed cases over time. You can do an animization of this over time.
 ```{r}
+ydate <- "2020-01-25"
+zdate <- "2020-02-05"
+
 ncov_tbl %>%
   filter(`Country/Region` %in% c("Mainland China", "Macau", "Hong Kong", "Taiwan")) %>%
   group_by(Date, Case) %>%  
   summarise(total_count = sum(Count)) %>%
+  subset(Date >= as.Date(ydate) & Date <= as.Date(zdate)) %>%
+
+
   # print()
   ggplot() +
   geom_line(mapping = aes(x = Date, y = total_count, color = Case), size = 2) + 
@@ -475,7 +481,7 @@ min(ncov_tbl$Date)
 TODO
 
 
-```{r}
+```{r, eval = FALSE}
 xdate <- "2020-01-22"
 plotdate <- "2020-02-27"
 
