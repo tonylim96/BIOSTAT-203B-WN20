@@ -1,4 +1,6 @@
 library(fs)
+library(ggplot2)
+library(grid)
 library(lubridate)
 library(quantmod)
 library(sf)
@@ -129,19 +131,6 @@ chn_prov <- chn_map %>%
     count(NAME) %>%
     mutate(NAME_ENG = translate(NAME)) # translate function is vectorized
 
-plotdate <- "2020-02-14"
-case <- "confirmed"
-
-ncov_tbl %>%
-    filter(`Country/Region` %in% c("Mainland China", "Macau", 
-                                   "Hong Kong", "Taiwan")) %>%
-    filter(Date == plotdate, Case == case) %>%
-    group_by(`Province/State`) %>%  
-    top_n(1, Date) %>%
-    right_join(chn_prov, by = c("Province/State" = "NAME_ENG")) # join map and virus data
-
-case <- "confirmed"
-
 ###### User interface #####
 ui <- fluidPage(
 
@@ -155,8 +144,7 @@ ui <- fluidPage(
             dateRangeInput(inputId = "date_id", 
                            label = "Date range:", 
                            start = min(ncov_tbl$Date), 
-                           end = Sys.Date() - 1,
-                           min = min(ncov_tbl$Date)), 
+                           end = Sys.Date() - 1), 
             
             radioButtons(inputId = "country_id", 
                                label = "Countries:", 
@@ -164,8 +152,7 @@ ui <- fluidPage(
             
             selectInput(inputId = "index_id", 
                                label = "Indices:", 
-                               choices = c("Dow Jones Industrial Average 
-                                           (^DJI)",
+                               choices = c("Dow Jones Industrial Average (^DJI)",
                                            "FTSE 100 (^FTSE)",
                                            "Hang Seng Index (^HSI)",
                                            "KOSPI Composite Index (^KS11)",
@@ -190,7 +177,8 @@ ui <- fluidPage(
 
 ##### Server #####
 server <- function(input, output) {
-    
+
+#### Bar graphs ####
     output$bargraph <- renderPlot({
         if (input$country_id == "China") {
             ncov_tbl %>%
@@ -205,15 +193,15 @@ server <- function(input, output) {
                     fill = `Case`)) + 
                 scale_y_log10() +
                 labs(title = paste("COVID-19 data for ", 
-                                   input$country_id, 
-                                   " (", 
-                                   format(min(ncov_tbl$Date), 
+                                   input$country_id,
+                                   sep = ""), 
+                     subtitle = paste(format(min(ncov_tbl$Date), 
                                           format = "%b %d, %Y"),
                                    " - ",
                                    format(input$date_id[2], 
                                           format = "%b %d, %Y"),
-                                   ")",
-                                   sep = "")) + 
+                                   sep = ""),
+                     x = "Province") + 
                 theme(axis.text.x = element_text(angle = 90))
             } else if (input$country_id == "United States") {
                 ncov_tbl %>%
@@ -231,14 +219,14 @@ server <- function(input, output) {
                     # scale_y_log10() +
                     labs(title = paste("COVID-19 data for ", 
                                        input$country_id,
-                                       " (",
-                                       format(min(ncov_tbl$Date), 
-                                          format = "%b %d, %Y"),
-                                       " - ",
-                                       format(input$date_id[2],
-                                              format = "%b %d, %Y"),
-                                       ")",
-                                       sep = "")) +
+                                       sep = ""), 
+                         subtitle = paste(format(min(ncov_tbl$Date), 
+                                                 format = "%b %d, %Y"),
+                                          " - ",
+                                          format(input$date_id[2], 
+                                                 format = "%b %d, %Y"),
+                                          sep = ""),
+                         x = "State") + 
                     theme(axis.text.x = element_text(angle = 90))
                 } else if (input$country_id == "Other") {
                     ncov_tbl %>%
@@ -256,20 +244,20 @@ server <- function(input, output) {
                             y = `Count`, 
                             fill = `Case`)) + 
                         # scale_y_log10() +
-                        labs(title = paste("COVID-19 data for ",
+                        labs(title = paste("COVID-19 data for ", 
                                            input$country_id,
-                                           " (", 
-                                           format(min(ncov_tbl$Date), 
-                                                  format = "%b %d, %Y"),
-                                           " - ",
-                                           format(input$date_id[2],
-                                                  format = "%b %d, %Y"),
-                                           ")",
-                                           sep = "")) + 
+                                           sep = ""), 
+                             subtitle = paste(format(min(ncov_tbl$Date), 
+                                                     format = "%b %d, %Y"),
+                                              " - ",
+                                              format(input$date_id[2], 
+                                                     format = "%b %d, %Y"),
+                                              sep = "")) +  
                         theme(axis.text.x = element_text(angle = 45))
                     }
         })
-    
+
+#### Maps ####
     output$map <- renderPlot({
         if (input$country_id == "China") {
             ncov_tbl %>%
@@ -284,7 +272,12 @@ server <- function(input, output) {
                 scale_fill_gradientn(colors = wes_palette("Zissou1", 100, type = "continuous"),
                                      trans = "log10") + 
                 theme_bw() +
-                labs(title = str_c(case, " cases"), subtitle = input$date_id[2])
+                labs(title = str_c(case, " cases"), 
+                     subtitle = format(input$date_id[2], 
+                                       format = "%b %d, %Y")) +
+                theme_map()
+                
+                # theme(panel.grid.major = element_line(colour = "transparent"))
 
         } else if (input$country_id =="United States") {
             state <- ncov_tbl %>%
@@ -298,17 +291,25 @@ server <- function(input, output) {
                 group_by(state) %>%
                 summarise(n = n_distinct(state), Count = sum(Count))
             
-                plot_usmap(regions = "states", 
-                           data = state, 
-                           values = "Count", 
-                           color = "black") + 
-                scale_fill_continuous(name = "Count", label = scales::comma) + 
-                theme(legend.position = "right")
+            plot_usmap(regions = "states", 
+                       data = state,
+                       values = "Count",
+                       color = "black") +
+                scale_fill_continuous(name = "Count", label = scales::comma) +
+                theme(legend.position = "right") +
+                labs(title = "Poop",
+                     subtitle = format(input$date_id[2], 
+                                       format = "%b %d, %Y"))
+                    
         }
     })
-    
+
+#### Indices ####
     output$stock <- renderPlot({
-        a <- regmatches(input$index_id, gregexpr("(?<=\\().*?(?=\\))", input$index_id, perl = T))[[1]]
+        a <- regmatches(input$index_id, 
+                        gregexpr("(?<=\\().*?(?=\\))", 
+                                 input$index_id, 
+                                 perl = T))[[1]]
         
         b <- paste(str_remove(a, "[^[:punct:]]"), ".Adjusted", sep = "")
         
@@ -320,28 +321,16 @@ server <- function(input, output) {
             as_tibble(rownames = "Date") %>%
             mutate(Date = date(Date)) %>%
             ggplot() + 
-            labs(title = "hi",
+            labs(title = input$index_id,
+                 subtitle = paste(format(min(ncov_tbl$Date), 
+                                         format = "%b %d, %Y"),
+                                  " - ",
+                                  format(input$date_id[2], 
+                                         format = "%b %d, %Y"),
+                                  sep = ""),
                  y = b) +
             geom_line(mapping = aes(x = Date, y = eval(parse(text = b)))) +
             theme_bw()
-        
-        # getSymbols(regmatches(input$index_id, gregexpr("(?<=\\().*?(?=\\))", input$index_id, perl = T))[[1]],
-        #            src = "yahoo", 
-        #            auto.assign = FALSE, 
-        #            from = input$date_id[1],
-        #            to = input$date_id[2]) %>% 
-        #     as_tibble(rownames = "Date") %>%
-        #     mutate(Date = date(Date)) %>%
-        #     ggplot() + 
-        #     labs(title = paste(input$index_id, 
-        #                        "from", 
-        #                        format(input$date_id[1], 
-        #                               format = "%b %d, %Y"), 
-        #                        "to", 
-        #                        format(input$date_id[2], 
-        #                               format = "%b %d, %Y"))) +
-        #     geom_line(mapping = aes(x = Date, y = HSI.Adjusted)) +
-        #     theme_bw()
     })
 }
 
