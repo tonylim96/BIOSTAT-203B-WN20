@@ -326,11 +326,13 @@ server <- function(input, output) {
                         filter(`Country/Region` %ni% c("Mainland China", 
                                                        "Macau",
                                                        "Hong Kong", 
-                                                       "Taiwan", 
+                                                       "Taiwan",
                                                        "US"), 
                                `Date` == input$date_id[2]) %>%
                         group_by(`Country/Region`) %>%
                         arrange(desc(`Count`)) %>%
+                        # summarise(total_count = sum(`Count`)) %>%
+                        # filter(rank(desc(`total_count`)) < 6) %>%
                         ggplot() +
                         geom_col(mapping = aes(
                             x = `Country/Region`, 

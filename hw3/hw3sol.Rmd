@@ -521,4 +521,31 @@ getSymbols("^DJI",
 ```
 
 
+```{r}
+ncov_tbl %>%
+                        filter(`Country/Region` %ni% c("Mainland China", 
+                                                       "Macau",
+                                                       "Hong Kong", 
+                                                       "Taiwan", 
+                                                       "US")) %>%
+                        group_by(`Country/Region`, `Case`) %>%
+  summarise(total_count = sum(Count)) %>%
+  arrange(desc(total_count))
+                        filter(rank(desc(`total_count`)) < 6) 
+                        # arrange(desc(`Count`)) %>%
+```
+
+```{r}
+today <- "2020-02-28"
+'%ni%' <- Negate('%in%')
+
+ncov_tbl %>%
+  filter(`Country/Region` %ni% c("Mainland China", 
+                                 "Macau",
+                                 "Hong Kong",
+                                 "Taiwan",
+                                 "US"), `Date` == today) %>%
+  group_by(`Country/Region`) %>%
+  summarise(total_count = sum(`Count`))
+```
 
