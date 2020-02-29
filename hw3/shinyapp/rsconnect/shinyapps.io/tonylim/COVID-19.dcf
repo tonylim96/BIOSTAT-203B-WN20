@@ -1,0 +1,12 @@
+name: COVID-19
+title: COVID-19
+username:
+account: tonylim
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1881841
+bundleId: 2839183
+url: https://tonylim.shinyapps.io/COVID-19/
+when: 1582955631.19874
+asMultiple: FALSE
+asStatic: FALSE

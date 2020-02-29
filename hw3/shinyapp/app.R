@@ -162,7 +162,8 @@ ui <- fluidPage(
     theme = shinytheme("paper"),
 
     titlePanel("Coronavirus Disease 2019 (COVID-19)"),
-    h6(a(" Data source: JHU CCSE", href = "https://github.com/CSSEGISandData/COVID-19")),
+    h6("Data source: ", 
+       a("JHU CCSE", href = "https://github.com/CSSEGISandData/COVID-19")),
 
     sidebarLayout(
         
@@ -184,7 +185,8 @@ ui <- fluidPage(
                          choices = c("Confirmed", "Death", "Recovered")),
             
             helpText("Select an index to examine. 
-               Information will be collected from Yahoo Finance."),
+               Information will be collected from ", 
+                     a("Yahoo Finance.", href = "https://finance.yahoo.com/")),
             
             selectInput(inputId = "index_id", 
                                label = "Indices:", 
@@ -269,7 +271,7 @@ server <- function(input, output) {
                 # scale_fill_continuous(name = "Count", label = scales::comma) +
                 theme(legend.position = "right") +
                 labs(title = str_c(input$case_id, 
-                                   " cases in ", 
+                                   " cases in the ", 
                                    input$country_id), 
                      subtitle = format(input$date_id[2], 
                                        format = "%b %d, %Y")) 
@@ -327,7 +329,7 @@ server <- function(input, output) {
                                                  "#CB2313", 
                                                  "#273046")) +
                     # scale_y_log10() +
-                    labs(title = str_c("COVID-19 data for ", 
+                    labs(title = str_c("COVID-19 data for the ", 
                                        input$country_id,
                                        sep = ""), 
                          subtitle = str_c(format(min(ncov_tbl$Date), 
@@ -372,7 +374,8 @@ server <- function(input, output) {
                                               " - ",
                                               format(input$date_id[2], 
                                                      format = "%b %d, %Y"),
-                                              sep = "")) +  
+                                              sep = ""),
+                             x = "Country") +  
                         theme_light() +
                         theme(axis.text.x = element_text(angle = 90))
                     }
@@ -429,7 +432,7 @@ server <- function(input, output) {
                                                "#CB2313", 
                                                "#273046")) + 
                 scale_y_log10() + 
-                labs(title = str_c("COVID-19 data for ", 
+                labs(title = str_c("COVID-19 data for the ", 
                                    input$country_id,
                                    " by case status over time",
                                    sep = ""), 
