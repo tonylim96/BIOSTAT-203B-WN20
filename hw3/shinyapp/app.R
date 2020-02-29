@@ -1,9 +1,20 @@
 # Library ----
-# install.packages("cowplot")
-# install.packages("maps")
-# install.packages("shinythemes")
-# install.packages("usmap")
-# install.packages("wesanderson")
+
+# List of required packages
+packages <- c("cowplot", "maps", "scales", "shinythemes", "usmap", "wesanderson")
+
+# Check if packages are installed 
+# https://vbaliga.github.io/verify-that-r-packages-are-installed-and-loaded/
+
+package.check <- lapply(
+    packages,
+    FUN = function(x) {
+        if (!require(x, character.only = TRUE)) {
+            install.packages(x, dependencies = TRUE)
+            library(x, character.only = TRUE)
+        }
+    }
+)
 
 library(cowplot)
 library(fs)
@@ -12,6 +23,7 @@ library(grid)
 library(lubridate)
 library(maps)
 library(quantmod)
+library(scales)
 library(sf)
 library(shiny)
 library(shinythemes)
@@ -19,9 +31,11 @@ library(tidyverse)
 library(usmap)
 library(wesanderson)
 
+# Function with opposite role of %in%
 '%ni%' <- Negate('%in%')
 c(1,3,11) %ni% 1:10
 
+# Steps to create ncov_tbl
 (confirmed <- read_csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"))
 
 (recovered <- read_csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv"))
@@ -53,6 +67,7 @@ ncov_tbl <- confirmed_long %>%
                  names_to = "Case", 
                  values_to = "Count")
 
+# Steps to form China map
 chn_map <- st_read("./bou2_4p.shp", as_tibble = TRUE) %>%
     mutate(NAME = iconv(NAME, from = "GBK"),
            BOU2_4M_ = as.integer(BOU2_4M_),
@@ -132,7 +147,7 @@ translate <- function(x) {
         } else if (str_detect(chn_name, "黑龙江")) {
             eng_name <- "Heilongjiang"
         } else {
-            eng_name <- chn_name # don't translate if no correspondence
+            eng_name <- chn_name
         }
         return(eng_name)
     })
@@ -140,13 +155,14 @@ translate <- function(x) {
 
 chn_prov <- chn_map %>% 
     count(NAME) %>%
-    mutate(NAME_ENG = translate(NAME)) # translate function is vectorized
+    mutate(NAME_ENG = translate(NAME))
 
 # UI ----
 ui <- fluidPage(
-    # theme = shinytheme("paper"),
-    
-    titlePanel("Coronavirus Disease 2019 (COVID-19) Data"),
+    theme = shinytheme("paper"),
+
+    titlePanel("Coronavirus Disease 2019 (COVID-19)"),
+    h6(a(" Data source: JHU CCSE", href = "https://github.com/CSSEGISandData/COVID-19")),
 
     sidebarLayout(
         
@@ -166,6 +182,9 @@ ui <- fluidPage(
             radioButtons(inputId = "case_id",
                          label = "Case status:",
                          choices = c("Confirmed", "Death", "Recovered")),
+            
+            helpText("Select an index to examine. 
+               Information will be collected from Yahoo Finance."),
             
             selectInput(inputId = "index_id", 
                                label = "Indices:", 
@@ -265,16 +284,14 @@ server <- function(input, output) {
                                                "Hong Kong", "Taiwan"),
                        `Date` == input$date_id[2]) %>%
                 group_by(`Province/State`) %>%
-                ggplot() +
-                geom_col(mapping = aes(
+                ggplot(mapping = aes(
                     x = `Province/State`,
                     y = `Count`,
                     fill = `Case`)) +
+                geom_col(position = "dodge") +
                 scale_fill_manual("Case status", 
                                   labels = c("Confirmed", "Death", "Recovered"),
                                   values = c("#FAD50F", "#CB2313", "#273046")) +
-                # Maybe remove dodge
-                # , position = "dodge") +
                 scale_y_log10() +
                 labs(title = str_c("COVID-19 data for ",
                                    input$country_id,
@@ -285,7 +302,8 @@ server <- function(input, output) {
                                       format(input$date_id[2],
                                              format = "%b %d, %Y"),
                                       sep = ""),
-                     x = "Province") +
+                     x = "Province",
+                     y = "log(Count)") +
                 theme_light() +
                 theme(axis.text.x = element_text(angle = 90))
             } else if (input$country_id == "United States") {
@@ -390,7 +408,7 @@ server <- function(input, output) {
                                       format(input$date_id[2], 
                                              format = "%b %d, %Y"),
                                       sep = ""),
-                     y = "Count") +
+                     y = "log(Count)") +
                 theme_light()
         } else if (input$country_id == "United States") {
             ncov_tbl %>%
@@ -421,7 +439,7 @@ server <- function(input, output) {
                                       format(input$date_id[2], 
                                              format = "%b %d, %Y"),
                                       sep = ""),
-                     y = "Count") +
+                     y = "log(Count)") +
                 theme_light()
         } else if (input$country_id == "Other") {
             ncov_tbl %>%
@@ -456,7 +474,7 @@ server <- function(input, output) {
                                       format(input$date_id[2],
                                              format = "%b %d, %Y"),
                                       sep = ""),
-                     y = "Count") +
+                     y = "log(Count)") +
                 theme_light()
             }
     })
