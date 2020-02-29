@@ -198,7 +198,6 @@ ui <- fluidPage(
                                            "NASDAQ (^IXIC)",
                                            "Nikkei 225 (^N225)",
                                            "Russell 2000 (^RUT)",
-                                           "SSE Composite Index (^SSEC)",
                                            "STI Index (^STI)",
                                            "S&P 500 (^GSPC)",
                                            "TSEC Weighted Index (^TWII)")),
