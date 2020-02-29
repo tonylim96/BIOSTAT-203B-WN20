@@ -537,6 +537,9 @@ ncov_tbl %>%
 
 ```{r}
 today <- "2020-02-28"
+rday <- "2020-01-27"
+
+
 '%ni%' <- Negate('%in%')
 
 ncov_tbl %>%

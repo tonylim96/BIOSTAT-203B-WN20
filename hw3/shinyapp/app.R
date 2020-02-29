@@ -1,7 +1,8 @@
 # Library ----
 
 # List of required packages
-packages <- c("cowplot", "maps", "scales", "shinythemes", "usmap", "wesanderson")
+packages <- c("cowplot", "maps", "scales", "shinythemes", "usmap", 
+              "wesanderson")
 
 # Check if packages are installed 
 # https://vbaliga.github.io/verify-that-r-packages-are-installed-and-loaded/
@@ -171,17 +172,17 @@ ui <- fluidPage(
             style = "position:fixed;width:inherit;",
             
             dateRangeInput(inputId = "date_id", 
-                           label = "Date range:", 
+                           label = h6(strong("Date range:")), 
                            max = Sys.Date(), 
                            start = min(ncov_tbl$Date), 
                            end = Sys.Date() - 1), 
             
             radioButtons(inputId = "country_id", 
-                               label = "Countries:", 
+                               label = h6(strong("Countries:")), 
                                choices = c("China", "United States", "Other")),
             
             radioButtons(inputId = "case_id",
-                         label = "Case status:",
+                         label = h6(strong("Case status:")),
                          choices = c("Confirmed", "Death", "Recovered")),
             
             helpText("Select an index to examine. 
@@ -189,7 +190,7 @@ ui <- fluidPage(
                      a("Yahoo Finance.", href = "https://finance.yahoo.com/")),
             
             selectInput(inputId = "index_id", 
-                               label = "Indices:", 
+                               label = h6(strong("Indices:")), 
                                choices = c("Dow Jones Industrial Average (^DJI)",
                                            "FTSE 100 (^FTSE)",
                                            "Hang Seng Index (^HSI)",
@@ -411,7 +412,8 @@ server <- function(input, output) {
                                    input$country_id,
                                    " by case status over time",
                                    sep = ""), 
-                     subtitle = str_c(format(input$date_id[1], 
+                     subtitle = str_c(format(max(input$date_id[1], 
+                                                 min(ncov_tbl$Date)), 
                                              format = "%b %d, %Y"),
                                       " - ",
                                       format(input$date_id[2], 
@@ -442,7 +444,8 @@ server <- function(input, output) {
                                    input$country_id,
                                    " by case status over time",
                                    sep = ""), 
-                     subtitle = str_c(format(input$date_id[1], 
+                     subtitle = str_c(format(max(input$date_id[1], 
+                                                 min(ncov_tbl$Date)), 
                                              format = "%b %d, %Y"),
                                       " - ",
                                       format(input$date_id[2], 
@@ -477,7 +480,8 @@ server <- function(input, output) {
                                    input$country_id,
                                    " by case status over time",
                                    sep = ""),
-                     subtitle = str_c(format(input$date_id[1],
+                     subtitle = str_c(format(max(input$date_id[1], 
+                                                 min(ncov_tbl$Date)), 
                                              format = "%b %d, %Y"),
                                       " - ",
                                       format(input$date_id[2],
@@ -506,7 +510,7 @@ server <- function(input, output) {
             mutate(Date = date(Date)) %>%
             ggplot() +
             labs(title = input$index_id,
-                 subtitle = str_c(format(min(ncov_tbl$Date),
+                 subtitle = str_c(format(input$date_id[1],
                                          format = "%b %d, %Y"),
                                   " - ",
                                   format(input$date_id[2],
