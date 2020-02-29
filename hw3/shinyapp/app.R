@@ -205,8 +205,14 @@ ui <- fluidPage(
 
         mainPanel(
             plotOutput("map"),
+            br(),
+            br(),
             plotOutput("bargraph"), 
+            br(),
+            br(),
             plotOutput("line"),
+            br(),
+            br(),
             plotOutput("index")
         )
         
@@ -405,7 +411,7 @@ server <- function(input, output) {
                                    input$country_id,
                                    " by case status over time",
                                    sep = ""), 
-                     subtitle = str_c(format(min(ncov_tbl$Date), 
+                     subtitle = str_c(format(input$date_id[1], 
                                              format = "%b %d, %Y"),
                                       " - ",
                                       format(input$date_id[2], 
@@ -436,7 +442,7 @@ server <- function(input, output) {
                                    input$country_id,
                                    " by case status over time",
                                    sep = ""), 
-                     subtitle = str_c(format(min(ncov_tbl$Date), 
+                     subtitle = str_c(format(input$date_id[1], 
                                              format = "%b %d, %Y"),
                                       " - ",
                                       format(input$date_id[2], 
@@ -471,7 +477,7 @@ server <- function(input, output) {
                                    input$country_id,
                                    " by case status over time",
                                    sep = ""),
-                     subtitle = str_c(format(min(ncov_tbl$Date),
+                     subtitle = str_c(format(input$date_id[1],
                                              format = "%b %d, %Y"),
                                       " - ",
                                       format(input$date_id[2],
