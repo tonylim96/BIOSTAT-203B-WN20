@@ -1,6 +1,6 @@
 ---
 title: "BIOSTAT 203B Homework 4"
-subtitle: Due Friday, 3/20 @ 11:59 PM
+subtitle: Due Sunday, 3/22 @ 11:59 PM
 author: Tony Lim
 output:
   # ioslides_presentation: default
@@ -120,32 +120,32 @@ tbl(con, "transfers") %>%
 Now we want to restrict to heart attack patients. To find all possible ICD-9 codes related to heart attack, we search for string `myocardial infarction` in the `long_title` of table `d_icd_diagnoses`:
 ```{r}
 tbl(con, "d_icd_diagnoses") %>%
-  filter(str_detect(tolower(long_title), "myocardial infarction")) %>%
-  print() -> mi_codes
+  filter(str_detect(tolower(long_title), "neoplasm")) %>%
+  print() -> neo_codes
 ```
 
 `diagnoses_icd` table stores the diagnosis of each admission. We use `semi_join()` to keep the rows in `diagnoses_icd` that match the ICD-9 codes related to heart attack:
 ```{r}
 tbl(con, "diagnoses_icd") %>%
-  semi_join(mi_codes, by = "icd9_code") %>%
-  print() -> mi_admissions
+  semi_join(neo_codes, by = "icd9_code") %>%
+  print() -> neo_admissions
 ```
 
 MI may not be listed as the principal diagnosis; as explained in [the documentation for the `patients` table](https://mimic.physionet.org/mimictables/diagnoses_icd/), the `seq_num` field is a priority ranking for the diagnoses generated at the end of stay. In order to focus on patients for whom MI was central to their hospitalization, we will include records with MI in any of the first five diagnosis positions, according to the `seq_num` field. To avoid duplicate admissions, we use `group_by()` and `top_n()` to limit the query to the first MI diagnosis for each admission.
 ```{r}
-mi_admissions %>%
+neo_admissions %>%
   filter(seq_num <= 5) %>%
   group_by(subject_id, hadm_id) %>%
   # top_n(1, wt = seq_num) %>% #  not working. bug? use following as workaround
   filter(min_rank(seq_num) <= 1) %>%
   ungroup() %>%
   select(subject_id, hadm_id, icd9_code, seq_num) %>%
-  print() -> mi_admissions
+  print() -> neo_admissions
 ```
 Now we `inner_join` the table of admissions to CCU and the table of admissions that include MI diagnosis.
 ```{r}
 ccu_admissions %>%
-  inner_join(mi_admissions, by = c("subject_id", "hadm_id")) %>%
+  inner_join(neo_admissions, by = c("subject_id", "hadm_id")) %>%
   print() -> study_admissions
 ```
 
@@ -309,25 +309,23 @@ openplotmat()
 # 1st column indicates x axis position between 0 and 1
 # 2nd column indicates y axis position between 0 and 1
 # automatically assigns vertical position
-num_of_boxes <- 6
+num_of_boxes <- 4
 auto_coords = coordinates(num_of_boxes)
 vert_pos = rev(auto_coords[,1])
 box_pos <- matrix(nrow = num_of_boxes, ncol = 2, data = 0)
 box_pos[1,] = c(0.20, vert_pos[1]) # 1st box
 box_pos[2,] = c(0.70, vert_pos[2]) # 2nd box
 box_pos[3,] = c(0.70, vert_pos[3]) # 3rd box
-box_pos[4,] = c(0.70, vert_pos[4]) # etc...
-box_pos[5,] = c(0.70, vert_pos[5])
-box_pos[6,] = c(0.20, vert_pos[6])
+box_pos[4,] = c(0.20, vert_pos[4]) # etc...
+# box_pos[5,] = c(0.70, vert_pos[5])
+# box_pos[6,] = c(0.20, vert_pos[6])
 
 # content of boxes
 box_content <- matrix(nrow = num_of_boxes, ncol = 1, data = 0)
-box_content[1] = "All patients in MIMIC-III \n n = 58,976" # 1st box
-box_content[2] = "Exclude patients of age < 18 \n n = 8,180" # 2nd box
-box_content[3] = "Exclude patients with no ICU admissions \n n = 1,071" # 3rd box
-box_content[4] = "Exclude patients with diabetes \n n = 1,324" # etc...
-box_content[5] = "Exclude patients with sepsis \n n = 4,804"
-box_content[6] = "Study cohort \n n = 43,597"
+box_content[1] = "All diagnoses in DIAGNOSES_ICD \n n = 651,047" # 1st box
+box_content[2] = "Exclude those without 'neoplasm' \n n = 632,362" # 2nd box
+box_content[3] = "Exclude if 'neoplasm' isn't in first five seq_num \n n = 12,947" # 3rd box
+box_content[4] = "neo_admissions \n n = 5,738"
 
 # adjust the size of boxes to fit content
 box_x <- c(0.20, 0.25, 0.25, 0.25, 0.25, 0.20)
@@ -337,8 +335,7 @@ box_y <- c(0.07, 0.07, 0.07, 0.07, 0.07, 0.07)
 straightarrow(from = c(box_pos[1,1],box_pos[2,2]), to = box_pos[2,], lwd = 1)  
 straightarrow(from = c(box_pos[1,1],box_pos[3,2]), to = box_pos[3,], lwd = 1)  
 straightarrow(from = c(box_pos[1,1],box_pos[4,2]), to = box_pos[4,], lwd = 1)  
-straightarrow(from = c(box_pos[1,1],box_pos[5,2]), to = box_pos[5,], lwd = 1)  
-straightarrow(from = box_pos[1,], to = box_pos[6,], lwd = 1)
+straightarrow(from = box_pos[1,], to = box_pos[4,], lwd = 1)
 
 # Draw the boxes
 for (i in 1:num_of_boxes) {
@@ -347,6 +344,55 @@ for (i in 1:num_of_boxes) {
            shadow.col = "grey")
   }
 ```
+
+```{r}
+# set margins and multiplot
+par(mfrow = c(1, 1))
+par(mar = c(0, 0, 0, 0))
+
+# initialise a plot device
+openplotmat()
+
+# position of boxes
+# 1st column indicates x axis position between 0 and 1
+# 2nd column indicates y axis position between 0 and 1
+# automatically assigns vertical position
+num_of_boxes <- 4
+auto_coords = coordinates(num_of_boxes)
+vert_pos = rev(auto_coords[,1])
+box_pos <- matrix(nrow = num_of_boxes, ncol = 2, data = 0)
+box_pos[1,] = c(0.20, vert_pos[1]) # 1st box
+box_pos[2,] = c(0.70, vert_pos[2]) # 2nd box
+box_pos[3,] = c(0.70, vert_pos[3]) # 3rd box
+box_pos[4,] = c(0.20, vert_pos[4]) # etc...
+# box_pos[5,] = c(0.70, vert_pos[5])
+# box_pos[6,] = c(0.20, vert_pos[6])
+
+# content of boxes
+box_content <- matrix(nrow = num_of_boxes, ncol = 1, data = 0)
+box_content[1] = "All patients in TRANSFER \n n = 261,897" # 1st box
+box_content[2] = "Exclude patients if prev_careunit = NA or\n curr_careunit != CCU \n n = 254,245" # 2nd box
+box_content[3] = "Exclude patients who aren't in neo_admissions \n n = 7,279" # 3rd box
+box_content[4] = "Study cohort \n n = 373"
+
+# adjust the size of boxes to fit content
+box_x <- c(0.20, 0.25, 0.25, 0.25, 0.25, 0.20)
+box_y <- c(0.07, 0.07, 0.07, 0.07, 0.07, 0.07)
+
+# Draw the arrows
+straightarrow(from = c(box_pos[1,1],box_pos[2,2]), to = box_pos[2,], lwd = 1)  
+straightarrow(from = c(box_pos[1,1],box_pos[3,2]), to = box_pos[3,], lwd = 1)  
+straightarrow(from = c(box_pos[1,1],box_pos[4,2]), to = box_pos[4,], lwd = 1)  
+straightarrow(from = box_pos[1,], to = box_pos[4,], lwd = 1)
+
+# Draw the boxes
+for (i in 1:num_of_boxes) {
+  textrect(mid = box_pos[i,], radx = box_x[i], rady = box_y[i], 
+           lab = box_content[i], 
+           shadow.col = "grey")
+  }
+```
+
 
 ## Install PostgreSQL and `RpostgreSQL` package on CentOS
 

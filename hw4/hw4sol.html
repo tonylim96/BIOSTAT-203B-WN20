@@ -363,7 +363,7 @@ summary {
 
 
 <h1 class="title toc-ignore">BIOSTAT 203B Homework 4</h1>
-<h3 class="subtitle">Due Friday, 3/20 @ 11:59 PM</h3>
+<h3 class="subtitle">Due Sunday, 3/22 @ 11:59 PM</h3>
 <h4 class="author">Tony Lim</h4>
 
 </div>
@@ -412,12 +412,12 @@ summary {
 <pre class="r"><code>library(DBI)
 library(RPostgreSQL)
 library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ─────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ── Attaching packages ──────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
 <pre><code>## ✓ ggplot2 3.2.1     ✓ purrr   0.3.3
 ## ✓ tibble  2.1.3     ✓ dplyr   0.8.4
 ## ✓ tidyr   1.0.2     ✓ stringr 1.4.0
 ## ✓ readr   1.3.1     ✓ forcats 0.4.0</code></pre>
-<pre><code>## ── Conflicts ────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Conflicts ─────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(lubridate)</code></pre>
@@ -502,31 +502,32 @@ dbExecute(con, paste(&quot;SET search_path TO &quot;, schema, sep=&quot; &quot;)
 ## [151] &quot;chartevents_141&quot;    &quot;chartevents_142&quot;    &quot;chartevents_143&quot;   
 ## [154] &quot;chartevents_144&quot;    &quot;chartevents_145&quot;    &quot;chartevents_146&quot;   
 ## [157] &quot;chartevents_147&quot;    &quot;chartevents_148&quot;    &quot;chartevents_149&quot;   
-## [160] &quot;chartevents_150&quot;    &quot;chartevents_151&quot;    &quot;chartevents_152&quot;   
-## [163] &quot;chartevents_153&quot;    &quot;chartevents_154&quot;    &quot;chartevents_155&quot;   
-## [166] &quot;chartevents_156&quot;    &quot;chartevents_157&quot;    &quot;chartevents_158&quot;   
-## [169] &quot;chartevents_159&quot;    &quot;chartevents_160&quot;    &quot;chartevents_161&quot;   
-## [172] &quot;chartevents_162&quot;    &quot;chartevents_163&quot;    &quot;chartevents_164&quot;   
-## [175] &quot;chartevents_165&quot;    &quot;chartevents_166&quot;    &quot;chartevents_167&quot;   
-## [178] &quot;chartevents_168&quot;    &quot;chartevents_169&quot;    &quot;chartevents_170&quot;   
-## [181] &quot;chartevents_171&quot;    &quot;chartevents_172&quot;    &quot;chartevents_173&quot;   
-## [184] &quot;chartevents_174&quot;    &quot;chartevents_175&quot;    &quot;chartevents_176&quot;   
-## [187] &quot;chartevents_177&quot;    &quot;chartevents_178&quot;    &quot;chartevents_179&quot;   
-## [190] &quot;chartevents_180&quot;    &quot;chartevents_181&quot;    &quot;chartevents_182&quot;   
-## [193] &quot;chartevents_183&quot;    &quot;chartevents_184&quot;    &quot;chartevents_185&quot;   
-## [196] &quot;chartevents_186&quot;    &quot;chartevents_187&quot;    &quot;chartevents_188&quot;   
-## [199] &quot;chartevents_189&quot;    &quot;chartevents_190&quot;    &quot;chartevents_191&quot;   
-## [202] &quot;chartevents_192&quot;    &quot;chartevents_193&quot;    &quot;chartevents_194&quot;   
-## [205] &quot;chartevents_195&quot;    &quot;chartevents_196&quot;    &quot;chartevents_197&quot;   
-## [208] &quot;chartevents_198&quot;    &quot;chartevents_199&quot;    &quot;chartevents_200&quot;   
-## [211] &quot;chartevents_201&quot;    &quot;chartevents_202&quot;    &quot;chartevents_203&quot;   
-## [214] &quot;chartevents_204&quot;    &quot;chartevents_205&quot;    &quot;chartevents_206&quot;   
-## [217] &quot;chartevents_207&quot;    &quot;cptevents&quot;          &quot;datetimeevents&quot;    
-## [220] &quot;diagnoses_icd&quot;      &quot;drgcodes&quot;           &quot;d_cpt&quot;             
-## [223] &quot;d_icd_diagnoses&quot;    &quot;d_icd_procedures&quot;   &quot;d_items&quot;           
-## [226] &quot;d_labitems&quot;         &quot;icustays&quot;           &quot;inputevents_cv&quot;    
-## [229] &quot;prescriptions&quot;      &quot;procedureevents_mv&quot; &quot;procedures_icd&quot;    
-## [232] &quot;services&quot;           &quot;transfers&quot;</code></pre>
+## [160] &quot;icd&quot;                &quot;chartevents_150&quot;    &quot;chartevents_151&quot;   
+## [163] &quot;chartevents_152&quot;    &quot;chartevents_153&quot;    &quot;chartevents_154&quot;   
+## [166] &quot;chartevents_155&quot;    &quot;chartevents_156&quot;    &quot;chartevents_157&quot;   
+## [169] &quot;chartevents_158&quot;    &quot;chartevents_159&quot;    &quot;chartevents_160&quot;   
+## [172] &quot;chartevents_161&quot;    &quot;chartevents_162&quot;    &quot;chartevents_163&quot;   
+## [175] &quot;chartevents_164&quot;    &quot;chartevents_165&quot;    &quot;chartevents_166&quot;   
+## [178] &quot;chartevents_167&quot;    &quot;chartevents_168&quot;    &quot;chartevents_169&quot;   
+## [181] &quot;chartevents_170&quot;    &quot;chartevents_171&quot;    &quot;chartevents_172&quot;   
+## [184] &quot;chartevents_173&quot;    &quot;chartevents_174&quot;    &quot;chartevents_175&quot;   
+## [187] &quot;chartevents_176&quot;    &quot;chartevents_177&quot;    &quot;chartevents_178&quot;   
+## [190] &quot;chartevents_179&quot;    &quot;chartevents_180&quot;    &quot;chartevents_181&quot;   
+## [193] &quot;chartevents_182&quot;    &quot;chartevents_183&quot;    &quot;chartevents_184&quot;   
+## [196] &quot;chartevents_185&quot;    &quot;chartevents_186&quot;    &quot;chartevents_187&quot;   
+## [199] &quot;chartevents_188&quot;    &quot;chartevents_189&quot;    &quot;chartevents_190&quot;   
+## [202] &quot;chartevents_191&quot;    &quot;chartevents_192&quot;    &quot;chartevents_193&quot;   
+## [205] &quot;chartevents_194&quot;    &quot;chartevents_195&quot;    &quot;chartevents_196&quot;   
+## [208] &quot;chartevents_197&quot;    &quot;chartevents_198&quot;    &quot;chartevents_199&quot;   
+## [211] &quot;chartevents_200&quot;    &quot;chartevents_201&quot;    &quot;chartevents_202&quot;   
+## [214] &quot;chartevents_203&quot;    &quot;chartevents_204&quot;    &quot;chartevents_205&quot;   
+## [217] &quot;chartevents_206&quot;    &quot;chartevents_207&quot;    &quot;cptevents&quot;         
+## [220] &quot;datetimeevents&quot;     &quot;diagnoses_icd&quot;      &quot;drgcodes&quot;          
+## [223] &quot;d_cpt&quot;              &quot;d_icd_diagnoses&quot;    &quot;d_icd_procedures&quot;  
+## [226] &quot;d_items&quot;            &quot;d_labitems&quot;         &quot;icustays&quot;          
+## [229] &quot;inputevents_cv&quot;     &quot;prescriptions&quot;      &quot;procedureevents_mv&quot;
+## [232] &quot;procedures_icd&quot;     &quot;services&quot;           &quot;transfers&quot;         
+## [235] &quot;dbplyr_073&quot;</code></pre>
 <p>An example SQL query:</p>
 <pre class="r"><code>sql_query &lt;- &quot;SELECT i.subject_id, i.hadm_id, i.los
               FROM icustays i;&quot;
@@ -588,7 +589,7 @@ patients %&gt;% print(width = Inf)</code></pre>
 <pre><code>## List of 2
 ##  $ src:List of 2
 ##   ..$ con  :Formal class 'PostgreSQLConnection' [package &quot;RPostgreSQL&quot;] with 1 slot
-##   .. .. ..@ Id: int [1:2] 10114 0
+##   .. .. ..@ Id: int [1:2] 1538 0
 ##   ..$ disco: NULL
 ##   ..- attr(*, &quot;class&quot;)= chr [1:4] &quot;src_PostgreSQLConnection&quot; &quot;src_dbi&quot; &quot;src_sql&quot; &quot;src&quot;
 ##  $ ops:List of 2
@@ -642,22 +643,22 @@ patients %&gt;% print(width = Inf)</code></pre>
 ## # … with more rows</code></pre>
 <p>Now we want to restrict to heart attack patients. To find all possible ICD-9 codes related to heart attack, we search for string <code>myocardial infarction</code> in the <code>long_title</code> of table <code>d_icd_diagnoses</code>:</p>
 <pre class="r"><code>tbl(con, &quot;d_icd_diagnoses&quot;) %&gt;%
-  filter(str_detect(tolower(long_title), &quot;myocardial infarction&quot;)) %&gt;%
+  filter(str_detect(tolower(long_title), &quot;neoplasm&quot;)) %&gt;%
   print() -&gt; mi_codes</code></pre>
 <pre><code>## # Source:   lazy query [?? x 4]
 ## # Database: postgres 11.0.7 [postgres@/var/run/postgresql:5432/mimic]
 ##    row_id icd9_code short_title        long_title                               
 ##     &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;              &lt;chr&gt;                                    
-##  1   4335 41000     AMI anterolateral… Acute myocardial infarction of anterolat…
-##  2   4336 41001     AMI anterolateral… Acute myocardial infarction of anterolat…
-##  3   4337 41002     AMI anterolateral… Acute myocardial infarction of anterolat…
-##  4   4338 41010     AMI anterior wall… Acute myocardial infarction of other ant…
-##  5   4339 41011     AMI anterior wall… Acute myocardial infarction of other ant…
-##  6   4340 41012     AMI anterior wall… Acute myocardial infarction of other ant…
-##  7   4341 41020     AMI inferolateral… Acute myocardial infarction of inferolat…
-##  8   4342 41021     AMI inferolateral… Acute myocardial infarction of inferolat…
-##  9   4343 41022     AMI inferolateral… Acute myocardial infarction of inferolat…
-## 10   4344 41030     AMI inferopost, u… Acute myocardial infarction of inferopos…
+##  1   1349 1709      Malig neopl bone … Malignant neoplasm of bone and articular…
+##  2   1246 1590      Malig neo intesti… Malignant neoplasm of intestinal tract, …
+##  3   1247 1591      Malignant neo spl… Malignant neoplasm of spleen, not elsewh…
+##  4   1248 1598      Mal neo gi/intra-… Malignant neoplasm of other sites of dig…
+##  5   1249 1599      Mal neo GI tract … Malignant neoplasm of ill-defined sites …
+##  6   1250 1712      Mal neo soft tiss… Malignant neoplasm of connective and oth…
+##  7   1251 1713      Mal neo soft tiss… Malignant neoplasm of connective and oth…
+##  8   1252 1714      Mal neo soft tis … Malignant neoplasm of connective and oth…
+##  9   1253 1715      Mal neo soft tis … Malignant neoplasm of connective and oth…
+## 10   1254 1716      Mal neo soft tis … Malignant neoplasm of connective and oth…
 ## # … with more rows</code></pre>
 <p><code>diagnoses_icd</code> table stores the diagnosis of each admission. We use <code>semi_join()</code> to keep the rows in <code>diagnoses_icd</code> that match the ICD-9 codes related to heart attack:</p>
 <pre class="r"><code>tbl(con, &quot;diagnoses_icd&quot;) %&gt;%
@@ -667,16 +668,16 @@ patients %&gt;% print(width = Inf)</code></pre>
 ## # Database: postgres 11.0.7 [postgres@/var/run/postgresql:5432/mimic]
 ##    row_id subject_id hadm_id seq_num icd9_code
 ##     &lt;int&gt;      &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;chr&gt;    
-##  1 175785      15805  188616       1 41000    
-##  2 281839      25208  167918       7 41000    
-##  3    594         73  194730       1 41001    
-##  4   6395        543  115307       1 41001    
-##  5   6630        571  193189       1 41001    
-##  6  11015        947  122379       1 41001    
-##  7  12916       1114  164691       2 41001    
-##  8  14945       1317  198886       1 41001    
-##  9  18340       1626  117062       1 41001    
-## 10  30343       2700  100335       1 41001    
+##  1 349606      30437  191673       1 1598     
+##  2 344455      30041  170860       1 1598     
+##  3 173064      15546  140996      19 1599     
+##  4 367250      31923  192162      10 1599     
+##  5 206945      18609  175191       1 1712     
+##  6 508070      68116  179546       5 1712     
+##  7 525830      71963  110965       4 1712     
+##  8  15889       1389  175065       1 1713     
+##  9  82505       7380  112188       1 1713     
+## 10 232962      20868  150969       1 1713     
 ## # … with more rows</code></pre>
 <p>MI may not be listed as the principal diagnosis; as explained in <a href="https://mimic.physionet.org/mimictables/diagnoses_icd/">the documentation for the <code>patients</code> table</a>, the <code>seq_num</code> field is a priority ranking for the diagnoses generated at the end of stay. In order to focus on patients for whom MI was central to their hospitalization, we will include records with MI in any of the first five diagnosis positions, according to the <code>seq_num</code> field. To avoid duplicate admissions, we use <code>group_by()</code> and <code>top_n()</code> to limit the query to the first MI diagnosis for each admission.</p>
 <pre class="r"><code>mi_admissions %&gt;%
@@ -697,16 +698,16 @@ patients %&gt;% print(width = Inf)</code></pre>
 ## # Database: postgres 11.0.7 [postgres@/var/run/postgresql:5432/mimic]
 ##    subject_id hadm_id icd9_code seq_num
 ##         &lt;int&gt;   &lt;int&gt; &lt;chr&gt;       &lt;int&gt;
-##  1         24  161859 41041           1
-##  2         28  162569 412             4
-##  3         42  119203 412             4
-##  4         53  155385 41021           1
-##  5         73  194730 41001           1
-##  6         79  181542 41011           1
-##  7        108  123552 412             5
-##  8        111  192123 41081           5
-##  9        123  195632 41011           1
-## 10        149  154869 41011           1
+##  1         11  194540 1913            1
+##  2         12  112213 1570            1
+##  3         23  124321 2252            1
+##  4         41  101757 1917            1
+##  5         56  181711 1983            1
+##  6         58  177285 2161            2
+##  7         84  120969 1919            1
+##  8         84  166401 1919            1
+##  9        103  130744 1983            1
+## 10        103  133550 1983            2
 ## # … with more rows</code></pre>
 <p>Now we <code>inner_join</code> the table of admissions to CCU and the table of admissions that include MI diagnosis.</p>
 <pre class="r"><code>ccu_admissions %&gt;%
@@ -716,16 +717,16 @@ patients %&gt;% print(width = Inf)</code></pre>
 ## # Database: postgres 11.0.7 [postgres@/var/run/postgresql:5432/mimic]
 ##    subject_id hadm_id icd9_code seq_num
 ##         &lt;int&gt;   &lt;int&gt; &lt;chr&gt;       &lt;int&gt;
-##  1         24  161859 41041           1
-##  2         42  119203 412             4
-##  3         53  155385 41021           1
-##  4         73  194730 41001           1
-##  5        111  192123 41081           5
-##  6        123  195632 41011           1
-##  7        149  154869 41011           1
-##  8        154  111735 41041           1
-##  9        158  169433 412             4
-## 10        160  161672 41041           1
+##  1        225  130684 1642            1
+##  2        301  160332 19889           1
+##  3        357  101651 1550            5
+##  4        808  100677 1972            1
+##  5        808  107825 1972            1
+##  6        813  159474 1536            1
+##  7        860  176225 1961            1
+##  8        863  194975 1522            1
+##  9       1207  109003 2113            2
+## 10       1265  120573 19889           1
 ## # … with more rows</code></pre>
 </div>
 <div id="transform-and-augment-query-tables" class="section level2">
@@ -739,16 +740,16 @@ patients %&gt;% print(width = Inf)</code></pre>
 ## # Database: postgres 11.0.7 [postgres@/var/run/postgresql:5432/mimic]
 ##    subject_id hadm_id icd9_code principal_dx
 ##         &lt;int&gt;   &lt;int&gt; &lt;chr&gt;     &lt;lgl&gt;       
-##  1         24  161859 41041     TRUE        
-##  2         42  119203 412       FALSE       
-##  3         53  155385 41021     TRUE        
-##  4         73  194730 41001     TRUE        
-##  5        111  192123 41081     FALSE       
-##  6        123  195632 41011     TRUE        
-##  7        149  154869 41011     TRUE        
-##  8        154  111735 41041     TRUE        
-##  9        158  169433 412       FALSE       
-## 10        160  161672 41041     TRUE        
+##  1        225  130684 1642      TRUE        
+##  2        301  160332 19889     TRUE        
+##  3        357  101651 1550      FALSE       
+##  4        808  100677 1972      TRUE        
+##  5        808  107825 1972      TRUE        
+##  6        813  159474 1536      TRUE        
+##  7        860  176225 1961      TRUE        
+##  8        863  194975 1522      TRUE        
+##  9       1207  109003 2113      FALSE       
+## 10       1265  120573 19889     TRUE        
 ## # … with more rows</code></pre>
 <p>We want to add information about the severity of patients’ ailments. The <code>drgcodes</code> table contains, for <code>DRG</code> codes from the All Payers Registry (APR), severity and mortality indicators. We pull the drug severity information and right-join it to our query table.</p>
 <pre class="r"><code>tbl(con, &quot;drgcodes&quot;) %&gt;%
@@ -761,16 +762,16 @@ patients %&gt;% print(width = Inf)</code></pre>
 ## # Database: postgres 11.0.7 [postgres@/var/run/postgresql:5432/mimic]
 ##    subject_id hadm_id drg_severity icd9_code principal_dx
 ##         &lt;int&gt;   &lt;int&gt;        &lt;dbl&gt; &lt;chr&gt;     &lt;lgl&gt;       
-##  1         24  161859            1 41041     TRUE        
-##  2         42  119203            1 412       FALSE       
-##  3         53  155385            1 41021     TRUE        
-##  4         73  194730            1 41001     TRUE        
-##  5        111  192123            4 41081     FALSE       
-##  6        123  195632            1 41011     TRUE        
-##  7        149  154869            1 41011     TRUE        
-##  8        154  111735            1 41041     TRUE        
-##  9        158  169433            1 412       FALSE       
-## 10        160  161672            1 41041     TRUE        
+##  1        225  130684            1 1642      TRUE        
+##  2        301  160332            4 19889     TRUE        
+##  3        357  101651            4 1550      FALSE       
+##  4        357  101651            4 1550      FALSE       
+##  5        808  100677            2 1972      TRUE        
+##  6        808  107825            2 1972      TRUE        
+##  7        813  159474            1 1536      TRUE        
+##  8        860  176225            1 1961      TRUE        
+##  9        863  194975            1 1522      TRUE        
+## 10       1207  109003            1 2113      FALSE       
 ## # … with more rows</code></pre>
 <p>Pull the admission time <code>admittime</code>, discharge time <code>dischtime</code>, date of birth <code>dob</code>, and date of death <code>dod</code>. We are interested in the mortaility rate 30 days after discharge. So we only keep patients who didn’t die in hospital.</p>
 <pre class="r"><code>study_admissions %&gt;%
@@ -790,28 +791,28 @@ patients %&gt;% print(width = Inf)</code></pre>
 ## # Database: postgres 11.0.7 [postgres@/var/run/postgresql:5432/mimic]
 ##    subject_id hadm_id drg_severity icd9_code principal_dx admittime          
 ##         &lt;int&gt;   &lt;int&gt;        &lt;dbl&gt; &lt;chr&gt;     &lt;lgl&gt;        &lt;dttm&gt;             
-##  1         24  161859            1 41041     TRUE         2139-06-06 16:14:00
-##  2         42  119203            1 412       FALSE        2116-04-26 18:58:00
-##  3         53  155385            1 41021     TRUE         2170-03-20 20:20:00
-##  4         73  194730            1 41001     TRUE         2170-12-22 00:12:00
-##  5        111  192123            4 41081     FALSE        2142-04-24 06:55:00
-##  6        123  195632            1 41011     TRUE         2161-10-29 02:27:00
-##  7        149  154869            1 41011     TRUE         2135-02-18 19:16:00
-##  8        154  111735            1 41041     TRUE         2117-12-29 21:36:00
-##  9        158  169433            1 412       FALSE        2170-02-03 11:38:00
-## 10        160  161672            1 41041     TRUE         2174-11-06 08:38:00
+##  1        225  130684            1 1642      TRUE         2168-01-04 00:57:00
+##  2        301  160332            4 19889     TRUE         2189-11-10 16:39:00
+##  3        357  101651            4 1550      FALSE        2199-10-20 12:05:00
+##  4        357  101651            4 1550      FALSE        2199-10-20 12:05:00
+##  5        808  100677            2 1972      TRUE         2181-07-12 20:11:00
+##  6        808  107825            2 1972      TRUE         2181-07-30 22:44:00
+##  7        813  159474            1 1536      TRUE         2179-12-15 18:01:00
+##  8        860  176225            1 1961      TRUE         2161-02-09 14:28:00
+##  9        863  194975            1 1522      TRUE         2117-10-10 22:40:00
+## 10       1207  109003            1 2113      FALSE        2172-11-30 03:15:00
 ##    dischtime           dob                 dod                
 ##    &lt;dttm&gt;              &lt;dttm&gt;              &lt;dttm&gt;             
-##  1 2139-06-09 12:48:00 2100-05-31 00:00:00 NA                 
-##  2 2116-04-30 18:16:00 2055-02-25 00:00:00 2121-10-17 00:00:00
-##  3 2170-03-23 18:00:00 2124-08-31 00:00:00 NA                 
-##  4 2170-12-26 12:00:00 2113-05-22 00:00:00 NA                 
-##  5 2142-05-05 11:45:00 2075-07-16 00:00:00 2144-07-01 00:00:00
-##  6 2161-11-01 11:37:00 2105-08-31 00:00:00 NA                 
-##  7 2135-02-26 17:00:00 1835-02-18 00:00:00 2135-03-02 00:00:00
-##  8 2118-01-01 14:27:00 2073-07-26 00:00:00 NA                 
-##  9 2170-02-06 16:49:00 2102-02-26 00:00:00 NA                 
-## 10 2174-11-08 16:35:00 2124-11-22 00:00:00 NA                 
+##  1 2168-01-13 11:00:00 2137-10-10 00:00:00 NA                 
+##  2 2189-11-18 14:43:00 2104-07-15 00:00:00 2189-11-20 00:00:00
+##  3 2199-10-23 17:30:00 2135-03-22 00:00:00 2201-08-02 00:00:00
+##  4 2199-10-23 17:30:00 2135-03-22 00:00:00 2201-08-02 00:00:00
+##  5 2181-07-17 13:14:00 2126-06-27 00:00:00 2182-01-31 00:00:00
+##  6 2181-08-07 17:46:00 2126-06-27 00:00:00 2182-01-31 00:00:00
+##  7 2179-12-30 14:27:00 1879-12-15 00:00:00 2180-01-30 00:00:00
+##  8 2161-02-25 16:00:00 2100-06-14 00:00:00 2161-03-08 00:00:00
+##  9 2117-11-04 16:24:00 2053-09-24 00:00:00 2118-02-10 00:00:00
+## 10 2172-12-07 11:57:00 2109-12-21 00:00:00 2177-01-13 00:00:00
 ## # … with more rows</code></pre>
 <p>To add <code>age</code> (at admission) variable into the table. <a href="https://mimic.physionet.org/mimictables/patients/">The documentation for the patients table</a> explains that patients of 90 years and older had their ages artificially inflated, so we remove these patients from the analysis.</p>
 <pre class="r"><code>study_admissions %&gt;%
@@ -835,16 +836,16 @@ patients %&gt;% print(width = Inf)</code></pre>
 ## # Database: postgres 11.0.7 [postgres@/var/run/postgresql:5432/mimic]
 ##    subject_id hadm_id   age mortality drg_severity icd9_code principal_dx
 ##         &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;lgl&gt;            &lt;dbl&gt; &lt;chr&gt;     &lt;lgl&gt;       
-##  1         24  161859    39 NA                   1 41041     TRUE        
-##  2         42  119203    61 TRUE                 1 412       FALSE       
-##  3         53  155385    45 NA                   1 41021     TRUE        
-##  4         73  194730    57 NA                   1 41001     TRUE        
-##  5        111  192123    66 TRUE                 4 41081     FALSE       
-##  6        123  195632    56 NA                   1 41011     TRUE        
-##  7        154  111735    44 NA                   1 41041     TRUE        
-##  8        158  169433    67 NA                   1 412       FALSE       
-##  9        160  161672    49 NA                   1 41041     TRUE        
-## 10        194  124794    47 NA                   1 41041     TRUE        
+##  1        225  130684    30 NA                   1 1642      TRUE        
+##  2        301  160332    85 TRUE                 4 19889     TRUE        
+##  3        357  101651    64 TRUE                 4 1550      FALSE       
+##  4        357  101651    64 TRUE                 4 1550      FALSE       
+##  5        808  100677    55 TRUE                 2 1972      TRUE        
+##  6        808  107825    55 TRUE                 2 1972      TRUE        
+##  7        860  176225    60 TRUE                 1 1961      TRUE        
+##  8        863  194975    64 TRUE                 1 1522      TRUE        
+##  9       1207  109003    62 TRUE                 1 2113      FALSE       
+## 10       1265  120573    50 TRUE                 1 19889     TRUE        
 ## # … with more rows</code></pre>
 <p>Many mortality indicators are missing, due to neither the hospital database nor the social security database having a record of these patients’ deaths. We could convert these to <code>FALSE</code> values, but it may be helpful to retain in the analytic table this information on whether deaths were recorded at all, e.g. for validation or sensitivity testing.</p>
 <p>Finally, let’s merge some demographic information (ethnicity, gender) into our study <code>study_admissions</code>.</p>
@@ -892,18 +893,18 @@ patients %&gt;% print(width = Inf)</code></pre>
   print() -&gt; study_subjects</code></pre>
 <pre><code>## # Source:   lazy query [?? x 3]
 ## # Database: postgres 11.0.7 [postgres@/var/run/postgresql:5432/mimic]
-##    subject_id gender ethnicity            
-##         &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;                
-##  1      11418 M      UNKNOWN/NOT SPECIFIED
-##  2      11787 F      WHITE                
-##  3      28951 M      WHITE                
-##  4      24780 M      HISPANIC OR LATINO   
-##  5      30647 M      UNABLE TO OBTAIN     
-##  6       5960 F      UNKNOWN/NOT SPECIFIED
-##  7      23893 M      WHITE                
-##  8      81371 M      WHITE                
-##  9       3606 M      UNKNOWN/NOT SPECIFIED
-## 10      58438 F      OTHER                
+##    subject_id gender ethnicity             
+##         &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;                 
+##  1      18598 M      WHITE                 
+##  2      75631 F      BLACK/AFRICAN AMERICAN
+##  3      27400 F      WHITE                 
+##  4      81608 M      WHITE                 
+##  5      14104 M      WHITE                 
+##  6      28845 F      UNKNOWN/NOT SPECIFIED 
+##  7        808 F      HISPANIC OR LATINO    
+##  8      45029 M      WHITE                 
+##  9      30196 M      WHITE                 
+## 10      31511 M      BLACK/AFRICAN AMERICAN
 ## # … with more rows</code></pre>
 <p>Let’s resolves ome diversity and inconsistency in the <code>ethnicity</code> field:</p>
 <pre class="r"><code>unknown_ethnicity &lt;- c(
@@ -927,20 +928,20 @@ study_subjects %&gt;%
   )) %&gt;%
   select(subject_id, gender, ethnic_group) %&gt;%
   print() -&gt; study_subjects</code></pre>
-<pre><code>## # A tibble: 1,203 x 3
+<pre><code>## # A tibble: 285 x 3
 ##    subject_id gender ethnic_group
 ##         &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;       
-##  1         24 M      WHITE       
-##  2         42 M      &lt;NA&gt;        
-##  3         53 M      &lt;NA&gt;        
-##  4         73 F      WHITE       
-##  5        111 F      WHITE       
-##  6        123 M      HISPANIC    
-##  7        154 M      WHITE       
-##  8        158 M      WHITE       
-##  9        160 F      WHITE       
-## 10        194 M      BLACK       
-## # … with 1,193 more rows</code></pre>
+##  1        225 M      WHITE       
+##  2        301 M      WHITE       
+##  3        357 M      WHITE       
+##  4        808 F      HISPANIC    
+##  5        860 F      WHITE       
+##  6        863 M      WHITE       
+##  7       1207 M      WHITE       
+##  8       1265 M      WHITE       
+##  9       1531 M      BLACK       
+## 10       1860 F      BLACK       
+## # … with 275 more rows</code></pre>
 <p>Some patients are coded as belonging to more than one ethnic group. To resolve these inconsistencies, we define a helper function to pick the modal value from a vector of values in R, which can be used by the <code>summarize()</code> function to choose one ethnic group for each patient.</p>
 <pre class="r"><code>most &lt;- function(x) {
   if (all(is.na(x))) return(NA_character_)
@@ -955,38 +956,38 @@ study_subjects %&gt;%
   ungroup() %&gt;%
   mutate(ethnic_group = ifelse(is.na(ethnic_group), &quot;UNKNOWN&quot;, ethnic_group)) %&gt;%
   print() -&gt; subject_ethnic_groups</code></pre>
-<pre><code>## # A tibble: 1,188 x 2
+<pre><code>## # A tibble: 282 x 2
 ##    subject_id ethnic_group
 ##         &lt;int&gt; &lt;chr&gt;       
-##  1         24 WHITE       
-##  2         42 UNKNOWN     
-##  3         53 UNKNOWN     
-##  4         73 WHITE       
-##  5        111 WHITE       
-##  6        123 HISPANIC    
-##  7        154 WHITE       
-##  8        158 WHITE       
-##  9        160 WHITE       
-## 10        194 BLACK       
-## # … with 1,178 more rows</code></pre>
+##  1        225 WHITE       
+##  2        301 WHITE       
+##  3        357 WHITE       
+##  4        808 HISPANIC    
+##  5        860 WHITE       
+##  6        863 WHITE       
+##  7       1207 WHITE       
+##  8       1265 WHITE       
+##  9       1531 BLACK       
+## 10       1860 BLACK       
+## # … with 272 more rows</code></pre>
 <pre class="r"><code>study_subjects %&gt;%
   select(subject_id, gender) %&gt;%
   left_join(subject_ethnic_groups, by = &quot;subject_id&quot;) %&gt;%
   print() -&gt; study_subjects</code></pre>
-<pre><code>## # A tibble: 1,203 x 3
+<pre><code>## # A tibble: 285 x 3
 ##    subject_id gender ethnic_group
 ##         &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;       
-##  1         24 M      WHITE       
-##  2         42 M      UNKNOWN     
-##  3         53 M      UNKNOWN     
-##  4         73 F      WHITE       
-##  5        111 F      WHITE       
-##  6        123 M      HISPANIC    
-##  7        154 M      WHITE       
-##  8        158 M      WHITE       
-##  9        160 F      WHITE       
-## 10        194 M      BLACK       
-## # … with 1,193 more rows</code></pre>
+##  1        225 M      WHITE       
+##  2        301 M      WHITE       
+##  3        357 M      WHITE       
+##  4        808 F      HISPANIC    
+##  5        860 F      WHITE       
+##  6        863 M      WHITE       
+##  7       1207 M      WHITE       
+##  8       1265 M      WHITE       
+##  9       1531 M      BLACK       
+## 10       1860 F      BLACK       
+## # … with 275 more rows</code></pre>
 <p>Now we add the demographic information <code>gender</code> and <code>ethnicity</code> into our <code>study_admissions</code> table:</p>
 <pre class="r"><code>study_admissions %&gt;%
   left_join(study_subjects, by = &quot;subject_id&quot;, copy = TRUE) %&gt;%
@@ -995,16 +996,16 @@ study_subjects %&gt;%
 ## # Database: postgres 11.0.7 [postgres@/var/run/postgresql:5432/mimic]
 ##    subject_id hadm_id   age mortality drg_severity icd9_code principal_dx gender
 ##         &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;lgl&gt;            &lt;dbl&gt; &lt;chr&gt;     &lt;lgl&gt;        &lt;chr&gt; 
-##  1         24  161859    39 NA                   1 41041     TRUE         M     
-##  2         42  119203    61 TRUE                 1 412       FALSE        M     
-##  3         53  155385    45 NA                   1 41021     TRUE         M     
-##  4         73  194730    57 NA                   1 41001     TRUE         F     
-##  5        111  192123    66 TRUE                 4 41081     FALSE        F     
-##  6        123  195632    56 NA                   1 41011     TRUE         M     
-##  7        154  111735    44 NA                   1 41041     TRUE         M     
-##  8        158  169433    67 NA                   1 412       FALSE        M     
-##  9        160  161672    49 NA                   1 41041     TRUE         F     
-## 10        194  124794    47 NA                   1 41041     TRUE         M     
+##  1        225  130684    30 NA                   1 1642      TRUE         M     
+##  2        301  160332    85 TRUE                 4 19889     TRUE         M     
+##  3        357  101651    64 TRUE                 4 1550      FALSE        M     
+##  4        357  101651    64 TRUE                 4 1550      FALSE        M     
+##  5        808  100677    55 TRUE                 2 1972      TRUE         F     
+##  6        808  107825    55 TRUE                 2 1972      TRUE         F     
+##  7        860  176225    60 TRUE                 1 1961      TRUE         F     
+##  8        863  194975    64 TRUE                 1 1522      TRUE         M     
+##  9       1207  109003    62 TRUE                 1 2113      FALSE        M     
+## 10       1265  120573    50 TRUE                 1 19889     TRUE         M     
 ## # … with more rows, and 1 more variable: ethnic_group &lt;chr&gt;</code></pre>
 </div>
 <div id="close-the-connection-to-a-database" class="section level2">
