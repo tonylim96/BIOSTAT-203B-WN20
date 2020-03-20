@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 In this assignment, you are to write a report analyzing the electronic health record (EHR) data MIMIC-III. You report will demostrate your knowledge of working with PostgreSQL database, data visualization, and commonly used analytical methods such as logistic regression and neural network. Your report should include at least following parts:  
 
-1. An informative title. For example, _30-Day Mortality Rate of Myocardia Infarction Patients Admitted to CCU_.  
+1. An informative title. For example, _30-Day Mortality Rate of Patients with Neoplasm Admitted to MICU_.  
 
 2. Introduction. Describe the MIMIC-III data set and what research hypothesis/goal you are to address using this data.
 
@@ -281,6 +281,15 @@ study_admissions %>%
   left_join(study_subjects, by = "subject_id", copy = TRUE) %>%
   print() -> study_admissions
 ```
+
+## Logistic regression
+
+```{r}
+logit_mort <- glm(mortality ~ age + drg_severity + gender.x + ethnic_group.x, data = study_admissions)
+
+summary(logit_mort)
+```
+
 
 ## Close the connection to a database
 
