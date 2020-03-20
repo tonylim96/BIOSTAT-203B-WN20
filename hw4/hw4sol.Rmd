@@ -285,9 +285,16 @@ study_admissions %>%
 ## Logistic regression
 
 ```{r}
-logit_mort <- glm(mortality ~ age + drg_severity + gender.x + ethnic_group.x, data = study_admissions)
+logit_mort <- glm(mortality ~ age + drg_severity + gender + ethnic_group, data = study_admissions, 
+                  family = binomial(link = "logit"), maxit = 100)
 
 summary(logit_mort)
+```
+
+## Neural network
+
+```{r}
+
 ```
 
 
@@ -295,7 +302,7 @@ summary(logit_mort)
 
 Close the connection:
 ```{r}
-dbDisconnect(con)
+# dbDisconnect(con)
 ```
 
 ## CONSORT Flow Diagrams
@@ -401,16 +408,4 @@ for (i in 1:num_of_boxes) {
            lab = box_content[i], 
            shadow.col = "grey")
   }
-```
-
-
-## Install PostgreSQL and `RpostgreSQL` package on CentOS
-
-This is a note to myself (Dr. Hua Zhou). The postgres in yum is an old version. We want to install the most recent postgres and then build the `RpostgreSQL` package based on it. 
-
-1. Follow instructions in <https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-centos-7> to install PostgreSQL 11 on CentOS 7. 
-
-2. Issue following command to install `RPostgreSQL` in R:
-```{bash, eval = F}
-sudo R -e 'Sys.setenv(PG_INCDIR="/usr/pgsql-11/include/"); Sys.setenv(PG_LIBDIR="/usr/pgsql-11/lib/"); install.packages("RPostgreSQL")'
 ```
