@@ -105,16 +105,17 @@ But keep in mind that the point of using a database software is that the data ta
 
 ## Query and subsetting
 
-In this section, we demo how to create a cohort of patients who were directly admitted into CCU and were diagnosed with heart attack.
+In this section, we demo how to create a cohort of patients who were directly admitted into MICU and were diagnosed with neoplasm (cancer).
 
-First we create a (query) table of patients who were directly admitted into CCU.
+First we create a (query) table of patients who were directly admitted into MICU.
+
 ```{r}
 tbl(con, "transfers") %>%
   select(subject_id, hadm_id, prev_careunit, curr_careunit) %>%
-  filter(is.na(prev_careunit) & curr_careunit == "CCU") %>%
+  filter(is.na(prev_careunit) & curr_careunit == "MICU") %>%
   select(subject_id, hadm_id) %>%
   distinct() %>%
-  print() -> ccu_admissions
+  print() -> micu_admissions
 ```
 
 Now we want to restrict to heart attack patients. To find all possible ICD-9 codes related to heart attack, we search for string `myocardial infarction` in the `long_title` of table `d_icd_diagnoses`:
@@ -127,7 +128,7 @@ tbl(con, "d_icd_diagnoses") %>%
 `diagnoses_icd` table stores the diagnosis of each admission. We use `semi_join()` to keep the rows in `diagnoses_icd` that match the ICD-9 codes related to heart attack:
 ```{r}
 tbl(con, "diagnoses_icd") %>%
-  semi_join(neo_codes, by = "icd9_code") %>%
+  semi_join(neo_codes, by = "icd9_code") %>% 
   print() -> neo_admissions
 ```
 
@@ -139,13 +140,13 @@ neo_admissions %>%
   # top_n(1, wt = seq_num) %>% #  not working. bug? use following as workaround
   filter(min_rank(seq_num) <= 1) %>%
   ungroup() %>%
-  select(subject_id, hadm_id, icd9_code, seq_num) %>%
+  select(subject_id, hadm_id, icd9_code, seq_num) %>% 
   print() -> neo_admissions
 ```
-Now we `inner_join` the table of admissions to CCU and the table of admissions that include MI diagnosis.
+Now we `inner_join` the table of admissions to MICU and the table of admissions that include neoplasm diagnosis.
 ```{r}
-ccu_admissions %>%
-  inner_join(neo_admissions, by = c("subject_id", "hadm_id")) %>%
+micu_admissions %>%
+  inner_join(neo_admissions, by = c("subject_id", "hadm_id")) %>% 
   print() -> study_admissions
 ```
 
@@ -317,8 +318,6 @@ box_pos[1,] = c(0.20, vert_pos[1]) # 1st box
 box_pos[2,] = c(0.70, vert_pos[2]) # 2nd box
 box_pos[3,] = c(0.70, vert_pos[3]) # 3rd box
 box_pos[4,] = c(0.20, vert_pos[4]) # etc...
-# box_pos[5,] = c(0.70, vert_pos[5])
-# box_pos[6,] = c(0.20, vert_pos[6])
 
 # content of boxes
 box_content <- matrix(nrow = num_of_boxes, ncol = 1, data = 0)
@@ -328,8 +327,8 @@ box_content[3] = "Exclude if 'neoplasm' isn't in first five seq_num \n n = 12,94
 box_content[4] = "neo_admissions \n n = 5,738"
 
 # adjust the size of boxes to fit content
-box_x <- c(0.20, 0.25, 0.25, 0.25, 0.25, 0.20)
-box_y <- c(0.07, 0.07, 0.07, 0.07, 0.07, 0.07)
+box_x <- c(0.20, 0.25, 0.25, 0.20)
+box_y <- c(0.07, 0.07, 0.07, 0.07)
 
 # Draw the arrows
 straightarrow(from = c(box_pos[1,1],box_pos[2,2]), to = box_pos[2,], lwd = 1)  
@@ -370,14 +369,14 @@ box_pos[4,] = c(0.20, vert_pos[4]) # etc...
 
 # content of boxes
 box_content <- matrix(nrow = num_of_boxes, ncol = 1, data = 0)
-box_content[1] = "All patients in TRANSFER \n n = 261,897" # 1st box
-box_content[2] = "Exclude patients if prev_careunit = NA or\n curr_careunit != CCU \n n = 254,245" # 2nd box
-box_content[3] = "Exclude patients who aren't in neo_admissions \n n = 7,279" # 3rd box
-box_content[4] = "Study cohort \n n = 373"
+box_content[1] = "All admissions in TRANSFER \n n = 261,897" # 1st box
+box_content[2] = "Exclude admissions if prev_careunit = NA or\n curr_careunit != MICU \n n = 241,604" # 2nd box
+box_content[3] = "Exclude admissions not in neo_admissions \n n = 17,256" # 3rd box
+box_content[4] = "Study cohort \n n = 3,037"
 
 # adjust the size of boxes to fit content
-box_x <- c(0.20, 0.25, 0.25, 0.25, 0.25, 0.20)
-box_y <- c(0.07, 0.07, 0.07, 0.07, 0.07, 0.07)
+box_x <- c(0.20, 0.25, 0.25, 0.20)
+box_y <- c(0.07, 0.10, 0.10, 0.07)
 
 # Draw the arrows
 straightarrow(from = c(box_pos[1,1],box_pos[2,2]), to = box_pos[2,], lwd = 1)  
