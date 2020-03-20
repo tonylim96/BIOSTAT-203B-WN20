@@ -323,7 +323,8 @@ box_pos[4,] = c(0.20, vert_pos[4]) # etc...
 box_content <- matrix(nrow = num_of_boxes, ncol = 1, data = 0)
 box_content[1] = "All diagnoses in DIAGNOSES_ICD \n n = 651,047" # 1st box
 box_content[2] = "Exclude those without 'neoplasm' \n n = 632,362" # 2nd box
-box_content[3] = "Exclude if 'neoplasm' isn't in first five seq_num \n n = 12,947" # 3rd box
+box_content[3] = "Exclude if 'neoplasm' isn't in first five seq_num
+  n = 12,947" # 3rd box
 box_content[4] = "neo_admissions \n n = 5,738"
 
 # adjust the size of boxes to fit content
@@ -369,9 +370,10 @@ box_pos[4,] = c(0.20, vert_pos[4]) # etc...
 
 # content of boxes
 box_content <- matrix(nrow = num_of_boxes, ncol = 1, data = 0)
-box_content[1] = "All admissions in TRANSFER \n n = 261,897" # 1st box
-box_content[2] = "Exclude admissions if prev_careunit = NA or\n curr_careunit != MICU \n n = 241,604" # 2nd box
-box_content[3] = "Exclude admissions not in neo_admissions \n n = 17,256" # 3rd box
+box_content[1] = "All admissions in TRANSFER \n n = 261,897"
+box_content[2] = "Exclude admissions if prev_careunit = NA or
+  curr_careunit != MICU \n n = 241,604"
+box_content[3] = "Exclude admissions not in neo_admissions \n n = 17,256" 
 box_content[4] = "Study cohort \n n = 3,037"
 
 # adjust the size of boxes to fit content
