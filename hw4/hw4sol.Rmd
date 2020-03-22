@@ -38,7 +38,7 @@ The database includes information such as:
 
 My research hypothesis predicts that gender will play a significant role in the 30-day mortality rate of patients with neoplasm (cancer) admitted to MICU (Medical Intensive Care Unit). 
 
-MIMIC-III consists of a total of [40 tables](https://mit-lcp.github.io/mimic-schema-spy/index.html), but this report will only utilize:
+MIMIC-III consists of a total of [40 tables](https://mit-lcp.github.io/mimic-schema-spy/index.html). To address the research hypothesis, this report will only utilize:
 
 * [`ADMISSIONS`](https://mimic.physionet.org/mimictables/admissions/)
 * [`D_ICD_DIAGNOSES`](https://mimic.physionet.org/mimictables/d_icd_diagnoses/)
@@ -48,7 +48,6 @@ MIMIC-III consists of a total of [40 tables](https://mit-lcp.github.io/mimic-sch
 * [`TRANSFERS`](https://mimic.physionet.org/mimictables/transfers/)
 
 # Data preparation
-
 Load database libraries and the tidyverse frontend:
 ```{r}
 library(DBI)
@@ -86,7 +85,6 @@ patients %>% print(width = Inf)
 ```
 
 ## Query and subsetting
-
 In this section, we demo how to create a cohort of patients who were directly admitted into MICU and were diagnosed with neoplasm (cancer).
 
 First, we create a (query) table of patients who were directly admitted into MICU.
@@ -132,7 +130,6 @@ micu_admissions %>%
 ```
 
 ## Transform and augment query tables
-
 Now we create a logical variable indicating whether cancer is the principal diagonosis or not (according to `seq_num`).
 ```{r}
 study_admissions %>%
@@ -267,7 +264,6 @@ study_admissions %>%
 ```
 
 ## CONSORT Flow Diagrams
-
 The following [CONSORT Flow Diagrams](http://www.consort-statement.org/consort-statement/flow-diagram) plot the flow of data selection of the patient cohort. 
 ```{r plot}
 library(shape)
@@ -367,7 +363,6 @@ for (i in 1:num_of_boxes) {
 ```
 
 # Data visualization
-
 ## Age
 ```{r, warning=FALSE, message=FALSE}
 study_admissions %>%
@@ -453,11 +448,32 @@ study_admissions %>%
 ```
 
 # Data analysis
+## Creating training and testing samples
+```{r}
+df <- as.data.frame(study_admissions)
+df <- replace_na(df, list(mortality = FALSE))
+
+table(df$mortality)
+
+set.seed(203)
+sample <- sample(c(TRUE, FALSE), nrow(df), replace = T, prob = c(0.6, 0.4))
+
+train <- df[sample, ]
+test <- df[!sample, ]
+```
+
 ## Logistic regression
 ```{r}
-glm(mortality ~ age + drg_severity + principal_dx + gender + ethnic_group, data = study_admissions, 
+glm(mortality ~ age + drg_severity + gender, data = train, 
                   family = binomial(link = "logit"), maxit = 100) %>%
   summary()
+
+logit_mod <- glm(mortality ~ age + drg_severity + gender, data = train, 
+                  family = binomial(link = "logit"), maxit = 100)
+
+predicted <- plogis(predict(logit_mod, test))
+
+df
 ```
 
 ## Neural network
@@ -476,3 +492,4 @@ Close the connection:
 ```
 
 # Conclusion
+
