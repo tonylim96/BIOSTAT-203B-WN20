@@ -282,6 +282,60 @@ study_admissions %>%
   print() -> study_admissions
 ```
 
+## Data visualization
+
+### Age
+```{r}
+study_admissions %>%
+  arrange(subject_id, desc(age)) %>%
+  group_by(subject_id) %>%
+  filter(row_number() == 1) %>%
+  ggplot +
+  geom_histogram(mapping = aes(x = age))
+```
+
+### Gender
+```{r}
+study_admissions %>%
+  arrange(subject_id) %>%
+  group_by(subject_id, gender) %>%
+  filter(row_number() == 1) %>%
+  ggplot +
+  geom_bar(mapping = aes(x = gender))
+```
+
+### Ethnicity
+
+```{r}
+study_admissions %>%
+  arrange(subject_id) %>%
+  group_by(subject_id, ethnic_group) %>%
+  filter(row_number() == 1) %>%
+  ggplot +
+  geom_bar(mapping = aes(x = ethnic_group))
+```
+
+### DRG severity
+```{r}
+study_admissions %>%
+  arrange(subject_id, desc(drg_severity)) %>%
+  group_by(subject_id, drg_severity) %>%
+  filter(row_number() == 1) %>%
+  ggplot +
+  geom_bar(mapping = aes(x = drg_severity))
+```
+
+### Mortality
+```{r}
+study_admissions %>%
+  arrange(subject_id, mortality) %>%
+  group_by(subject_id, mortality) %>%
+  filter(row_number() == 1) %>% 
+  ggplot +
+  geom_bar(mapping = aes(x = mortality))
+```
+
+
 ## Logistic regression
 
 ```{r}
@@ -293,7 +347,11 @@ glm(mortality ~ age + drg_severity + principal_dx + gender + ethnic_group, data 
 ## Neural network
 
 ```{r}
-df_studyadm <- data.frame
+library(keras)
+
+mx <- as.matrix(as.data.frame(study_admissions))
+
+
 ```
 
 
