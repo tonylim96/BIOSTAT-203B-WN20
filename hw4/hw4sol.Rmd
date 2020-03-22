@@ -13,8 +13,6 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Introduction
-
 2. Introduction. Describe the MIMIC-III data set and what research hypothesis/goal you are to address using this data.
 
 3. Data preparation. Create a study cohort from MIMIC-III corresponding to your research hypothesis/goal. See the examplary code below. Use a CONSORT flow diagram to summarize your steps to create the cohort.
@@ -25,6 +23,29 @@ knitr::opts_chunk$set(echo = TRUE)
 
 6. Conclusions. 
 
+# Introduction
+[MIMIC-III](https://mimic.physionet.org/about/mimic/) ((Medical Information Mart for Intensive Care III)) is a free database compromised of over 40,000 patients seen at critical care units of the Beth Israel Deaconess Medical Center between 2001 and 2012. The current version of the database is [v1.4](https://mimic.physionet.org/about/releasenotes/). 
+
+The database includes information such as:
+
+* Demographics
+* Vital sign measurements made at the bedside (~1 data point per hour)
+* Laboratory test results, procedures
+* Medications
+* Caregiver notes
+* Imaging reports, and
+* Mortality (both in and out of hospital)
+
+My research hypothesis predicts that gender will play a significant role in the 30-day mortality rate of patients with neoplasm (cancer) admitted to MICU (Medical Intensive Care Unit). 
+
+MIMIC-III consists of a total of [40 tables](https://mit-lcp.github.io/mimic-schema-spy/index.html), but this report will only utilize:
+
+* [`ADMISSIONS`](https://mimic.physionet.org/mimictables/admissions/)
+* [`D_ICD_DIAGNOSES`](https://mimic.physionet.org/mimictables/d_icd_diagnoses/)
+* [`DIAGNOSES_ICD`](https://mimic.physionet.org/mimictables/diagnoses_icd/)
+* [`DRGCODES`](https://mimic.physionet.org/mimictables/drgcodes/)
+* [`PATIENTS`](https://mimic.physionet.org/mimictables/patients/)
+* [`TRANSFERS`](https://mimic.physionet.org/mimictables/transfers/)
 
 # Data preparation
 
@@ -58,7 +79,7 @@ dbExecute(con, paste("SET search_path TO ", schema, sep=" "))
 con
 ```
 
-To connect to the `patients` table in the database:
+To connect to the `PATIENTS` table in the database:
 ```{r}
 patients <- tbl(con, "patients")
 patients %>% print(width = Inf)
@@ -68,7 +89,7 @@ patients %>% print(width = Inf)
 
 In this section, we demo how to create a cohort of patients who were directly admitted into MICU and were diagnosed with neoplasm (cancer).
 
-First we create a (query) table of patients who were directly admitted into MICU.
+First, we create a (query) table of patients who were directly admitted into MICU.
 ```{r}
 tbl(con, "transfers") %>%
   select(subject_id, hadm_id, prev_careunit, curr_careunit) %>%
@@ -78,26 +99,25 @@ tbl(con, "transfers") %>%
   print() -> micu_admissions
 ```
 
-Now we want to restrict to patients with cancer. To find all possible ICD-9 codes related to cancer, we search for string `neoplasm` in the `long_title` of table `d_icd_diagnoses`:
+Now we want to restrict to patients with cancer. To find all possible ICD-9 codes related to cancer, we search for string `neoplasm` in the `long_title` of table `D_ICD_DIAGNOSES`:
 ```{r}
 tbl(con, "d_icd_diagnoses") %>%
   filter(str_detect(tolower(long_title), "neoplasm")) %>%
   print() -> neo_codes
 ```
 
-`diagnoses_icd` table stores the diagnosis of each admission. We use `semi_join()` to keep the rows in `diagnoses_icd` that match the ICD-9 codes related to cancer:
+`DIAGNOSES_ICD` table stores the diagnosis of each admission. We use `semi_join()` to keep the rows in `DIAGNOSES_ICD` that match the ICD-9 codes related to cancer:
 ```{r}
 tbl(con, "diagnoses_icd") %>%
   semi_join(neo_codes, by = "icd9_code") %>% 
   print() -> neo_admissions
 ```
 
-Cancer may not be listed as the principal diagnosis; as explained in [the documentation for the `patients` table](https://mimic.physionet.org/mimictables/diagnoses_icd/), the `seq_num` field is a priority ranking for the diagnoses generated at the end of stay. In order to focus on patients for whom MI was central to their hospitalization, we will include records with MI in any of the first five diagnosis positions, according to the `seq_num` field. To avoid duplicate admissions, we use `group_by()` and `top_n()` to limit the query to the first MI diagnosis for each admission.
+Cancer may not be listed as the principal diagnosis; as explained in [the documentation for the `patients` table](https://mimic.physionet.org/mimictables/diagnoses_icd/), the `seq_num` field is a priority ranking for the diagnoses generated at the end of stay. In order to focus on patients for whom cancer was central to their hospitalization, we will include records with neoplasm in any of the first five diagnosis positions, according to the `seq_num` field. To avoid duplicate admissions, we use `group_by()` and `top_n()` to limit the query to the first cancer diagnosis for each admission.
 ```{r}
 neo_admissions %>%
   filter(seq_num <= 5) %>%
   group_by(subject_id, hadm_id) %>%
-  # top_n(1, wt = seq_num) %>% #  not working. bug? use following as workaround
   filter(min_rank(seq_num) <= 1) %>%
   ungroup() %>%
   select(subject_id, hadm_id, icd9_code, seq_num) %>% 
@@ -121,7 +141,7 @@ study_admissions %>%
   print() -> study_admissions
 ```
 
-We want to add information about the severity of patients’ ailments. The `drgcodes` table contains, for `DRG` codes from the All Payers Registry (APR), severity and mortality indicators. We pull the drug severity information and right-join it to our query table.
+We want to add information about the severity of patients’ ailments. The `DRGCODES` table contains, for `DRG` codes from the All Payers Registry (APR), severity and mortality indicators. We pull the drug severity information and right-join it to our query table.
 ```{r}
 tbl(con, "drgcodes") %>%
   filter(str_detect(drg_type, "APR")) %>%
@@ -191,7 +211,7 @@ study_subjects %>%
   print() -> study_subjects
 ```
 
-Let's resolves ome diversity and inconsistency in the `ethnicity` field:
+Let's resolve some diversity and inconsistency in the `ethnicity` field:
 ```{r}
 unknown_ethnicity <- c(
   "OTHER",
@@ -247,8 +267,9 @@ study_admissions %>%
 ```
 
 ## CONSORT Flow Diagrams
-The following [CONSORT Flow Diagrams](http://www.consort-statement.org/consort-statement/flow-diagram) plots the flow of data selection of the patient cohort. 
-```{r plot, echo = FALSE}
+
+The following [CONSORT Flow Diagrams](http://www.consort-statement.org/consort-statement/flow-diagram) plot the flow of data selection of the patient cohort. 
+```{r plot}
 library(shape)
 library(diagram)
 
@@ -298,7 +319,7 @@ for (i in 1:num_of_boxes) {
   }
 ```
 
-```{r, echo = FALSE}
+```{r}
 # set margins and multiplot
 par(mfrow = c(1, 1))
 par(mar = c(0, 0, 0, 0))
@@ -348,13 +369,17 @@ for (i in 1:num_of_boxes) {
 # Data visualization
 
 ## Age
-```{r}
+```{r, warning=FALSE, message=FALSE}
 study_admissions %>%
   arrange(subject_id, desc(age)) %>%
   group_by(subject_id) %>%
   filter(row_number() == 1) %>%
   ggplot +
-  geom_histogram(mapping = aes(x = age))
+  geom_histogram(mapping = aes(x = age)) +
+  labs(title = "Age distribution",
+       subtitle = "n = 1,697",
+       x = "Age",
+       y = "Count")
 ```
 
 ## Gender
@@ -364,7 +389,11 @@ study_admissions %>%
   group_by(subject_id, gender) %>%
   filter(row_number() == 1) %>%
   ggplot +
-  geom_bar(mapping = aes(x = gender))
+  geom_bar(mapping = aes(x = gender)) +
+  labs(title = "Gender distribution",
+       subtitle = "n = 1,697",
+       x = "Gender",
+       y = "Count")
 ```
 
 ## Ethnicity
@@ -372,10 +401,11 @@ study_admissions %>%
 study_admissions %>%
   arrange(subject_id) %>%
   group_by(subject_id, ethnic_group) %>%
-  filter(row_number() == 1) %>%
+  filter(row_number() == 1) %>% 
   ggplot +
   geom_bar(mapping = aes(x = ethnic_group)) + 
-  labs(title = "Ethnicity",
+  labs(title = "Ethnicity distribution",
+       subtitle = "n = 1,697",
        x = "Ethnicity", 
        y = "Count")
 ```
@@ -387,7 +417,11 @@ study_admissions %>%
   group_by(subject_id, drg_severity) %>%
   filter(row_number() == 1) %>%
   ggplot +
-  geom_bar(mapping = aes(x = drg_severity, fill = gender))
+  geom_bar(mapping = aes(x = drg_severity, fill = gender)) +
+  labs(title = "DRG severity by gender",
+       subtitle = "n = 1,801",
+       x = "DRG severity",
+       y = "Count")
 ```
 
 ## Principal diagnosis
@@ -397,7 +431,11 @@ study_admissions %>%
   group_by(subject_id, principal_dx) %>%
   filter(row_number() == 1) %>%
   ggplot +
-  geom_bar(mapping = aes(x = principal_dx, fill = gender)) 
+  geom_bar(mapping = aes(x = principal_dx, fill = gender)) +
+  labs(title = "Principal diagnosis by gender",
+       subtitle = "n = 1,746",
+       x = "Principal diagnosis",
+       y = "Count")
 ```
 
 ## Mortality
@@ -405,9 +443,13 @@ study_admissions %>%
 study_admissions %>%
   arrange(subject_id, mortality) %>%
   group_by(subject_id, mortality) %>%
-  filter(row_number() == 1) %>% 
+  filter(row_number() == 1) %>%
   ggplot +
-  geom_bar(mapping = aes(x = mortality, fill = gender)) 
+  geom_bar(mapping = aes(x = mortality, fill = gender)) +
+  labs(title = "Mortality by gender",
+       subtitle = "n = 1,697",
+       x = "Mortality",
+       y = "Count")
 ```
 
 # Data analysis
@@ -427,9 +469,10 @@ mx <- as.matrix(as.data.frame(study_admissions))
 
 ```
 
-
 ## Close the connection to a database
 Close the connection:
 ```{r}
 # dbDisconnect(con)
 ```
+
+# Conclusion
