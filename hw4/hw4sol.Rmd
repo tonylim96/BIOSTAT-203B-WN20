@@ -285,16 +285,15 @@ study_admissions %>%
 ## Logistic regression
 
 ```{r}
-logit_mort <- glm(mortality ~ age + drg_severity + gender + ethnic_group, data = study_admissions, 
-                  family = binomial(link = "logit"), maxit = 100)
-
-summary(logit_mort)
+glm(mortality ~ age + drg_severity + principal_dx + gender + ethnic_group, data = study_admissions, 
+                  family = binomial(link = "logit"), maxit = 100) %>%
+  summary()
 ```
 
 ## Neural network
 
 ```{r}
-
+df_studyadm <- data.frame
 ```
 
 
