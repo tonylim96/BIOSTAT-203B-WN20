@@ -312,7 +312,10 @@ study_admissions %>%
   group_by(subject_id, ethnic_group) %>%
   filter(row_number() == 1) %>%
   ggplot +
-  geom_bar(mapping = aes(x = ethnic_group))
+  geom_bar(mapping = aes(x = ethnic_group)) + 
+  labs(title = "Ethnicity",
+       x = "Ethnicity", 
+       y = "Count")
 ```
 
 ### DRG severity
@@ -322,8 +325,19 @@ study_admissions %>%
   group_by(subject_id, drg_severity) %>%
   filter(row_number() == 1) %>%
   ggplot +
-  geom_bar(mapping = aes(x = drg_severity))
+  geom_bar(mapping = aes(x = drg_severity, fill = gender))
 ```
+
+### Principal diagnosis
+```{r}
+study_admissions %>%
+  arrange(subject_id, principal_dx) %>%
+  group_by(subject_id, principal_dx) %>%
+  filter(row_number() == 1) %>%
+  ggplot +
+  geom_bar(mapping = aes(x = principal_dx, fill = gender)) 
+```
+
 
 ### Mortality
 ```{r}
@@ -332,7 +346,7 @@ study_admissions %>%
   group_by(subject_id, mortality) %>%
   filter(row_number() == 1) %>% 
   ggplot +
-  geom_bar(mapping = aes(x = mortality))
+  geom_bar(mapping = aes(x = mortality, fill = gender)) 
 ```
 
 
