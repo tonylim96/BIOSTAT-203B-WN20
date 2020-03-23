@@ -13,16 +13,6 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-2. Introduction. Describe the MIMIC-III data set and what research hypothesis/goal you are to address using this data.
-
-3. Data preparation. Create a study cohort from MIMIC-III corresponding to your research hypothesis/goal. See the examplary code below. Use a CONSORT flow diagram to summarize your steps to create the cohort.
-
-4. Data visualization. Use visualization to summarize the cohort you created. 
-
-5. Analytics. Use at least two analytical approaches to address your research hypothesis/goal. For example, we can use (1) logistic regression and (2) neural network to build a predictive model for the 30-day mortality rate of patients admitted into CCU and compare their predictive performance. Summarize your results in graphs.
-
-6. Conclusions. 
-
 # Introduction
 [MIMIC-III](https://mimic.physionet.org/about/mimic/) ((Medical Information Mart for Intensive Care III)) is a free database compromised of over 40,000 patients seen at critical care units of the Beth Israel Deaconess Medical Center between 2001 and 2012. The current version of the database is [v1.4](https://mimic.physionet.org/about/releasenotes/). 
 
@@ -76,12 +66,6 @@ con <- dbConnect(RPostgreSQL::PostgreSQL(),
 # Set the default schema
 dbExecute(con, paste("SET search_path TO ", schema, sep=" "))
 con
-```
-
-To connect to the `PATIENTS` table in the database:
-```{r}
-patients <- tbl(con, "patients")
-patients %>% print(width = Inf)
 ```
 
 ## Query and subsetting
@@ -364,31 +348,47 @@ for (i in 1:num_of_boxes) {
 
 # Data visualization
 ## Age
+The age distribution appears to be skewed to the left with a median age of 65. 
+
+```{r}
+a <- as_tibble(study_admissions %>%
+  arrange(subject_id, desc(age)) %>%
+  group_by(subject_id) %>%
+  filter(row_number() == 1))
+
+median(a$age, na.RM = TRUE)
+```
+
+
 ```{r, warning=FALSE, message=FALSE}
 study_admissions %>%
   arrange(subject_id, desc(age)) %>%
   group_by(subject_id) %>%
   filter(row_number() == 1) %>%
   ggplot +
-  geom_histogram(mapping = aes(x = age)) +
+  geom_histogram(mapping = aes(x = age), fill = "#3C99B2") +
   labs(title = "Age distribution",
        subtitle = "n = 1,697",
        x = "Age",
-       y = "Count")
+       y = "Count") +
+  theme_light()
 ```
 
 ## Gender
+There are more males than females in the study cohort. 
 ```{r}
 study_admissions %>%
   arrange(subject_id) %>%
   group_by(subject_id, gender) %>%
   filter(row_number() == 1) %>%
   ggplot +
-  geom_bar(mapping = aes(x = gender)) +
+  geom_bar(mapping = aes(x = gender), fill = "#78b7c5") +
   labs(title = "Gender distribution",
        subtitle = "n = 1,697",
        x = "Gender",
-       y = "Count")
+       y = "Count") +
+  scale_x_discrete(labels = c("Female", "Male")) +
+  theme_light()
 ```
 
 ## Ethnicity
@@ -398,11 +398,12 @@ study_admissions %>%
   group_by(subject_id, ethnic_group) %>%
   filter(row_number() == 1) %>% 
   ggplot +
-  geom_bar(mapping = aes(x = ethnic_group)) + 
+  geom_bar(mapping = aes(x = str_to_sentence(ethnic_group)), fill = "#EBCC2A") + 
   labs(title = "Ethnicity distribution",
        subtitle = "n = 1,697",
        x = "Ethnicity", 
-       y = "Count")
+       y = "Count") +
+  theme_light()
 ```
 
 ## DRG severity
@@ -413,10 +414,14 @@ study_admissions %>%
   filter(row_number() == 1) %>%
   ggplot +
   geom_bar(mapping = aes(x = drg_severity, fill = gender)) +
+  scale_fill_manual(name = "Gender",
+                    values = c("#FDD361","#D3DDDC"), 
+                    labels = c("Female", "Male")) +
   labs(title = "DRG severity by gender",
        subtitle = "n = 1,801",
        x = "DRG severity",
-       y = "Count")
+       y = "Count") +
+  theme_light()
 ```
 
 ## Principal diagnosis
@@ -427,10 +432,14 @@ study_admissions %>%
   filter(row_number() == 1) %>%
   ggplot +
   geom_bar(mapping = aes(x = principal_dx, fill = gender)) +
+  scale_fill_manual(name = "Gender", 
+                    values = c("#FDD361","#D3DDDC"), 
+                    labels = c("Female", "Male")) +
   labs(title = "Principal diagnosis by gender",
        subtitle = "n = 1,746",
        x = "Principal diagnosis",
-       y = "Count")
+       y = "Count") +
+  theme_light()
 ```
 
 ## Mortality
@@ -441,10 +450,14 @@ study_admissions %>%
   filter(row_number() == 1) %>%
   ggplot +
   geom_bar(mapping = aes(x = mortality, fill = gender)) +
+  scale_fill_manual(name = "Gender", 
+                    values = c("#FDD361","#D3DDDC"), 
+                    labels = c("Female", "Male")) +
   labs(title = "Mortality by gender",
        subtitle = "n = 1,697",
        x = "Mortality",
-       y = "Count")
+       y = "Count") +
+  theme_light()
 ```
 
 # Data analysis
@@ -463,6 +476,7 @@ test <- df[!sample, ]
 ```
 
 ## Logistic regression
+I included only `age`, `DRG severity`, and `gender` in the logistic regression. The other variables (principal diagnosis and ethnic group) did not appear to be statistically significant (p-values above 0.05).
 ```{r}
 glm(mortality ~ age + drg_severity + gender, data = train, 
                   family = binomial(link = "logit"), maxit = 100) %>%
@@ -470,24 +484,26 @@ glm(mortality ~ age + drg_severity + gender, data = train,
 
 logit_mod <- glm(mortality ~ age + drg_severity + gender, data = train, 
                   family = binomial(link = "logit"), maxit = 100)
+```
 
+## ROC curve
+```{r}
 test$predicted <- plogis(predict(logit_mod, test))
 roc <- pROC::roc(test$mortality, test$predicted)
 
-newdf <- data_frame(rep(NA, 356))
+newdf <- tibble(rep(NA, 356))
 newdf$sens <- roc$sensitivities
 newdf$spec <- roc$specificities
 
 ggplot(newdf, aes(x = 1 - spec, y = sens)) + 
-  geom_line() +
+  geom_line(color = "blue") +
   labs(title = "ROC curve",
        subtitle = str_c("AUC = ", round(roc$auc, digits = 2)),
        x = "1 - Specificity",
        y = "Sensitivity") +
-  geom_segment(aes(x = 0, y = 0, xend = 1, yend = 1), linetype = "dashed", size = 0.05)
-
-
+  geom_segment(aes(x = 0, y = 0, xend = 1, yend = 1), linetype = "dashed", size = 0.02, color = "gray55")
 ```
+
 
 ## Neural network
 ```{r}
