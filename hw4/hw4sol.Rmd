@@ -471,9 +471,22 @@ glm(mortality ~ age + drg_severity + gender, data = train,
 logit_mod <- glm(mortality ~ age + drg_severity + gender, data = train, 
                   family = binomial(link = "logit"), maxit = 100)
 
-predicted <- plogis(predict(logit_mod, test))
+test$predicted <- plogis(predict(logit_mod, test))
+roc <- pROC::roc(test$mortality, test$predicted)
 
-df
+newdf <- data_frame(rep(NA, 356))
+newdf$sens <- roc$sensitivities
+newdf$spec <- roc$specificities
+
+ggplot(newdf, aes(x = 1 - spec, y = sens)) + 
+  geom_line() +
+  labs(title = "ROC curve",
+       subtitle = str_c("AUC = ", round(roc$auc, digits = 2)),
+       x = "1 - Specificity",
+       y = "Sensitivity") +
+  geom_segment(aes(x = 0, y = 0, xend = 1, yend = 1), linetype = "dashed", size = 0.05)
+
+
 ```
 
 ## Neural network
