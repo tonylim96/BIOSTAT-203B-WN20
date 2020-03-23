@@ -267,23 +267,24 @@ ncov_tbl %>%
 
 state <- ncov_tbl %>%
   filter(`Country/Region` %in% c("US")) %>%
-  filter(`Case` == "confirmed") %>%
+  filter(`Case` == "death") %>%
   separate(col = "Province/State", into = c("City", "State"), sep = ", ") %>%
   print
 
 ```
 
 ```{r}
+today <- "2020-03-07"
 
-# ncov_tbl %>%
-#     filter(`Country/Region` %in% c("US"), 
-#            `Date` == plotdate) %>%
-#     filter(`Case` == "confirmed") %>%
-#     separate(col = "Province/State", into = c("City", "state"), sep = ", ") %>%
-#   filter(`state` %in% state.abb) %>%
-#   group_by(state) %>%
-#   summarise(n = n_distinct(state), sum = sum(Count)) %>%
-#   print(width = Inf)
+ncov_tbl %>%
+    filter(`Country/Region` %in% c("US"),
+           `Date` == "plotdate") %>%
+    filter(`Case` == "death") %>%
+    separate(col = "Province/State", into = c("City", "state"), sep = ", ") %>%
+  filter(`state` %in% state.abb) %>%
+  group_by(state) %>%
+  summarise(n = n_distinct(state), sum = sum(Count)) %>%
+  print(width = Inf)
 # 
 #   plot_usmap(regions = "states", data = state, values = "Count", color = "black") + 
 #     scale_fill_continuous(name = "Count", label = scales::comma) + 
