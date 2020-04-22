@@ -1,7 +1,7 @@
 # Library ----
 
 # List of required packages
-packages <- c("cowplot", "maps", "scales", "shinythemes", "usmap", 
+packages <- c("cowplot", "maps", "quantmod", "scales", "sf", "shinythemes", "usmap", 
               "wesanderson")
 
 # Check if packages are installed 
@@ -37,11 +37,11 @@ library(wesanderson)
 c(1,3,11) %ni% 1:10
 
 # Steps to create ncov_tbl
-(confirmed <- read_csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"))
+(confirmed <- read_csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"))
 
-(recovered <- read_csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv"))
+(recovered <- read_csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv"))
 
-(death <- read_csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv"))
+(death <- read_csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"))
 
 confirmed_long <- confirmed %>%
     pivot_longer(-(`Province/State`:Long), 
